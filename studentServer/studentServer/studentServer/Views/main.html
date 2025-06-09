@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Административная панель</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .auth-modal {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .blur-background {
+            filter: blur(5px);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-blue-50 min-h-screen">
+    <!-- Шапка -->
+    <header class="bg-teal-700 text-blue-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2"></div>
+            <button id="authBtn" class="bg-teal-100 text-teal-800 px-4 py-2 rounded-lg font-medium hover:bg-teal-200 transition flex items-center space-x-2">
+                <i class="fas fa-user"></i>
+                <a href="main.html">main.html</a>
+                <span>Войти</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Основное содержимое -->
+    <main class="container mx-auto px-4 py-8">
+        <h2 class="text-3xl font-bold text-teal-800 mb-8 text-center">Выберите раздел для работы</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Карточка сотрудников -->
+            <a href="students.html" class="bg-teal-50 rounded-xl shadow-md overflow-hidden card-hover">
+                <div class="p-6">
+                    <div class="text-teal-600 mb-4">
+                        <i class="fas fa-users text-5xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-stone-700 mb-2">Сотрудники</h3>
+                    <p class="text-stone-600">Управление базой данных сотрудников, добавление, редактирование и удаление записей</p>
+                </div>
+                <div class="bg-teal-100 px-6 py-3">
+                    <span class="text-teal-800 font-medium">Перейти →</span>
+                </div>
+            </a>
+            
+            <!-- Карточка компаний -->
+            <a href="#" class="bg-blue-50 rounded-xl shadow-md overflow-hidden card-hover">
+                <div class="p-6">
+                    <div class="text-teal-500 mb-4">
+                        <i class="fas fa-building text-5xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Компании</h3>
+                    <p class="text-gray-600">Редактирование базы данных компаний, управление контрагентами и партнерами</p>
+                </div>
+                <div class="bg-slate-100 px-6 py-3">
+                    <span class="text-slate-700 font-medium">Перейти →</span>
+                </div>
+            </a>
+            
+            <!-- Карточка договоров -->
+            <a href="#" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                <div class="p-6">
+                    <div class="text-slate-600 mb-4">
+                        <i class="fas fa-file-contract text-5xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Договоры</h3>
+                    <p class="text-gray-600">Создание, редактирование и управление договорами, история изменений</p>
+                </div>
+                <div class="bg-slate-100 px-6 py-3">
+                    <span class="text-slate-700 font-medium">Перейти →</span>
+                </div>
+            </a>
+            
+            <!-- Карточка шаблонов -->
+            <a href="#" class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                <div class="p-6">
+                    <div class="text-slate-500 mb-4">
+                        <i class="fas fa-file-alt text-5xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Шаблоны документов</h3>
+                    <p class="text-gray-600">Управление шаблонами документов, создание новых форм и бланков</p>
+                </div>
+                <div class="bg-slate-100 px-6 py-3">
+                    <span class="text-slate-700 font-medium">Перейти →</span>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <!-- Модальное окно авторизации -->
+    <div id="authModal" class="auth-modal fixed inset-0 flex items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Авторизация</h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Логин</label>
+                        <input type="text" id="username" name="username" 
+                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                               placeholder="Введите ваш логин" required>
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
+                        <input type="password" id="password" name="password" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+                               placeholder="Введите ваш пароль" required>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" name="remember" type="checkbox" 
+                                   class="h-4 w-4 text-slate-600 focus:ring-slate-500 border-gray-300 rounded">
+                            <label for="remember" class="ml-2 block text-sm text-gray-700">Запомнить меня</label>
+                        </div>
+                        
+                        <a href="#" class="text-sm text-slate-600 hover:text-slate-500">Забыли пароль?</a>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-teal-600 text-blue-50 py-2 px-4 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition">
+                        Войти
+                    </button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Управление модальным окном авторизации
+        const authBtn = document.getElementById('authBtn');
+        const authModal = document.getElementById('authModal');
+        const closeModal = document.getElementById('closeModal');
+        const loginForm = document.getElementById('loginForm');
+        const mainContent = document.querySelector('main');
+        const header = document.querySelector('header');
+
+        authBtn.addEventListener('click', () => {
+            authModal.style.display = 'flex';
+            mainContent.classList.add('blur-background');
+            header.classList.add('blur-background');
+        });
+
+        closeModal.addEventListener('click', () => {
+            authModal.style.display = 'none';
+            mainContent.classList.remove('blur-background');
+            header.classList.remove('blur-background');
+        });
+
+        // Закрытие по клику вне модального окна
+        window.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                authModal.style.display = 'none';
+                mainContent.classList.remove('blur-background');
+                header.classList.remove('blur-background');
+            }
+        });
+
+        // Обработка формы входа
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Здесь должна быть логика авторизации
+            console.log('Попытка входа:', { username, password });
+            
+            // Временная имитация успешного входа
+            setTimeout(() => {
+                authModal.style.display = 'none';
+                mainContent.classList.remove('blur-background');
+                header.classList.remove('blur-background');
+                
+                // Меняем кнопку на профиль пользователя
+                authBtn.innerHTML = `
+                    <i class="fas fa-user-circle"></i>
+                    <span>${username}</span>
+                `;
+                
+                // Показываем уведомление об успешном входе
+                alert(`Добро пожаловать, ${username}!`);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

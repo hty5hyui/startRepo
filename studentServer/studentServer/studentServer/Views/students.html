@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Административная панель</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .auth-modal {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .blur-background {
+            filter: blur(5px);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-blue-50 min-h-screen">
+    <!-- Шапка -->
+    <header class="bg-teal-700 text-blue-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="#" class="text-blue-50 hover:text-teal-200 transition">Главная</a>
+                <span class="text-blue-50 mx-1">|</span>
+                <a href="#" class="text-teal-200 hover:text-blue-100 transition">Сотрудники</a>
+            </div>
+            <button id="authBtn" class="bg-teal-100 text-teal-800 px-4 py-2 rounded-lg font-medium hover:bg-teal-200 transition flex items-center space-x-2">
+                <i class="fas fa-user"></i>
+                <span>Войти</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Основное содержимое -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-teal-800">Редактор базы сотрудников</h2>
+            <button class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+                <i class="fas fa-plus"></i>
+                <span>Добавить сотрудника</span>
+            </button>
+        </div>
+
+        <!-- Таблица сотрудников -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-teal-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">ФИО</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Должность</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Отдел</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Телефон</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- Пример строки с данными -->
+                        <tr class="hover:bg-blue-50 transition">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1001</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Иванов Иван Иванович</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Менеджер проектов</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">ИТ</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">+7 (999) 123-45-67</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                <div class="flex space-x-2">
+                                    <button class="text-teal-600 hover:text-teal-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Еще примеры строк -->
+                        <tr class="hover:bg-blue-50 transition">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1002</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Петрова Анна Сергеевна</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Разработчик</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Разработка</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">+7 (999) 765-43-21</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                <div class="flex space-x-2">
+                                    <button class="text-teal-600 hover:text-teal-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-blue-50 transition">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1003</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Сидоров Дмитрий Петрович</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Дизайнер</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Дизайн</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">+7 (999) 111-22-33</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                <div class="flex space-x-2">
+                                    <button class="text-teal-600 hover:text-teal-800">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Пагинация -->
+            <div class="bg-teal-50 px-6 py-3 flex items-center justify-between">
+                <div class="text-sm text-gray-700">
+                    Показано <span class="font-medium">1</span> до <span class="font-medium">3</span> из <span class="font-medium">3</span> записей
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50">
+                        Назад
+                    </button>
+                    <button class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50">
+                        Вперед
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Модальное окно авторизации -->
+    <div id="authModal" class="auth-modal fixed inset-0 flex items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Авторизация</h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Логин</label>
+                        <input type="text" id="username" name="username" 
+                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                               placeholder="Введите ваш логин" required>
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
+                        <input type="password" id="password" name="password" 
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+                               placeholder="Введите ваш пароль" required>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" name="remember" type="checkbox" 
+                                   class="h-4 w-4 text-slate-600 focus:ring-slate-500 border-gray-300 rounded">
+                            <label for="remember" class="ml-2 block text-sm text-gray-700">Запомнить меня</label>
+                        </div>
+                        
+                        <a href="#" class="text-sm text-slate-600 hover:text-slate-500">Забыли пароль?</a>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-teal-600 text-blue-50 py-2 px-4 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition">
+                        Войти
+                    </button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Управление модальным окном авторизации
+        const authBtn = document.getElementById('authBtn');
+        
+        // Управление сотрудниками
+        document.addEventListener('DOMContentLoaded', function() {
+            // Обработчик кнопки Добавить сотрудника
+            document.querySelectorAll('.add-employee').forEach(button => {
+                button.addEventListener('click', function() {
+                    alert('Форма добавления нового сотрудника');
+                });
+            });
+            
+            // Обработчики кнопок редактирования
+            document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const id = row.querySelector('td:first-child').textContent;
+                    alert(`Редактирование сотрудника с ID: ${id}`);
+                });
+            });
+            
+            // Обработчики кнопок удаления
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const name = row.querySelector('td:nth-child(2)').textContent;
+                    if(confirm(`Удалить сотрудника ${name}?`)) {
+                        row.remove();
+                    }
+                });
+            });
+        });
+        const authModal = document.getElementById('authModal');
+        const closeModal = document.getElementById('closeModal');
+        const loginForm = document.getElementById('loginForm');
+        const mainContent = document.querySelector('main');
+        const header = document.querySelector('header');
+
+        authBtn.addEventListener('click', () => {
+            authModal.style.display = 'flex';
+            mainContent.classList.add('blur-background');
+            header.classList.add('blur-background');
+        });
+
+        closeModal.addEventListener('click', () => {
+            authModal.style.display = 'none';
+            mainContent.classList.remove('blur-background');
+            header.classList.remove('blur-background');
+        });
+
+        // Закрытие по клику вне модального окна
+        window.addEventListener('click', (e) => {
+            if (e.target === authModal) {
+                authModal.style.display = 'none';
+                mainContent.classList.remove('blur-background');
+                header.classList.remove('blur-background');
+            }
+        });
+
+        // Обработка формы входа
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Здесь должна быть логика авторизации
+            console.log('Попытка входа:', { username, password });
+            
+            // Временная имитация успешного входа
+            setTimeout(() => {
+                authModal.style.display = 'none';
+                mainContent.classList.remove('blur-background');
+                header.classList.remove('blur-background');
+                
+                // Меняем кнопку на профиль пользователя
+                authBtn.innerHTML = `
+                    <i class="fas fa-user-circle"></i>
+                    <span>${username}</span>
+                `;
+                
+                // Показываем уведомление об успешном входе
+                alert(`Добро пожаловать, ${username}!`);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

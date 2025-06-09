@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "PR82UoBCYc4eCqIRQXqnWi6aQ4bQEoWU9G7UOz3LAKI=",
+  "Source": "studentServer",
+  "BasePath": "_content/studentServer",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
