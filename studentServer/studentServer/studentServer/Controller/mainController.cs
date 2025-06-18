@@ -4,7 +4,6 @@ using studentServer.Service;
 namespace studentServer.Controller
 {
     [ApiController]
-    //[Route("[controller]")]
     public class mainController : ControllerBase
     {
         [HttpGet("/")]
