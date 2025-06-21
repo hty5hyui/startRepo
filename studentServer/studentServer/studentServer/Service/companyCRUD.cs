@@ -1,17 +1,23 @@
 ﻿using studentServer.Entity;
+using studentServer.TempService;
 
 namespace studentServer.Service
 {
     public class companyCRUD
     {
-        public static async Task<List<CompanyStruct>> getAllCompanyDataAsync()
+        public static async Task<List<Company>> getAllCompanyDataAsync(int page)
         {
-            return [];
+            List<Company> companies = new List<Company>();
+            for (int i = 0; i < 5; i++)
+            {
+                companies.Add(companyGenerator.GenerateRandomCompany());
+            }
+            return companies;
         }
 
-        public static async Task<CompanyStruct> getCompanyDataAsync(int idCompany)
+        public static async Task<Company> getCompanyDataAsync(int idCompany)
         {
-            return new CompanyStruct();
+            return companyGenerator.GenerateRandomCompany();
         }
 
         public static async Task deleteCompanyAsync(int idCompany)
@@ -19,12 +25,12 @@ namespace studentServer.Service
 
         }
 
-        public static async Task patchCompanyAsync(CompanyStruct newCompanyData)
+        public static async Task patchCompanyAsync(Company newCompanyData)
         {
 
         }
 
-        public static async Task addCompanyAsync(CompanyStruct companyData)
+        public static async Task addCompanyAsync(Company companyData)
         {
 
         }

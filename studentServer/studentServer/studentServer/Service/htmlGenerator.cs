@@ -13,5 +13,10 @@
             string htmlPage = await System.IO.File.ReadAllTextAsync("Views/company.html");
             return htmlPage;
         }
+        public static async Task<string> studentPageGenerator()
+        {
+            string htmlPage = await System.IO.File.ReadAllTextAsync("Views/student.html");
+            return htmlPage;
+        }
     }
 }

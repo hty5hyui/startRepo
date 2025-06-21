@@ -1,18 +1,38 @@
 ﻿namespace studentServer.Entity
 {
+
     public class Student
     {
         public Contract Contract { get; set; } = new Contract();
-        public Finance Finance { get; set; } = new Finance();
+        public FinanceDoc FinanceDoc { get; set; } = new FinanceDoc();
         public PersonalData PersonalData { get; set; } = new PersonalData();
         public VISA Visa { get; set; } = new VISA();
     }
 
-    public class Finance
+    public class PatchStudent
+    {
+        public List<int> idList { get; set; } = new List<int>();
+        public Student data { get; set; } = new Student();
+    }
+
+    public class Contract
+    {
+        public int Id { get; set; }
+        public string? NumberUVM { get; set; }
+        public string? Number3Party { get; set; }
+        public DateTime? Date3Party { get; set; }
+        public string? Number2Party { get; set; }
+        public DateTime? Date2Party { get; set; }
+        public string? GroupNumber { get; set; }
+        public DateTime? DateOfDispatch { get; set; }
+        public string? MailCompany { get; set; }
+        public DateTime? DateReturn { get; set; }
+    }
+    public class FinanceDoc
     {
         public int Id { get; set; }
         public bool PaymentOfContribution { get; set; } = false;
-        public bool PaymentOfOontributionYear { get; set; } = false;
+        public bool PaymentOfContributionYear { get; set; } = false;
         public string? CheckNumber { get; set; }
         public DateOnly? CheckDate { get; set; }
         public bool CardIsReady { get; set; } = false;
