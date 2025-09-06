@@ -1,7 +1,12 @@
-﻿namespace studentServer.Entity
-{
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Student
+namespace studentServer.Entity
+{
+    
+
+
+    public class StudentData
     {
         public Contract Contract { get; set; } = new Contract();
         public FinanceDoc FinanceDoc { get; set; } = new FinanceDoc();
@@ -11,12 +16,29 @@
 
     public class PatchStudent
     {
-        public List<int> idList { get; set; } = new List<int>();
-        public Student data { get; set; } = new Student();
+        public List<int> idList { get; set; } = [];
+        public StudentData data { get; set; } = new StudentData();
     }
 
+    [Table("Student")]
+    public class Student
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public int PersonalDataId { get; set; }
+        public int CompanyId { get; set; }
+        public int FinanceId { get; set; }
+        public int VisaId { get; set; }
+        public int ProfessionId { get; set; }
+        public int ContractsId { get; set; }
+    }
+
+    [Table("Contracts")]
     public class Contract
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string? NumberUVM { get; set; }
         public string? Number3Party { get; set; }
@@ -28,8 +50,12 @@
         public string? MailCompany { get; set; }
         public DateTime? DateReturn { get; set; }
     }
+
+    [Table("Finance")]
     public class FinanceDoc
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public bool PaymentOfContribution { get; set; } = false;
         public bool PaymentOfContributionYear { get; set; } = false;
@@ -39,8 +65,11 @@
         public bool CardIsGet { get; set; } = false;
     }
 
+    [Table("PersonalData")]
     public class PersonalData
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string? Surname { get; set; }
         public string? Name { get; set; }
@@ -59,8 +88,12 @@
         public string? AddressRegistrationIndex { get; set; }
         public string? Curator { get; set; }
     }
+
+    [Table("VISA")]
     public class VISA
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string? InviteNumber { get; set; }
         public DateOnly? ArrivalDate { get; set; }
@@ -71,10 +104,14 @@
         public DateOnly? VisaReceiptDate { get; set; }
         public DateOnly? VisaValidityDate { get; set; }
     }
-    public struct Profession
+
+    [Table("Profession")]
+    public class Profession
     {
-        public int Id { get; set; }
-        public string? ProfessionName { get; set; }
-        public string? ProfessionNumber { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int? Id { get; set; }
+        public string ProfessionName { get; set; }
+        public string ProfessionNumber { get; set; }
     }
 }

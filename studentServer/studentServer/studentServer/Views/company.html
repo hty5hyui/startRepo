@@ -11,17 +11,28 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
+
         .card-hover {
             transition: all 0.3s ease;
         }
+
         .auth-modal {
             display: none;
             animation: fadeIn 0.3s;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         .blur-background {
             filter: blur(5px);
             pointer-events: none;
@@ -48,7 +59,7 @@
     <main class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold text-teal-800">Редактор базы компаний</h2>
-            <button class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+            <button class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2" onclick="openAddModal()">
                 <i class="fas fa-plus"></i>
                 <span>Добавить компанию</span>
             </button>
@@ -57,14 +68,14 @@
         <!-- Поиск и таблица компаний -->
         <div class="mb-6">
             <div class="relative">
-                <input type="text" placeholder="Поиск компаний..." 
+                <input type="text" placeholder="Поиск компаний..."
                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
                 <button class="absolute right-3 top-2 text-gray-400 hover:text-gray-600">
                     <i class="fas fa-search"></i>
                 </button>
             </div>
         </div>
-        
+
         <!-- Таблица компаний -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden">
             <div class="overflow-x-auto">
@@ -80,68 +91,19 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Действия</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <!-- Пример строки с данными компании -->
-                        <tr class="hover:bg-blue-50 transition cursor-pointer" ondblclick="showCompanyDetails(1001)">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1001</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">ООО "ТехноПром"</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">г. Москва, ул. Ленина, 42</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Петров П.П.</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Сидоров С.С.</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1234567890</td>
-                            
-                        </tr>
-                        <!-- Еще примеры строк -->
-                        <tr class="hover:bg-blue-50 transition cursor-pointer" ondblclick="showCompanyDetails(1002)">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1002</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">ООО "Вектор"</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">г. Санкт-Петербург, пр. Невский, 15</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Иванова А.А.</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Кузнецов К.К.</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">0987654321</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                <div class="flex space-x-2">
-                                    <button class="text-teal-600 hover:text-teal-800">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-blue-50 transition cursor-pointer" ondblclick="showCompanyDetails(1003)">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1003</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">ООО "СтройГарант"</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">г. Екатеринбург, ул. Мамина-Сибиряка, 101</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Смирнов С.С.</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Васильев В.В.</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1122334455</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                <div class="flex space-x-2">
-                                    <button class="text-teal-600 hover:text-teal-800">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                    <tbody class="bg-white divide-y divide-gray-200" id="companiesTableBody">
                     </tbody>
                 </table>
             </div>
 
             <!-- Пагинация -->
-            <div class="bg-teal-50 px-6 py-3 flex items-center justify-between">
-                <div class="text-sm text-gray-700">
-                    Показано <span class="font-medium">1</span> до <span class="font-medium">3</span> из <span class="font-medium">3</span> записей
-                </div>
-                <div class="flex space-x-2">
-                    <button class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50">
+            <div class="bg-teal-50 px-6 py-3 flex items-center justify-end">
+                <div class="flex items-center space-x-2">
+                    <button id="prevPageBtn" class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50">
                         Назад
                     </button>
-                    <button class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50">
+                    <span id="currentPage" class="px-4 py-2 text-sm font-medium text-gray-700">1</span>
+                    <button id="nextPageBtn" class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50">
                         Вперед
                     </button>
                 </div>
@@ -156,43 +118,77 @@
             <div class="p-6">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold text-stone-700">Редактирование компании</h3>
-                    <button onclick="closeCompanyModal()" class="text-gray-500 hover:text-gray-700">
+                    <button id="closeCompanyModalBtn" class="text-gray-500 hover:text-gray-700">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                
-                <form id="companyForm" class="space-y-4">
+
+                <form id="companyForm" class="space-y-4" onsubmit="saveCompany(event)">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ID компании</label>
+                        <input type="text" id="companyId" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                    </div>
+                    <div id="loadingOverlay" class="hidden absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-20 rounded-xl">
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-2"></div>
+                            <p class="text-teal-700 font-medium">Сохранение данных...</p>
+                        </div>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Название компании</label>
-                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" value="ООО 'ТехноПром'">
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите название компании">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">ИНН</label>
-                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" value="1234567890">
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите ИНН">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Адрес</label>
-                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" value="г. Москва, ул. Ленина, 42">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">КПП</label>
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите КПП">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Телефон</label>
-                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" value="+7 (495) 123-45-67">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">ОГРН</label>
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите ОГРН">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Руководитель</label>
-                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" value="Петров П.П.">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Расчетный счет</label>
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите расчетный счет">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Банк</label>
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите банк">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Корреспондентский счёт</label>
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите корр. счет">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">БИК</label>
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите БИК">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Почта</label>
+                            <input type="email" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите email">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Директор</label>
-                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" value="Сидоров С.С.">
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите директора">
                         </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Описание</label>
-                            <textarea class="w-full px-4 py-2 border border-blue-200 rounded-lg h-24">Компания занимается производством промышленного оборудования</textarea>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Руководитель</label>
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите руководителя">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Адрес компании</label>
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите адрес компании">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Адрес практики</label>
+                            <input type="text" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите адрес практики">
                         </div>
                     </div>
-                    
+
                     <div class="flex justify-end space-x-3 pt-4">
                         <button type="button" onclick="closeCompanyModal()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
                             Отмена
@@ -217,89 +213,175 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                
+
                 <form id="loginForm" class="space-y-4">
                     <div>
                         <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Логин</label>
-                        <input type="text" id="username" name="username" 
-                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                        <input type="text" id="username" name="username"
+                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                                placeholder="Введите ваш логин" required>
                     </div>
-                    
+
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
-                        <input type="password" id="password" name="password" 
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+                        <input type="password" id="password" name="password"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                placeholder="Введите ваш пароль" required>
                     </div>
-                    
+
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
-                            <input id="remember" name="remember" type="checkbox" 
+                            <input id="remember" name="remember" type="checkbox"
                                    class="h-4 w-4 text-slate-600 focus:ring-slate-500 border-gray-300 rounded">
                             <label for="remember" class="ml-2 block text-sm text-gray-700">Запомнить меня</label>
                         </div>
-                        
+
                         <a href="#" class="text-sm text-slate-600 hover:text-slate-500">Забыли пароль?</a>
                     </div>
-                    
-                    <button type="submit" 
+
+                    <button type="submit"
                             class="w-full bg-teal-600 text-blue-50 py-2 px-4 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition">
                         Войти
                     </button>
                 </form>
-                
+
             </div>
         </div>
     </div>
 
     <script>
-        // Функции для работы с компаниями
-        function showCompanyDetails(id) {
-            document.getElementById('companyModal').style.display = 'flex';
-            document.querySelector('main').classList.add('blur-background');
-            document.querySelector('header').classList.add('blur-background');
-            // Здесь должна быть загрузка данных компании по ID
-        }
-
         function closeCompanyModal() {
             document.getElementById('companyModal').style.display = 'none';
             document.querySelector('main').classList.remove('blur-background');
             document.querySelector('header').classList.remove('blur-background');
+            // При закрытии возвращаем поле ID на случай следующего открытия
+            document.getElementById('companyId').parentElement.style.display = 'block';
+        }
+
+        document.getElementById('closeCompanyModalBtn').addEventListener('click', closeCompanyModal);
+
+        function openAddModal() {
+            const modal = document.getElementById('companyModal');
+            const form = document.getElementById('companyForm');
+
+            // Очищаем форму
+            document.getElementById('companyId').value = '';
+            form.querySelector('input[placeholder="Введите название компании"]').value = '';
+            form.querySelector('input[placeholder="Введите ИНН"]').value = '';
+            form.querySelector('input[placeholder="Введите КПП"]').value = '';
+            form.querySelector('input[placeholder="Введите ОГРН"]').value = '';
+            form.querySelector('input[placeholder="Введите расчетный счет"]').value = '';
+            form.querySelector('input[placeholder="Введите банк"]').value = '';
+            form.querySelector('input[placeholder="Введите корр. счет"]').value = '';
+            form.querySelector('input[placeholder="Введите БИК"]').value = '';
+            form.querySelector('input[placeholder="Введите email"]').value = '';
+            form.querySelector('input[placeholder="Введите директора"]').value = '';
+            form.querySelector('input[placeholder="Введите руководителя"]').value = '';
+            form.querySelector('input[placeholder="Введите адрес компании"]').value = '';
+            form.querySelector('input[placeholder="Введите адрес практики"]').value = '';
+
+            // Скрываем поле ID
+            document.getElementById('companyId').parentElement.style.display = 'none';
+
+            modal.style.display = 'flex';
+            document.querySelector('main').classList.add('blur-background');
+            document.querySelector('header').classList.add('blur-background');
+        }
+
+        function openEditModal(companyId) {
+            fetch(`https://localhost:7229/company?idCompany=${companyId}`)
+                .then(response => response.json())
+                .then(company => {
+                    const modal = document.getElementById('companyModal');
+                    const form = document.getElementById('companyForm');
+
+                    // Показываем поле ID
+                    document.getElementById('companyId').parentElement.style.display = 'block';
+                    document.getElementById('companyId').value = company.id || '';
+                    form.querySelector('input[placeholder="Введите название компании"]').value = company.name || '';
+                    form.querySelector('input[placeholder="Введите ИНН"]').value = company.inn || '';
+                    form.querySelector('input[placeholder="Введите КПП"]').value = company.kpp || '';
+                    form.querySelector('input[placeholder="Введите ОГРН"]').value = company.ogrn || '';
+                    form.querySelector('input[placeholder="Введите расчетный счет"]').value = company.paymantAccount || '';
+                    form.querySelector('input[placeholder="Введите банк"]').value = company.bank || '';
+                    form.querySelector('input[placeholder="Введите корр. счет"]').value = company.correspondentAccount || '';
+                    form.querySelector('input[placeholder="Введите БИК"]').value = company.bik || '';
+                    form.querySelector('input[placeholder="Введите email"]').value = company.mail || '';
+                    form.querySelector('input[placeholder="Введите директора"]').value = company.director || '';
+                    form.querySelector('input[placeholder="Введите руководителя"]').value = company.headOfTheCompany || '';
+                    form.querySelector('input[placeholder="Введите адрес компании"]').value = company.companyAddress || '';
+                    form.querySelector('input[placeholder="Введите адрес практики"]').value = company.practiceAddress || '';
+
+                    modal.style.display = 'flex';
+                    document.querySelector('main').classList.add('blur-background');
+                    document.querySelector('header').classList.add('blur-background');
+                })
+                .catch(error => {
+                    console.error('Error fetching company data:', error);
+                    alert('Ошибка при загрузке данных компании');
+                });
         }
 
         // Управление модальным окном авторизации
         const authBtn = document.getElementById('authBtn');
-        
-        // Управление сотрудниками
-        document.addEventListener('DOMContentLoaded', function() {
-            // Обработчик кнопки Добавить сотрудника
-            document.querySelectorAll('.add-employee').forEach(button => {
-                button.addEventListener('click', function() {
-                    alert('Форма добавления нового сотрудника');
-                });
+
+        // Загрузка данных компаний при загрузке страницы
+        let currentPage = 1;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            closeCompanyModal();
+            loadCompanies(currentPage);
+
+            // Обработчики пагинации
+            document.getElementById('prevPageBtn').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    document.getElementById('currentPage').textContent = currentPage;
+                    loadCompanies(currentPage);
+                }
             });
-            
-            // Обработчики кнопок редактирования
-            document.querySelectorAll('.edit-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const id = row.querySelector('td:first-child').textContent;
-                    alert(`Редактирование сотрудника с ID: ${id}`);
-                });
-            });
-            
-            // Обработчики кнопок удаления
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const name = row.querySelector('td:nth-child(2)').textContent;
-                    if(confirm(`Удалить сотрудника ${name}?`)) {
-                        row.remove();
-                    }
-                });
+
+            document.getElementById('nextPageBtn').addEventListener('click', () => {
+                currentPage++;
+                document.getElementById('currentPage').textContent = currentPage;
+                loadCompanies(currentPage);
             });
         });
+
+        async function loadCompanies(page = 1) {
+            try {
+                const response = await fetch(`https://localhost:7229/company/allCompany?page=${page}`);
+                const companies = await response.json();
+                const tableBody = document.getElementById('companiesTableBody');
+
+                tableBody.innerHTML = '';
+
+                companies.forEach(company => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-gray-50';
+                    row.innerHTML = `
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${company.id}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${company.name || '-'}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${company.companyAddress || '-'}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${company.headOfTheCompany || '-'}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${company.director || '-'}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${company.inn || '-'}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <button class="text-teal-600 hover:text-teal-900 mr-3" onclick="openEditModal(${company.id})">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="text-red-600 hover:text-red-900" onclick="deleteCompany(${company.id}); event.stopPropagation();">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Ошибка при загрузке компаний:', error);
+            }
+        }
+
         const authModal = document.getElementById('authModal');
         const closeModal = document.getElementById('closeModal');
         const loginForm = document.getElementById('loginForm');
@@ -318,37 +400,209 @@
             header.classList.remove('blur-background');
         });
 
-        // Закрытие по клику вне модального окна
+        // Закрытие по клику вне модальных окон
         window.addEventListener('click', (e) => {
             if (e.target === authModal) {
                 authModal.style.display = 'none';
                 mainContent.classList.remove('blur-background');
                 header.classList.remove('blur-background');
             }
+            if (e.target === deleteModal) {
+                hideDeleteModal();
+            }
         });
+
+        // Сохранение данных компании
+        // Модальное окно подтверждения удаления
+        const deleteModal = document.createElement('div');
+        deleteModal.id = 'deleteModal';
+        deleteModal.className = 'auth-modal fixed inset-0 flex items-center justify-center z-50 hidden';
+        deleteModal.innerHTML = `
+                <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+                <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-md mx-4">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl font-bold text-stone-700">Подтверждение удаления</h3>
+                            <button id="closeDeleteModal" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="mb-6">
+                            <p class="text-gray-700">Вы уверены, что хотите удалить эту компанию? Это действие нельзя отменить.</p>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button id="cancelDelete" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">
+                                Отмена
+                            </button>
+                            <button id="confirmDelete" class="bg-red-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-red-700">
+                                Удалить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        document.body.appendChild(deleteModal);
+
+        let currentCompanyIdToDelete = null;
+
+        function showDeleteModal(companyId) {
+            currentCompanyIdToDelete = companyId;
+            deleteModal.style.display = 'flex';
+            document.querySelector('main').classList.add('blur-background');
+            document.querySelector('header').classList.add('blur-background');
+        }
+
+        function hideDeleteModal() {
+            deleteModal.style.display = 'none';
+            document.querySelector('main').classList.remove('blur-background');
+            document.querySelector('header').classList.remove('blur-background');
+        }
+
+        document.getElementById('closeDeleteModal')?.addEventListener('click', hideDeleteModal);
+        document.getElementById('cancelDelete')?.addEventListener('click', hideDeleteModal);
+
+        document.getElementById('confirmDelete')?.addEventListener('click', function () {
+            if (currentCompanyIdToDelete) {
+                fetch(`https://localhost:7229/company?idCompany=${currentCompanyIdToDelete}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            loadCompanies(); // Перезагружаем список компаний
+                            hideDeleteModal();
+                            showSuccessMessage('Компания успешно удалена');
+                        } else {
+                            throw new Error('Ошибка при удалении компании');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error deleting company:', error);
+                        showErrorMessage('Ошибка при удалении компании');
+                    })
+                    .finally(() => {
+                        loadCompanies(currentPage); // Перезагружаем текущую страницу
+                    });
+            }
+        });
+
+        function showSuccessMessage(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        function showErrorMessage(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        function deleteCompany(companyId) {
+            showDeleteModal(companyId);
+        }
+
+        function saveCompany(event) {
+            event.preventDefault();
+            const form = event.target;
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const submitButton = form.querySelector('button[type="submit"]');
+
+            // Блокируем интерфейс
+            loadingOverlay.classList.remove('hidden');
+            submitButton.disabled = true;
+            document.getElementById('closeCompanyModalBtn').disabled = true;
+
+            const companyData = {};
+            const inputs = {
+                name: form.querySelector('input[placeholder="Введите название компании"]'),
+                inn: form.querySelector('input[placeholder="Введите ИНН"]'),
+                kpp: form.querySelector('input[placeholder="Введите КПП"]'),
+                ogrn: form.querySelector('input[placeholder="Введите ОГРН"]'),
+                paymantAccount: form.querySelector('input[placeholder="Введите расчетный счет"]'),
+                bank: form.querySelector('input[placeholder="Введите банк"]'),
+                correspondentAccount: form.querySelector('input[placeholder="Введите корр. счет"]'),
+                bik: form.querySelector('input[placeholder="Введите БИК"]'),
+                mail: form.querySelector('input[placeholder="Введите email"]'),
+                director: form.querySelector('input[placeholder="Введите директора"]'),
+                headOfTheCompany: form.querySelector('input[placeholder="Введите руководителя"]'),
+                companyAddress: form.querySelector('input[placeholder="Введите адрес компании"]'),
+                practiceAddress: form.querySelector('input[placeholder="Введите адрес практики"]')
+            };
+
+            for (const [key, input] of Object.entries(inputs)) {
+                companyData[key] = input.value.trim() === '' ? null : input.value.trim();
+            }
+
+            const companyId = document.getElementById('companyId').value;
+            if (companyId) {
+                companyData.id = companyId;
+            }
+
+            // Определяем метод запроса в зависимости от того, добавляем или редактируем
+            const method = companyId ? 'PATCH' : 'POST';
+
+            // Отправка запроса на сервер
+            fetch('https://localhost:7229/company', {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(companyData)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        closeCompanyModal();
+                        loadCompanies(currentPage); // Перезагружаем текущую страницу
+                    } else {
+                        throw new Error('Ошибка при сохранении данных');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error saving company data:', error);
+                    alert('Ошибка при сохранении данных компании');
+                })
+                .finally(() => {
+                    // Разблокируем интерфейс
+                    loadingOverlay.classList.add('hidden');
+                    submitButton.disabled = false;
+                    document.getElementById('closeCompanyModalBtn').disabled = false;
+                });
+        }
 
         // Обработка формы входа
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            
+
             // Здесь должна быть логика авторизации
             console.log('Попытка входа:', { username, password });
-            
+
             // Временная имитация успешного входа
             setTimeout(() => {
                 authModal.style.display = 'none';
                 mainContent.classList.remove('blur-background');
                 header.classList.remove('blur-background');
-                
+
                 // Меняем кнопку на профиль пользователя
                 authBtn.innerHTML = `
-                    <i class="fas fa-user-circle"></i>
-                    <span>${username}</span>
-                `;
-                
+                                            <i class="fas fa-user-circle"></i>
+                                            <span>${username}</span>
+                                        `;
+
                 // Показываем уведомление об успешном входе
                 alert(`Добро пожаловать, ${username}!`);
             }, 1000);

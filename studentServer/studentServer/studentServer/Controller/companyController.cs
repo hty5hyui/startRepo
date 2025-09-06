@@ -6,7 +6,7 @@ namespace studentServer.Controller
 {
     [ApiController]
     [Route("[controller]")]
-    public class companyController: ControllerBase
+    public class companyController(companyCRUD companyService) : ControllerBase
     {
         [HttpGet("companyPage")]
         public async Task<IActionResult> GetCompanyPage()
@@ -32,7 +32,7 @@ namespace studentServer.Controller
         {
             try
             {
-                List<Company> companyList = await companyCRUD.getAllCompanyDataAsync(page);
+                List<Company> companyList = await companyService.getAllCompanyDataAsync(page);
                 return new JsonResult(companyList);
             }
             catch (Exception ex)
@@ -47,7 +47,7 @@ namespace studentServer.Controller
         {
             try
             {
-                Company company = await companyCRUD.getCompanyDataAsync(idCompany);
+                Company company = await companyService.getCompanyDataAsync(idCompany);
                 return new JsonResult(company);
             }
             catch (Exception ex)
@@ -62,7 +62,7 @@ namespace studentServer.Controller
         {
             try
             {
-                await companyCRUD.patchCompanyAsync(newData);
+                await companyService.patchCompanyAsync(newData);
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace studentServer.Controller
         {
             try
             {
-                await companyCRUD.addCompanyAsync(newCompany);
+                await companyService.addCompanyAsync(newCompany);
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)
@@ -92,7 +92,7 @@ namespace studentServer.Controller
         {
             try
             {
-                await companyCRUD.deleteCompanyAsync(idCompany);
+                await companyService.deleteCompanyAsync(idCompany);
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)

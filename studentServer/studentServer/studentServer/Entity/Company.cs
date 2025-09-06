@@ -1,7 +1,13 @@
-﻿namespace studentServer.Entity
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace studentServer.Entity
 {
+    [Table("Company")]
     public class Company
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? PracticeAddress { get; set; }
@@ -15,5 +21,6 @@
         public string? Mail { get; set; }
         public string? Director { get; set; }
         public string? HeadOfTheCompany { get; set; }
+        public string? CompanyAddress { get; set; }
     }
 }

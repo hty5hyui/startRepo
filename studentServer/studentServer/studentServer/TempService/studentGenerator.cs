@@ -5,10 +5,10 @@ namespace studentServer.TempService
 {
     public class studentGenerator
     {
-        private static readonly Random random = new Random();
-        public static Student GenerateRandomStudent()
+        private static readonly Random random = new();
+        public static StudentData GenerateRandomStudent()
         {
-            return new Student
+            return new StudentData
             {
                 Contract = GenerateRandomContract(),
                 FinanceDoc = GenerateRandomFinance(),

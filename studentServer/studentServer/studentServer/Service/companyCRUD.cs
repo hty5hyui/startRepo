@@ -1,38 +1,36 @@
-﻿using studentServer.Entity;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using studentServer.Entity;
+using studentServer.repo;
 using studentServer.TempService;
 
 namespace studentServer.Service
 {
-    public class companyCRUD
+    public class companyCRUD(companyRepo repository)
     {
-        public static async Task<List<Company>> getAllCompanyDataAsync(int page)
+        public async Task<List<Company>> getAllCompanyDataAsync(int page)
         {
-            List<Company> companies = new List<Company>();
-            for (int i = 0; i < 5; i++)
-            {
-                companies.Add(companyGenerator.GenerateRandomCompany());
-            }
-            return companies;
+            return await repository.GetAllCompanyAsync(page);
         }
 
-        public static async Task<Company> getCompanyDataAsync(int idCompany)
+        public async Task<Company> getCompanyDataAsync(int idCompany)
         {
-            return companyGenerator.GenerateRandomCompany();
+            return await repository.GetCompanyByIdAsync(idCompany);
         }
 
-        public static async Task deleteCompanyAsync(int idCompany)
+        public async Task deleteCompanyAsync(int idCompany)
         {
-
+            Company company = new Company { Id = idCompany };
+            await repository.DeleteCompanyAsync(company);
         }
 
-        public static async Task patchCompanyAsync(Company newCompanyData)
+        public async Task patchCompanyAsync(Company newCompanyData)
         {
-
+            await repository.UpdateCompanyAsync(newCompanyData);
         }
 
-        public static async Task addCompanyAsync(Company companyData)
+        public async Task addCompanyAsync(Company companyData)
         {
-
+            await repository.SetCompanyAsync(companyData);
         }
     }
 }
