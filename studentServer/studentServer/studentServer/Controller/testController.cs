@@ -1,23 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using studentServer.Service;
+using studentServer.TempService;
 
 namespace studentServer.Controller
 {
     [ApiController]
-    public class mainController : ControllerBase
+    [Route("[controller]")]
+    public class testController(RandomDataSetInBase testBase) : ControllerBase
     {
-        [HttpGet("/")]
-        public async Task<IActionResult> GetMainPage()
+        [HttpGet]
+        public async Task<IActionResult> TEST()
         {
             try
             {
-                string page = await htmlGenerator.mainPageGenerator();
-                return new ContentResult
-                {
-                    Content = page,
-                    ContentType = "text/html"
-                };
-
+                testBase.setInBaseCompany();
+                return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)
             {

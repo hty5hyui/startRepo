@@ -1,0 +1,407 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 17.5
+-- Dumped by pg_dump version 17.5
+
+-- Started on 2025-07-02 20:55:07
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 5 (class 2615 OID 16390)
+-- Name: work; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA work;
+
+
+ALTER SCHEMA work OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 218 (class 1259 OID 16400)
+-- Name: Company; Type: TABLE; Schema: work; Owner: postgres
+--
+
+CREATE TABLE work."Company" (
+    id integer NOT NULL,
+    name text,
+    practice_address text,
+    "INN" character varying(80),
+    "KPP" character varying(80),
+    "OGRN" character varying(80),
+    payment_account character varying(80),
+    bank text,
+    correspondent_account character varying(80),
+    "BIK" character varying(80),
+    mail character varying(100),
+    director text,
+    head_of_the_company text,
+    company_addrex text
+);
+
+
+ALTER TABLE work."Company" OWNER TO postgres;
+
+--
+-- TOC entry 219 (class 1259 OID 16407)
+-- Name: Company_id_seq; Type: SEQUENCE; Schema: work; Owner: postgres
+--
+
+ALTER TABLE work."Company" ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME work."Company_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 224 (class 1259 OID 16416)
+-- Name: Contracts; Type: TABLE; Schema: work; Owner: postgres
+--
+
+CREATE TABLE work."Contracts" (
+    id integer NOT NULL,
+    "number_UVM" character varying(40) NOT NULL,
+    number_3_party character varying(60) NOT NULL,
+    date_3_party date NOT NULL,
+    number_2_party character varying(60) NOT NULL,
+    date_2_party date NOT NULL,
+    group_number character varying(60) NOT NULL,
+    date_of_dispatch date,
+    mail_company character varying(80),
+    date_return date
+);
+
+
+ALTER TABLE work."Contracts" OWNER TO postgres;
+
+--
+-- TOC entry 223 (class 1259 OID 16415)
+-- Name: Contracts_id_seq; Type: SEQUENCE; Schema: work; Owner: postgres
+--
+
+ALTER TABLE work."Contracts" ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME work."Contracts_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 228 (class 1259 OID 16428)
+-- Name: Finance; Type: TABLE; Schema: work; Owner: postgres
+--
+
+CREATE TABLE work."Finance" (
+    id integer NOT NULL,
+    payment_of_contribution boolean DEFAULT false,
+    payment_of_contribution_year boolean DEFAULT false,
+    check_number character varying(60),
+    check_date date,
+    card_is_ready boolean,
+    card_is_get boolean
+);
+
+
+ALTER TABLE work."Finance" OWNER TO postgres;
+
+--
+-- TOC entry 227 (class 1259 OID 16427)
+-- Name: Finance_id_seq; Type: SEQUENCE; Schema: work; Owner: postgres
+--
+
+ALTER TABLE work."Finance" ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME work."Finance_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 217 (class 1259 OID 16392)
+-- Name: PersonalData; Type: TABLE; Schema: work; Owner: postgres
+--
+
+CREATE TABLE work."PersonalData" (
+    id integer NOT NULL,
+    "Surname" text,
+    "Name" text,
+    "Patronymic" text,
+    "Surname_EN" text,
+    "Name_EN" text,
+    "Patronymic_EN" text,
+    "Birthday" date,
+    "Passport_series" character varying(60),
+    "Passport_number" character varying(60),
+    "Passport_date_of_issue" date,
+    "Passport_date_End" date,
+    "Place_of_birth" text,
+    "City_of_registration" text,
+    "Address_registration" text,
+    "Address_registration_index" character varying(60),
+    "Curator" text
+);
+
+
+ALTER TABLE work."PersonalData" OWNER TO postgres;
+
+--
+-- TOC entry 220 (class 1259 OID 16408)
+-- Name: PersonalData_id_seq1; Type: SEQUENCE; Schema: work; Owner: postgres
+--
+
+ALTER TABLE work."PersonalData" ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME work."PersonalData_id_seq1"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 222 (class 1259 OID 16410)
+-- Name: Profession; Type: TABLE; Schema: work; Owner: postgres
+--
+
+CREATE TABLE work."Profession" (
+    id integer NOT NULL,
+    profession_name character varying(100),
+    profession_number character varying(80)
+);
+
+
+ALTER TABLE work."Profession" OWNER TO postgres;
+
+--
+-- TOC entry 229 (class 1259 OID 24580)
+-- Name: Student; Type: TABLE; Schema: work; Owner: postgres
+--
+
+CREATE TABLE work."Student" (
+    id integer NOT NULL,
+    "personalData_id" integer NOT NULL,
+    company_id integer NOT NULL,
+    finance_id integer NOT NULL,
+    visa_id integer NOT NULL,
+    profession_id integer NOT NULL,
+    contracts_id integer NOT NULL
+);
+
+
+ALTER TABLE work."Student" OWNER TO postgres;
+
+--
+-- TOC entry 230 (class 1259 OID 24615)
+-- Name: Student_id_seq; Type: SEQUENCE; Schema: work; Owner: postgres
+--
+
+ALTER TABLE work."Student" ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME work."Student_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 226 (class 1259 OID 16422)
+-- Name: VISA; Type: TABLE; Schema: work; Owner: postgres
+--
+
+CREATE TABLE work."VISA" (
+    id integer NOT NULL,
+    invite_number character varying(60),
+    arrival_date date,
+    visa_id character varying(60),
+    visa_series character varying(40),
+    visa_number character varying(40),
+    visa_issue_date date,
+    visa_receipt_date date,
+    visa_validity_date date
+);
+
+
+ALTER TABLE work."VISA" OWNER TO postgres;
+
+--
+-- TOC entry 225 (class 1259 OID 16421)
+-- Name: VISA_id_seq; Type: SEQUENCE; Schema: work; Owner: postgres
+--
+
+ALTER TABLE work."VISA" ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME work."VISA_id_seq"
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 221 (class 1259 OID 16409)
+-- Name: profession_id_seq; Type: SEQUENCE; Schema: work; Owner: postgres
+--
+
+ALTER TABLE work."Profession" ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME work.profession_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 4676 (class 2606 OID 16404)
+-- Name: Company Company_pkey; Type: CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Company"
+    ADD CONSTRAINT "Company_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4680 (class 2606 OID 16420)
+-- Name: Contracts Contracts_pkey; Type: CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Contracts"
+    ADD CONSTRAINT "Contracts_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4684 (class 2606 OID 24579)
+-- Name: Finance Finance_pkey; Type: CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Finance"
+    ADD CONSTRAINT "Finance_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4674 (class 2606 OID 16399)
+-- Name: PersonalData PersonalData_pkey; Type: CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."PersonalData"
+    ADD CONSTRAINT "PersonalData_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4686 (class 2606 OID 24584)
+-- Name: Student Student_pkey; Type: CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Student"
+    ADD CONSTRAINT "Student_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4682 (class 2606 OID 16426)
+-- Name: VISA VISA_pkey; Type: CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."VISA"
+    ADD CONSTRAINT "VISA_pkey" PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4678 (class 2606 OID 16414)
+-- Name: Profession profession_pkey; Type: CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Profession"
+    ADD CONSTRAINT profession_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4687 (class 2606 OID 24590)
+-- Name: Student company_id; Type: FK CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Student"
+    ADD CONSTRAINT company_id FOREIGN KEY (company_id) REFERENCES work."Company"(id) NOT VALID;
+
+
+--
+-- TOC entry 4688 (class 2606 OID 24595)
+-- Name: Student contracts_id; Type: FK CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Student"
+    ADD CONSTRAINT contracts_id FOREIGN KEY (contracts_id) REFERENCES work."Contracts"(id) NOT VALID;
+
+
+--
+-- TOC entry 4689 (class 2606 OID 24610)
+-- Name: Student finance_id; Type: FK CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Student"
+    ADD CONSTRAINT finance_id FOREIGN KEY (finance_id) REFERENCES work."Finance"(id) NOT VALID;
+
+
+--
+-- TOC entry 4690 (class 2606 OID 24585)
+-- Name: Student personalData_id; Type: FK CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Student"
+    ADD CONSTRAINT "personalData_id" FOREIGN KEY ("personalData_id") REFERENCES work."PersonalData"(id) NOT VALID;
+
+
+--
+-- TOC entry 4691 (class 2606 OID 24605)
+-- Name: Student profession_id; Type: FK CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Student"
+    ADD CONSTRAINT profession_id FOREIGN KEY (profession_id) REFERENCES work."Profession"(id) NOT VALID;
+
+
+--
+-- TOC entry 4692 (class 2606 OID 24600)
+-- Name: Student visa_id; Type: FK CONSTRAINT; Schema: work; Owner: postgres
+--
+
+ALTER TABLE ONLY work."Student"
+    ADD CONSTRAINT visa_id FOREIGN KEY (visa_id) REFERENCES work."VISA"(id) NOT VALID;
+
+
+-- Completed on 2025-07-02 20:55:07
+
+--
+-- PostgreSQL database dump complete
+--
+

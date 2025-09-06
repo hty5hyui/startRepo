@@ -1,0 +1,11 @@
+﻿namespace studentServer.Entity
+{
+    public class LogMessage
+    {
+        public int Id { get; set; }
+        public string? Message { get; set; }
+        public DateTime Timestamp { get; set; }
+        public string? User { get; set; }
+        public int Type { get; set; }
+    }
+}
