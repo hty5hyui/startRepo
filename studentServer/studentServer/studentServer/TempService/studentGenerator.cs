@@ -65,7 +65,6 @@ namespace studentServer.TempService
                 CityOfRegistration = Address.City(),
                 AddressRegistration = Address.StreetAddress(),
                 AddressRegistrationIndex = random.Next(100000, 999999).ToString(),
-                Curator = Name.FullName()
             };
         }
 

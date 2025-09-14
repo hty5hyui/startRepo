@@ -9,6 +9,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\student.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\student.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Faker.Net" Version="2.0.163" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.6">
       <PrivateAssets>all</PrivateAssets>

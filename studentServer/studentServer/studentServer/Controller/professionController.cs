@@ -6,15 +6,16 @@ namespace studentServer.Controller
 {
     [ApiController]
     [Route("[controller]")]
-    public class companyController(companyCRUD companyService) : ControllerBase
+    public class professionController(professionCRUD professionService) :ControllerBase
     {
-        [HttpGet("allCompany")]
-        public async Task<IActionResult> GetAllCompany([FromQuery] int page)
+
+        [HttpGet("allProfession")]
+        public async Task<IActionResult> GetAllProfession()
         {
             try
             {
-                List<Company> companyList = await companyService.getAllCompanyDataAsync(page);
-                return new JsonResult(companyList);
+                List<Profession> ProfessiontList = await professionService.GetAllProfessionAsync();
+                return new JsonResult(ProfessiontList);
             }
             catch (Exception ex)
             {
@@ -23,13 +24,13 @@ namespace studentServer.Controller
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetCompanyData([FromQuery] int idCompany)
+        [HttpGet("profession")]
+        public async Task<IActionResult> GetProfessionById([FromQuery] int id)
         {
             try
             {
-                Company company = await companyService.getCompanyDataAsync(idCompany);
-                return new JsonResult(company);
+                Profession profession = await professionService.GetProfessionByIdAsync(id);
+                return new JsonResult(profession);
             }
             catch (Exception ex)
             {
@@ -38,12 +39,12 @@ namespace studentServer.Controller
             }
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> PatchCompany([FromBody] Company newData)
+        [HttpPost("profession")]
+        public async Task<IActionResult> SetProfession([FromBody] Profession profession)
         {
             try
             {
-                await companyService.patchCompanyAsync(newData);
+                await professionService.SetProfessionAsync(profession);
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)
@@ -53,12 +54,12 @@ namespace studentServer.Controller
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddCompany([FromBody] Company newCompany)
+        [HttpPatch("profession")]
+        public async Task<IActionResult> UpdateProfession([FromBody] Profession profession)
         {
             try
             {
-                await companyService.addCompanyAsync(newCompany);
+                await professionService.UpdateProfessionAsync(profession);
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)
@@ -68,12 +69,12 @@ namespace studentServer.Controller
             }
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteCompany([FromQuery] int idCompany)
+        [HttpDelete("profession")]
+        public async Task<IActionResult> DeleteProfession([FromBody] Profession profession)
         {
             try
             {
-                await companyService.deleteCompanyAsync(idCompany);
+                await professionService.DeleteProfessionAsync(profession);
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)

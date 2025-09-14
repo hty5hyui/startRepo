@@ -5,7 +5,6 @@ using studentServer.repo;
 using studentServer.repo.Data;
 using studentServer.Service;
 using studentServer.TempService;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +52,9 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseStaticFiles();
+
 //Используем CORS
 app.UseCors("AllowAll");
 

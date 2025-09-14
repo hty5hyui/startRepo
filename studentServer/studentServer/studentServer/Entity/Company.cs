@@ -22,5 +22,8 @@ namespace studentServer.Entity
         public string? Director { get; set; }
         public string? HeadOfTheCompany { get; set; }
         public string? CompanyAddress { get; set; }
+
+        //---------Связь с таблицей Student один ко многим---------
+        public virtual ICollection<Student> Students { get; set; }
     }
 }
