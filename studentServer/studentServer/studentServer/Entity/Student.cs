@@ -13,11 +13,11 @@ namespace studentServer.Entity
         public VISADTO visa { get; set; } = new VISADTO();
     }
 
-    public class PatchStudent
-    {
-        public List<int> idList { get; set; } = [];
-        public StudentDataDTO data { get; set; } = new StudentDataDTO();
-    }
+    //public class PatchStudent
+    //{
+    //    public List<int> idList { get; set; } = [];
+    //    public StudentDataDTO data { get; set; } = new StudentDataDTO();
+    //}
 
     public class StudentPreview
     {

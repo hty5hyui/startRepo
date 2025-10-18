@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using studentServer.Entity;
 using studentServer.repo;
 using studentServer.Service;
@@ -56,11 +57,13 @@ namespace studentServer.Controller
         }
 
         [HttpPatch]
-        public async Task<IActionResult> PatchStudents([FromBody] PatchStudent newStudentsData)
+        public async Task<IActionResult> PatchStudents([FromBody] StudentDataDTO newStudentsData)
         {
+            Console.WriteLine(JsonConvert.SerializeObject(newStudentsData));
+
             try
             {
-                await studentsService.patchStudentsyAsync(newStudentsData);
+                await studentsService.patchStudentsAsync(newStudentsData);
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)

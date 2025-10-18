@@ -17,20 +17,26 @@ namespace studentServer.Service
             return await repository.GetStudentByIdAsync(idStudent);
         }
 
-
         public async Task deleteStudentsAsync(List<int> idCompany)
         {
-
+            foreach (var id in idCompany)
+            {
+                Student student = new Student{Id = id};
+                await repository.DeleteStudentAsync(student);
+            }
         }
 
-        public async Task patchStudentsyAsync(PatchStudent newStudentsData)
+        public async Task patchStudentsAsync(StudentDataDTO newStudentsData)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(newStudentsData));
+           await repository.UpdateStudentAsync(newStudentsData);
         }
 
         public async Task addStudentsAsync(StudentDataDTO newStudentData, int count)
         {
-            await repository.AddStudentAsync(newStudentData);
+            for (int i = 0; i < count; i++)
+            {
+                await repository.AddStudentAsync(newStudentData);
+            }   
         }       
     }
 }

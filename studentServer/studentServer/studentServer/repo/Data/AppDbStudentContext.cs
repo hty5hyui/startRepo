@@ -27,25 +27,29 @@ namespace studentServer.repo.Data
             modelBuilder.Entity<Student>()
                 .HasOne(main => main.Contract)
                 .WithOne(pi => pi.Student)
-                .HasForeignKey<Contract>(pi => pi.Id); // Внешним ключом в Contract является его собственный Id
+                .HasForeignKey<Contract>(pi => pi.Id) // Внешним ключом в Contract является его собственный Id
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Конфигурация для связи Student <--> FinanceDoc
             modelBuilder.Entity<Student>()
                 .HasOne(main => main.FinanceDoc)
                 .WithOne(pi => pi.Student)
-                .HasForeignKey<FinanceDoc>(pi => pi.Id); // Внешним ключом в FinanceDoc является его собственный Id
+                .HasForeignKey<FinanceDoc>(pi => pi.Id) // Внешним ключом в FinanceDoc является его собственный Id
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Конфигурация для связи Student <--> PersonalData
             modelBuilder.Entity<Student>()
                 .HasOne(main => main.PersonalData)
                 .WithOne(pi => pi.Student)  
-                .HasForeignKey<PersonalData>(pi => pi.Id); // Внешним ключом в PersonalData является его собственный Id
+                .HasForeignKey<PersonalData>(pi => pi.Id) // Внешним ключом в PersonalData является его собственный Id
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Конфигурация для связи Student <--> VISA
             modelBuilder.Entity<Student>()
                 .HasOne(main => main.VISA)
                 .WithOne(pi => pi.Student)
-                .HasForeignKey<VISA>(pi => pi.Id); // Внешним ключом в VISA является его собственный Id
+                .HasForeignKey<VISA>(pi => pi.Id) // Внешним ключом в VISA является его собственный Id
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -91,16 +91,55 @@ namespace studentServer.repo
 
         }
 
-        public async Task UpdateStudentAsync(Student student)
+        public async Task UpdateStudentAsync(StudentDataDTO studentData)
         {
-            _dbContext.Students.Update(student);
-            await _dbContext.SaveChangesAsync();
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                Student student = EntityMapper.ToStudent(studentData.student);
+                _dbContext.Students.Update(student);
+                await _dbContext.SaveChangesAsync();
+
+                FinanceDoc financeDoc = EntityMapper.ToFinanceDoc(studentData.financeDoc);
+                financeDoc.Id = student.Id;
+                _dbContext.FinanceDoc.Update(financeDoc);
+                await _dbContext.SaveChangesAsync();
+
+                VISA visa = EntityMapper.ToVISA(studentData.visa);
+                visa.Id = student.Id;
+                _dbContext.VISA.Update(visa);
+                await _dbContext.SaveChangesAsync();
+
+                PersonalData personalData = EntityMapper.ToPersonalData(studentData.personalData);
+                personalData.Id = student.Id;
+                _dbContext.PersonalData.Update(personalData);
+                await _dbContext.SaveChangesAsync();
+
+                Contract contract = EntityMapper.ToContract(studentData.contract);
+                contract.Id = student.Id;
+                _dbContext.Contract.Update(contract);
+                await _dbContext.SaveChangesAsync();
+
+                // Если все операции успешны, подтверждаем транзакцию
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при обновлении студента: {ex.Message}");
+            }
         }
 
         public async Task DeleteStudentAsync(Student student)
         {
-            _dbContext.Students.Remove(student);
-            await _dbContext.SaveChangesAsync();
+            try
+            {
+                _dbContext.Students.Remove(student);
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при удалении студента: {ex.Message}");
+            }
         }
 
         public async Task<List<StudentPreview>> GetStudentPreviewAsync(int page)

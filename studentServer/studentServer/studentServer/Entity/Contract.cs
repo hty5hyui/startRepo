@@ -11,13 +11,13 @@ namespace studentServer.Entity
         public int Id { get; set; }
         public string? NumberUVM { get; set; }
         public string? Number3Party { get; set; }
-        public DateTime? Date3Party { get; set; }
+        public DateOnly? Date3Party { get; set; }
         public string? Number2Party { get; set; }
-        public DateTime? Date2Party { get; set; }
+        public DateOnly? Date2Party { get; set; }
         public string? GroupNumber { get; set; }
-        public DateTime? DateOfDispatch { get; set; }
+        public DateOnly? DateOfDispatch { get; set; }
         public string? MailCompany { get; set; }
-        public DateTime? DateReturn { get; set; }
+        public DateOnly? DateReturn { get; set; }
 
         // Навигационное свойство обратно к главной сущности
         public virtual Student Student { get; set; }
@@ -28,12 +28,12 @@ namespace studentServer.Entity
         public int Id { get; set; }
         public string? NumberUVM { get; set; }
         public string? Number3Party { get; set; }
-        public DateTime? Date3Party { get; set; }
+        public DateOnly? Date3Party { get; set; }
         public string? Number2Party { get; set; }
-        public DateTime? Date2Party { get; set; }
+        public DateOnly? Date2Party { get; set; }
         public string? GroupNumber { get; set; }
-        public DateTime? DateOfDispatch { get; set; }
+        public DateOnly? DateOfDispatch { get; set; }
         public string? MailCompany { get; set; }
-        public DateTime? DateReturn { get; set; }
+        public DateOnly? DateReturn { get; set; }
     }
 }
