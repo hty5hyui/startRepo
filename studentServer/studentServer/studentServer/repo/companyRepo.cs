@@ -7,11 +7,39 @@ namespace studentServer.repo
     public class companyRepo(AppDbStudentContext _dbContext)
     {
         int pageSize = 20;
-        public async Task<List<Company>> GetAllCompanyAsync(int page)
+        public async Task<List<CompanyDTO>> GetAllCompanyAsync(int page)
         {
-            return await _dbContext.Company.OrderBy(a => a.Id)
+            return await _dbContext.Company.OrderBy(a => a.Name)
                                            .Skip((page - 1)* pageSize)
                                            .Take(pageSize)
+                                           .Select(c => new CompanyDTO
+                                           {
+                                               Id = c.Id,
+                                               Name = c.Name,
+                                               Bank = c.Bank,
+                                               BIK = c.BIK,
+                                               CompanyAddress = c.CompanyAddress,
+                                               CorrespondentAccount = c.CorrespondentAccount,
+                                               Director = c.Director,
+                                               HeadOfTheCompany = c.HeadOfTheCompany,
+                                               INN = c.INN,
+                                               KPP = c.KPP,
+                                               Mail = c.Mail,
+                                               OGRN = c.OGRN,
+                                               PaymantAccount = c.PaymantAccount,
+                                               PracticeAddress = c.PracticeAddress,
+                                           })
+                                           .ToListAsync();
+        }
+
+        public async Task<List<CompanyNameDTO>> GetAllCompanyNameAsync()
+        {
+            return await _dbContext.Company.OrderBy(a => a.Name)
+                                           .Select(c => new CompanyNameDTO 
+                                           {
+                                               Id = c.Id,
+                                               Name = c.Name
+                                           })
                                            .ToListAsync();
         }
 

@@ -5,12 +5,12 @@ namespace studentServer.Service
 {
     public class professionCRUD(professionRepo repository)
     {
-        public async Task<List<Profession>> GetAllProfessionAsync()
+        public async Task<List<ProfessionDTO>> GetAllProfessionAsync()
         {
             return await repository.GetAllProffesionAsync();
         }
 
-        public async Task<Profession> GetProfessionByIdAsync(int id)
+        public async Task<ProfessionDTO> GetProfessionByIdAsync(int id)
         {
             return await repository.GetProffesionByIdAsync(id);
         }

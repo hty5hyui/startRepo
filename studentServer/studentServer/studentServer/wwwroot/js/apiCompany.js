@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://localhost:7229'; // Убедитесь, что порт правильный
+const API_BASE_URL = 'https://localhost:7229';
 
 export async function fetchCompanies(page = 1) {
     const response = await fetch(`${API_BASE_URL}/company/allCompany?page=${page}`);

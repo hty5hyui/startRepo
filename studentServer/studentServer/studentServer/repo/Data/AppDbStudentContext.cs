@@ -12,10 +12,11 @@ namespace studentServer.repo.Data
         public DbSet<VISA> VISA { get; set; }
         public DbSet<Profession> Profession { get; set; }
         public DbSet<Company> Company { get; set; }
+        public DbSet<Curator> Curator { get; set; }
 
         public AppDbStudentContext(DbContextOptions options) : base(options)
         {
-
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,7 +38,7 @@ namespace studentServer.repo.Data
             // Конфигурация для связи Student <--> PersonalData
             modelBuilder.Entity<Student>()
                 .HasOne(main => main.PersonalData)
-                .WithOne(pi => pi.Student)
+                .WithOne(pi => pi.Student)  
                 .HasForeignKey<PersonalData>(pi => pi.Id); // Внешним ключом в PersonalData является его собственный Id
 
             // Конфигурация для связи Student <--> VISA
@@ -45,7 +46,6 @@ namespace studentServer.repo.Data
                 .HasOne(main => main.VISA)
                 .WithOne(pi => pi.Student)
                 .HasForeignKey<VISA>(pi => pi.Id); // Внешним ключом в VISA является его собственный Id
-
         }
     }
 }

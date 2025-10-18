@@ -1,3 +1,5 @@
+<input id="Button1" type="button" value="button" />
+<input id="Reset1" type="reset" value="reset" />
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -11,21 +13,53 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
+
         .card-hover {
             transition: all 0.3s ease;
         }
+
         .auth-modal {
             display: none;
             animation: fadeIn 0.3s;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         .blur-background {
             filter: blur(5px);
             pointer-events: none;
         }
+
+        .tab-btn.active {
+            color: #0d9488;
+            border-bottom-color: #0d9488;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+            .tab-content.active {
+                display: grid;
+            }
+
+        .edit-tab-content {
+            display: none;
+        }
+
+            .edit-tab-content.active {
+                display: grid;
+            }
     </style>
 </head>
 <body class="bg-blue-50 min-h-screen">
@@ -48,7 +82,7 @@
     <main class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold text-teal-800">Редактор базы сотрудников</h2>
-            <button class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+            <button id="addEmployeeBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
                 <i class="fas fa-plus"></i>
                 <span>Добавить сотрудника</span>
             </button>
@@ -62,86 +96,531 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">ID</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">ФИО</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Должность</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Отдел</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Телефон</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Паспорт</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Группа</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Компания</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Профессия</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Куратор</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Действия</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <!-- Пример строки с данными -->
-                        <tr class="hover:bg-blue-50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1001</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Иванов Иван Иванович</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Менеджер проектов</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">ИТ</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">+7 (999) 123-45-67</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                <div class="flex space-x-2">
-                                    <button class="text-teal-600 hover:text-teal-800">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Еще примеры строк -->
-                        <tr class="hover:bg-blue-50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1002</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Петрова Анна Сергеевна</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Разработчик</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Разработка</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">+7 (999) 765-43-21</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                <div class="flex space-x-2">
-                                    <button class="text-teal-600 hover:text-teal-800">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="hover:bg-blue-50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1003</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">Сидоров Дмитрий Петрович</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Дизайнер</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Дизайн</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">+7 (999) 111-22-33</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                <div class="flex space-x-2">
-                                    <button class="text-teal-600 hover:text-teal-800">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                    <tbody id="studentsTableBody" class="bg-white divide-y divide-gray-200">
+                        <!-- Данные будут загружены через API -->
                     </tbody>
                 </table>
             </div>
 
-            <!-- Пагинация -->
-            <div class="bg-teal-50 px-6 py-3 flex items-center justify-between">
-                <div class="text-sm text-gray-700">
-                    Показано <span class="font-medium">1</span> до <span class="font-medium">3</span> из <span class="font-medium">3</span> записей
-                </div>
-                <div class="flex space-x-2">
-                    <button class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50">
-                        Назад
-                    </button>
-                    <button class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50">
-                        Вперед
-                    </button>
-                </div>
-            </div>
         </div>
     </main>
+
+    <!-- Модальное окно добавления сотрудника -->
+    <div id="employeeModal" class="auth-modal fixed inset-0 flex items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Добавление сотрудника</h3>
+                    <button id="closeEmployeeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Количество сотрудников</label>
+                    <input type="number" min="1" value="1" class="w-24 px-4 py-2 border border-blue-200 rounded-lg">
+                </div>
+
+                <div class="border-b border-gray-200 mb-6">
+                    <ul class="flex flex-wrap -mb-px" id="employeeTabs">
+                        <li class="mr-2">
+                            <button class="tab-btn active inline-block p-4 border-b-2 border-teal-600 rounded-t-lg text-teal-600" data-tab="personal">Персональные данные</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="finance">Финансы</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="contracts">Договоры</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="visa">VISA</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="work">Работа</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <form id="employeeForm" class="space-y-4">
+                    <!-- Personal Data Tab -->
+                    <div id="personalTab" class="tab-content active grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Фамилия</label>
+                            <input type="text" id="surname" name="surname" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Фамилия (EN)</label>
+                            <input type="text" id="surname_en" name="surname_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Имя</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Имя (EN)</label>
+                            <input type="text" id="name_en" name="name_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Отчество</label>
+                            <input type="text" id="patronymic" name="patronymic" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Отчество (EN)</label>
+                            <input type="text" id="patronymic_en" name="patronymic_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Серия паспорта</label>
+                            <input type="text" id="passport_series" name="passport_series" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер паспорта</label>
+                            <input type="text" id="passport_number" name="passport_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата рождения</label>
+                            <input type="date" id="birth_date" name="birth_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата выдачи паспорта</label>
+                            <input type="date" id="passport_issue_date" name="passport_issue_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата окончания паспорта</label>
+                            <input type="date" id="passport_expiry_date" name="passport_expiry_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Место рождения</label>
+                            <input type="text" id="birth_place" name="birth_place" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Город прописки</label>
+                            <input type="text" id="registration_city" name="registration_city" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Адрес прописки</label>
+                            <input type="text" id="registration_address" name="registration_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Индекс адреса прописки</label>
+                            <input type="text" id="registration_zip" name="registration_zip" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                    </div>
+
+                    <!-- Finance Tab -->
+                    <div id="financeTab" class="tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="payment_contribution" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="payment_contribution" class="ml-2 block text-sm text-gray-700">Оплата взноса</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="payment_contribution_year" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="payment_contribution_year" class="ml-2 block text-sm text-gray-700">Оплата годового взноса</label>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер квитанции</label>
+                            <input type="text" id="receipt_number" name="receipt_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата Квитанции</label>
+                            <input type="date" id="receipt_date" name="receipt_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="card_ready" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="card_ready" class="ml-2 block text-sm text-gray-700">Оформление карты</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="card_get" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="card_get" class="ml-2 block text-sm text-gray-700">Выдача карты</label>
+                        </div>
+                    </div>
+
+                    <!-- Contracts Tab -->
+                    <div id="contractsTab" class="tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер договора УВМ</label>
+                            <input type="text" id="uvm_contract_number" name="uvm_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер 3-х стороннего договора</label>
+                            <input type="text" id="tripartite_contract_number" name="tripartite_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата 3-х стороннего договора</label>
+                            <input type="date" id="tripartite_contract_date" name="tripartite_contract_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер 2-х стороннего договора</label>
+                            <input type="text" id="bipartite_contract_number" name="bipartite_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата 2-х стороннего договора</label>
+                            <input type="date" id="bipartite_contract_date" name="bipartite_contract_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер группы</label>
+                            <input type="text" id="group_number" name="group_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата отправки</label>
+                            <input type="date" id="shipment_date" name="shipment_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Почтовая компания</label>
+                            <input type="text" id="postal_company" name="postal_company" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата возврата</label>
+                            <input type="date" id="return_date" name="return_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                    </div>
+
+                    <!-- VISA Tab -->
+                    <div id="visaTab" class="tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер приглашения</label>
+                            <input type="text" id="invitation_number" name="invitation_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата прибытия</label>
+                            <input type="date" id="arrival_date" name="arrival_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Идентификатор визы</label>
+                            <input type="text" id="visa_id" name="visa_id" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Серия бланка визы</label>
+                            <input type="text" id="visa_form_series" name="visa_form_series" class="w-full px-4极 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер визы</label>
+                            极<input type="text" id="visa_number" name="visa_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата выдачи визы</label>
+                            <input type="date" id="visa_issue_date" name="visa_issue_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата получения визы</label>
+                            <input type="date" id="visa_receipt_date" name="visa_receipt_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text极-gray-700 mb-1">Виза действительна до</label>
+                            <input type="date" id="visa_expiry_date" name="visa_expiry_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                    </div>
+
+                    <!-- Work Tab -->
+                    <div id="workTab" class="tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Компания</label>
+                            <select id="company" name="company" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="">Выберите компанию...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Директор</label>
+                            <input type="text" id="director" name="director" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Адрес компании</label>
+                            <input type="text" id="company_address" name="company_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Адрес прохождения практики</label>
+                            <input type="text" id="practice_address" name="practice_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Профессия</label>
+                            <select id="profession" name="profession" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="">Выберите профессию...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер профессии</label>
+                            <input type="text" id="profession_number" name="profession_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Куратор</label>
+                            <select id="curator" name="curator" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="">Выберите куратора...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 pt-6">
+                        <button type="button" id="cancelEmployeeBtn" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                            Отмена
+                        </button>
+                        <button type="submit" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition">
+                            Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования сотрудника -->
+    <div id="editEmployeeModal" class="auth-modal fixed inset-0 flex items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Редактирование сотрудника</h3>
+                    <button id="closeEditEmployeeModal" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="border-b border-gray-200 mb-6">
+                    <ul class="flex flex-wrap -mb-px" id="editEmployeeTabs">
+                        <li class="mr-2">
+                            <button class="edit-tab-btn active inline-block p-4 border-b-2 border-teal-600 rounded-t-lg text-teal-600" data-tab="edit-personal">Персональные данные</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="edit-tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="edit-finance">Финансы</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="edit-tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="edit-contracts">Договоры</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="edit-tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="edit-visa">VISA</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="edit-tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="edit-work">Работа</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <form id="editEmployeeForm" class="space-y-4">
+                    <!-- Personal Data Tab -->
+                    <div id="edit-personalTab" class="edit-tab-content active grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Фамилия</label>
+                            <input type="text" id="edit_surname" name="edit_surname" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Фамилия (EN)</label>
+                            <input type="text" id="edit_surname_en" name="edit_surname_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Имя</label>
+                            <input type="text" id="edit_name" name="edit_name" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Имя (EN)</label>
+                            <input type="text" id="edit_name_en" name="edit_name_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Отчество</label>
+                            <input type="text" id="edit_patronymic" name="edit_patronymic" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Отчество (EN)</label>
+                            <input type="text" id="edit_patronymic_en" name="edit_patronymic_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Серия паспорта</label>
+                            <input type="text" id="edit_passport_series" name="edit_passport_series" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер паспорта</label>
+                            <input type="text" id="edit_passport_number" name="edit_passport_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата рождения</label>
+                            <input type="date" id="edit_birth_date" name="edit_birth_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата выдачи паспорта</label>
+                            <input type="date" id="edit_passport_issue_date" name="edit_passport_issue_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата окончания паспорта</label>
+                            <input type="date" id="edit_passport_expiry_date" name="edit_passport_expiry_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Место рождения</label>
+                            <input type="text" id="edit_birth_place" name="edit_birth_place" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Город прописки</label>
+                            <input type="text" id="edit_registration_city" name="edit_registration_city" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Адрес прописки</label>
+                            <input type="text" id="edit_registration_address" name="edit_registration_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Индекс адреса прописки</label>
+                            <input type="text" id="edit_registration_zip" name="edit_registration_zip" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                    </div>
+
+                    <!-- Finance Tab -->
+                    <div id="edit-financeTab" class="edit-tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="edit_payment_contribution" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="edit_payment_contribution" class="ml-2 block text-sm text-gray-700">Оплата взноса</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="edit_payment_contribution_year" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="edit_payment_contribution_year" class="ml-2 block text-sm text-gray-700">Оплата годового взноса</label>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер квитанции</label>
+                            <input type="text" id="edit_receipt_number" name="edit_receipt_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата Квитанции</label>
+                            <input type="date" id="edit_receipt_date" name="edit_receipt_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="edit_card_ready" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="edit_card_ready" class="ml-2 block text-sm text-gray-700">Оформление карты</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="edit_card_get" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="edit_card_get" class="ml-2 block text-sm text-gray-700">Выдача карты</label>
+                        </div>
+                    </div>
+
+                    <!-- Contracts Tab -->
+                    <div id="edit-contractsTab" class="edit-tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер договора УВМ</label>
+                            <input type="text" id="edit_uvm_contract_number" name="edit_uvm_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер 3-х стороннего договора</label>
+                            <input type="text" id="edit_tripartite_contract_number" name="edit_tripartite_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата 3-х стороннего договора</label>
+                            <input type="date" id="edit_tripartite_contract_date" name="edit_tripartite_contract_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер 2-х стороннего договора</label>
+                            <input type="text" id="edit_bipartite_contract_number" name="edit_bipartite_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата 2-х стороннего договора</label>
+                            <input type="date" id="edit_bipartite_contract_date" name="edit_bipartite_contract_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер группы</label>
+                            <input type="text" id="edit_group_number" name="edit_group_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата отправки</label>
+                            <input type="date" id="edit_shipment_date" name="edit_shipment_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Почтовая компания</label>
+                            <input type="text" id="edit_postal_company" name="edit_postal_company" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата возврата</label>
+                            <input type="date" id="edit_return_date" name="edit_return_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                    </div>
+
+                    <!-- VISA Tab -->
+                    <div id="edit-visaTab" class="edit-tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер приглашения</label>
+                            <input type="text" id="edit_invitation_number" name="edit_invitation_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата прибытия</label>
+                            <input type="date" id="edit_arrival_date" name="edit_arrival_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Идентификатор визы</label>
+                            <input type="text" id="edit_visa_id" name="edit_visa_id" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Серия бланка визы</label>
+                            <input type="text" id="edit_visa_form_series" name="edit_visa_form_series" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер визы</label>
+                            <input type="text" id="edit_visa_number" name="edit_visa_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата выдачи визы</label>
+                            <input type="date" id="edit_visa_issue_date" name="edit_visa_issue_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Дата получения визы</label>
+                            <input type="date" id="edit_visa_receipt_date" name="edit_visa_receipt_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Виза действительна до</label>
+                            <input type="date" id="edit_visa_expiry_date" name="edit_visa_expiry_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                    </div>
+
+                    <!-- Work Tab -->
+                    <div id="edit-workTab" class="edit-tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Компания</label>
+                            <select id="edit_company" name="edit_company" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="">Выберите компанию...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Директор</label>
+                            <input type="text" id="edit_director" name="edit_director" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Адрес компании</label>
+                            <input type="text" id="edit_company_address" name="edit_company_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Адрес прохождения практики</label>
+                            <input type="text" id="edit_practice_address" name="edit_practice_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Профессия</label>
+                            <select id="edit_profession" name="edit_profession" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="">Выберите профессию...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Номер профессии</label>
+                            <input type="text" id="edit_profession_number" name="edit_profession_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Куратор</label>
+                            <select id="edit_curator" name="edit_curator" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="">Выберите куратора...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 pt-6">
+                        <button type="button" id="cancelEditEmployeeBtn" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                            Отмена
+                        </button>
+                        <button type="submit" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition">
+                            Сохранить изменения
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Модальное окно авторизации -->
     <div id="authModal" class="auth-modal fixed inset-0 flex items-center justify-center z-50">
@@ -154,80 +633,528 @@
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
-                
+
                 <form id="loginForm" class="space-y-4">
                     <div>
                         <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Логин</label>
-                        <input type="text" id="username" name="username" 
-                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                        <input type="text" id="username" name="username"
+                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
                                placeholder="Введите ваш логин" required>
                     </div>
-                    
+
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
-                        <input type="password" id="password" name="password" 
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+                        <input type="password" id="password" name="password"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                                placeholder="Введите ваш пароль" required>
                     </div>
-                    
+
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
-                            <input id="remember" name="remember" type="checkbox" 
+                            <input id="remember" name="remember" type="checkbox"
                                    class="h-4 w-4 text-slate-600 focus:ring-slate-500 border-gray-300 rounded">
                             <label for="remember" class="ml-2 block text-sm text-gray-700">Запомнить меня</label>
                         </div>
-                        
+
                         <a href="#" class="text-sm text-slate-600 hover:text-slate-500">Забыли пароль?</a>
                     </div>
-                    
-                    <button type="submit" 
+
+                    <button type="submit"
                             class="w-full bg-teal-600 text-blue-50 py-2 px-4 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition">
                         Войти
                     </button>
                 </form>
-                
+
             </div>
         </div>
     </div>
 
     <script>
-        // Управление модальным окном авторизации
-        const authBtn = document.getElementById('authBtn');
-        
-        // Управление сотрудниками
-        document.addEventListener('DOMContentLoaded', function() {
-            // Обработчик кнопки Добавить сотрудника
-            document.querySelectorAll('.add-employee').forEach(button => {
-                button.addEventListener('click', function() {
-                    alert('Форма добавления нового сотрудника');
+        // Загрузка компаний в выпадающий список
+        async function loadCompanies() {
+            try {
+                const response = await fetch('https://localhost:7229/company/allCompanyName');
+                const companies = await response.json();
+                const companySelect = document.getElementById('company');
+
+                // Очищаем существующие опции кроме первой
+                while (companySelect.options.length > 1) {
+                    companySelect.remove(1);
+                }
+
+                // Добавляем компании в выпадающий список
+                companies.forEach(company => {
+                    const option = document.createElement('option');
+                    option.value = company.id;
+                    option.textContent = company.name;
+                    companySelect.appendChild(option);
                 });
-            });
-            
-            // Обработчики кнопок редактирования
-            document.querySelectorAll('.edit-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const id = row.querySelector('td:first-child').textContent;
-                    alert(`Редактирование сотрудника с ID: ${id}`);
-                });
-            });
-            
-            // Обработчики кнопок удаления
-            document.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const row = this.closest('tr');
-                    const name = row.querySelector('td:nth-child(2)').textContent;
-                    if(confirm(`Удалить сотрудника ${name}?`)) {
-                        row.remove();
+
+                // Добавляем обработчик изменения выбора компании
+                companySelect.addEventListener('change', async function () {
+                    if (this.value) {
+                        try {
+                            const companyResponse = await fetch(`https://localhost:7229/company?idCompany=${this.value}`);
+                            const companyData = await companyResponse.json();
+
+                            // Заполняем поля данными компании
+                            document.getElementById('director').value = companyData.director || '';
+                            document.getElementById('company_address').value = companyData.companyAddress || '';
+                            document.getElementById('practice_address').value = companyData.practiceAddress || '';
+                        } catch (error) {
+                            console.error('Ошибка загрузки данных компании:', error);
+                        }
+                    } else {
+                        // Очищаем поля если компания не выбрана
+                        document.getElementById('director').value = '';
+                        document.getElementById('company_address').value = '';
+                        document.getElementById('practice_address').value = '';
                     }
                 });
-            });
-        });
+
+            } catch (error) {
+                console.error('Ошибка загрузки компаний:', error);
+            }
+        }
+
+        // Загрузка профессий в выпадающий список
+        async function loadProfessions() {
+            try {
+                const response = await fetch('https://localhost:7229/profession/allProfession');
+                const professions = await response.json();
+                const professionSelect = document.getElementById('profession');
+
+                // Очищаем существующие опции кроме первой
+                while (professionSelect.options.length > 1) {
+                    professionSelect.remove(1);
+                }
+
+                // Добавляем профессии в выпадающий список
+                professions.forEach(profession => {
+                    const option = document.createElement('option');
+                    option.value = profession.id;
+                    option.textContent = profession.professionName;
+                    // Сохраняем номер профессии в data-атрибут
+                    option.dataset.professionNumber = profession.professionNumber;
+                    professionSelect.appendChild(option);
+                });
+
+                // Добавляем обработчик изменения выбора профессии
+                professionSelect.addEventListener('change', async function () {
+                    if (this.value) {
+                        try {
+                            const professionResponse = await fetch(`https://localhost:7229/profession/profession?id=${this.value}`);
+                            const professionData = await professionResponse.json();
+
+                            // Заполняем поле номера профессии
+                            document.getElementById('profession_number').value = professionData.professionNumber || '';
+                        } catch (error) {
+                            console.error('Ошибка загрузки данных профессии:', error);
+                        }
+                    } else {
+                        // Очищаем поле если профессия не выбрана
+                        document.getElementById('profession_number').value = '';
+                    }
+                });
+
+            } catch (error) {
+                console.error('Ошибка загрузки профессий:', error);
+            }
+        }
+
+        // Загрузка данных студентов
+        async function loadStudents() {
+            try {
+                const response = await fetch('https://localhost:7229/student/allStudents?page=1');
+                const students = await response.json();
+                const tableBody = document.getElementById('studentsTableBody');
+
+                tableBody.innerHTML = students.map(student => `
+                                                            <tr class="hover:bg-blue-50 transition">
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.id}</td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                                                                    ${student.surname} ${student.name} ${student.patronymic}
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                                                    ${student.passportSeries} ${student.passportNumber}
+                                                                </td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.groupNumber}</td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.companyName}</td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.professionName}</td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.curator}</td>
+                                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                                                                    <div class="flex space-x-2">
+                                                                        <button class="text-teal-600 hover:text-teal-800 edit-employee-btn" data-student-id="${student.id}">
+                                                                            <i class="fas fa-edit"></i>
+                                                                        </button>
+                                                                        <button class="text-red-600 hover:text-red-800">
+                                                                            <i class="fas fa-trash"></i>
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        `).join('');
+            } catch (error) {
+                console.error('Ошибка загрузки данных:', error);
+            }
+        }
+
+        // Управление модальными окнами
+        const authBtn = document.getElementById('authBtn');
         const authModal = document.getElementById('authModal');
         const closeModal = document.getElementById('closeModal');
         const loginForm = document.getElementById('loginForm');
         const mainContent = document.querySelector('main');
         const header = document.querySelector('header');
+
+        // Загрузка компаний для формы редактирования
+        async function loadEditCompanies() {
+            try {
+                const response = await fetch('https://localhost:7229/company/allCompanyName');
+                const companies = await response.json();
+                const companySelect = document.getElementById('edit_company');
+
+                // Очищаем существующие опции кроме первой
+                while (companySelect.options.length > 1) {
+                    companySelect.remove(1);
+                }
+
+                // Добавляем компании в выпадающий список
+                companies.forEach(company => {
+                    const option = document.createElement('option');
+                    option.value = company.id;
+                    option.textContent = company.name;
+                    companySelect.appendChild(option);
+                });
+
+                // Добавляем обработчик изменения выбора компании
+                companySelect.addEventListener('change', async function () {
+                    if (this.value) {
+                        try {
+                            const companyResponse = await fetch(`https://localhost:7229/company?idCompany=${this.value}`);
+                            const companyData = await companyResponse.json();
+
+                            // Заполняем поля данными компании
+                            document.getElementById('edit_director').value = companyData.director || '';
+                            document.getElementById('edit_company_address').value = companyData.companyAddress || '';
+                            document.getElementById('edit_practice_address').value = companyData.practiceAddress || '';
+                        } catch (error) {
+                            console.error('Ошибка загрузки данных компании:', error);
+                        }
+                    } else {
+                        // Очищаем поля если компания не выбрана
+                        document.getElementById('edit_director').value = '';
+                        document.getElementById('edit_company_address').value = '';
+                        document.getElementById('edit_practice_address').value = '';
+                    }
+                });
+
+            } catch (error) {
+                console.error('Ошибка загрузки компаний:', error);
+            }
+        }
+
+        // Очистка формы редактирования
+        function clearEditForm() {
+            // Очищаем все текстовые поля
+            const textInputs = document.querySelectorAll('#editEmployeeForm input[type="text"], #editEmployeeForm input[type="date"], #editEmployeeForm input[type="number"]');
+            textInputs.forEach(input => input.value = '');
+
+            // Очищаем все чекбоксы
+            const checkboxes = document.querySelectorAll('#editEmployeeForm input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+
+            // Сбрасываем выпадающие списки
+            const selects = document.querySelectorAll('#editEmployeeForm select');
+            selects.forEach(select => select.selectedIndex = 0);
+        }
+
+        // Загрузка данных студента для редактирования
+        async function loadStudentData(studentId) {
+            try {
+                const response = await fetch(`https://localhost:7229/student?idStudent=${studentId}`);
+                const data = await response.json();
+
+                console.log('Загруженные данные студента:', data);
+
+                // Заполняем поля персональных данных
+                if (data.personalData) {
+                    document.getElementById('edit_surname').value = data.personalData.surname || '';
+                    document.getElementById('edit_surname_en').value = data.personalData.surnameEn || '';
+                    document.getElementById('edit_name').value = data.personalData.name || '';
+                    document.getElementById('edit_name_en').value = data.personalData.nameEn || '';
+                    document.getElementById('edit_patronymic').value = data.personalData.patronymic || '';
+                    document.getElementById('edit_patronymic_en').value = data.personalData.patronymicEn || '';
+                    document.getElementById('edit_birth_date').value = data.personalData.birthday || '';
+                    document.getElementById('edit_passport_series').value = data.personalData.passportSeries || '';
+                    document.getElementById('edit_passport_number').value = data.personalData.passportNumber || '';
+                    document.getElementById('edit_passport_issue_date').value = data.personalData.passportDateOfIssue || '';
+                    document.getElementById('edit_passport_expiry_date').value = data.personalData.passportDateEnd || '';
+                    document.getElementById('edit_birth_place').value = data.personalData.placeOfBirth || '';
+                    document.getElementById('edit_registration_city').value = data.personalData.cityOfRegistration || '';
+                    document.getElementById('edit_registration_address').value = data.personalData.addressRegistration || '';
+                    document.getElementById('edit_registration_zip').value = data.personalData.addressRegistrationIndex || '';
+                }
+
+                // Заполняем поля финансовых документов
+                if (data.financeDoc) {
+                    document.getElementById('edit_payment_contribution').checked = data.financeDoc.paymentOfContribution || false;
+                    document.getElementById('edit_payment_contribution_year').checked = data.financeDoc.paymentOfContributionYear || false;
+                    document.getElementById('edit_receipt_number').value = data.financeDoc.checkNumber || '';
+                    document.getElementById('edit_receipt_date').value = data.financeDoc.checkDate || '';
+                    document.getElementById('edit_card_ready').checked = data.financeDoc.cardIsReady || false;
+                    document.getElementById('edit_card_get').checked = data.financeDoc.cardIsGet || false;
+                }
+
+                // Заполняем поля договоров
+                if (data.contract) {
+                    document.getElementById('edit_uvm_contract_number').value = data.contract.numberUVM || '';
+                    document.getElementById('edit_tripartite_contract_number').value = data.contract.number3Party || '';
+                    document.getElementById('edit_tripartite_contract_date').value = data.contract.date3Party || '';
+                    document.getElementById('edit_bipartite_contract_number').value = data.contract.number2Party || '';
+                    document.getElementById('edit_bipartite_contract_date').value = data.contract.date2Party || '';
+                    document.getElementById('edit_group_number').value = data.contract.groupNumber || '';
+                    document.getElementById('edit_shipment_date').value = data.contract.dateOfDispatch || '';
+                    document.getElementById('edit_postal_company').value = data.contract.mailCompany || '';
+                    document.getElementById('edit_return_date').value = data.contract.dateReturn || '';
+                }
+
+                // Заполняем поля визы
+                if (data.visa) {
+                    document.getElementById('edit_invitation_number').value = data.visa.inviteNumber || '';
+                    document.getElementById('edit_arrival_date').value = data.visa.arrivalDate || '';
+                    document.getElementById('edit_visa_id').value = data.visa.visaId || '';
+                    document.getElementById('edit_visa_form_series').value = data.visa.visaSeries || '';
+                    document.getElementById('edit_visa_number').value = data.visa.visaNumber || '';
+                    document.getElementById('edit_visa_issue_date').value = data.visa.visaIssueDate || '';
+                    document.getElementById('edit_visa_receipt_date').value = data.visa.visaReceiptDate || '';
+                    document.getElementById('edit_visa_expiry_date').value = data.visa.visaValidityDate || '';
+                }
+
+                // Заполняем поля работы
+                if (data.student) {
+                    document.getElementById('edit_company').value = data.student.companyId || '';
+                    document.getElementById('edit_profession').value = data.student.professionId || '';
+                    document.getElementById('edit_curator').value = data.student.curatorId || '';
+
+                    // Если выбрана компания, загружаем её данные
+                    if (data.student.companyId) {
+                        try {
+                            const companyResponse = await fetch(`https://localhost:7229/company?idCompany=${data.student.companyId}`);
+                            const companyData = await companyResponse.json();
+                            document.getElementById('edit_director').value = companyData.director || '';
+                            document.getElementById('edit_company_address').value = companyData.companyAddress || '';
+                            document.getElementById('edit_practice_address').value = companyData.practiceAddress || '';
+                        } catch (error) {
+                            console.error('Ошибка загрузки данных компании:', error);
+                        }
+                    }
+
+                    // Если выбрана профессия, загружаем её данные
+                    if (data.student.professionId) {
+                        try {
+                            const professionResponse = await fetch(`https://localhost:7229/profession/profession?id=${data.student.professionId}`);
+                            const professionData = await professionResponse.json();
+                            document.getElementById('edit_profession_number').value = professionData.professionNumber || '';
+                        } catch (error) {
+                            console.error('Ошибка загрузки данных профессии:', error);
+                        }
+                    }
+                }
+
+            } catch (error) {
+                console.error('Ошибка загрузки данных студента:', error);
+                throw error;
+            }
+        }
+
+        // Загрузка профессий для формы редактирования
+        async function loadEditProfessions() {
+            try {
+                const response = await fetch('https://localhost:7229/profession/allProfession');
+                const professions = await response.json();
+                const professionSelect = document.getElementById('edit_profession');
+
+                // Очищаем существующие опции кроме первой
+                while (professionSelect.options.length > 1) {
+                    professionSelect.remove(1);
+                }
+
+                // Добавляем профессии в выпадающий список
+                professions.forEach(profession => {
+                    const option = document.createElement('option');
+                    option.value = profession.id;
+                    option.textContent = profession.professionName;
+                    // Сохраняем номер профессии в data-атрибут
+                    option.dataset.professionNumber = profession.professionNumber;
+                    professionSelect.appendChild(option);
+                });
+
+                // Добавляем обработчик изменения выбора профессии
+                professionSelect.addEventListener('change', async function () {
+                    if (this.value) {
+                        try {
+                            const professionResponse = await fetch(`https://localhost:7229/profession/profession?id=${this.value}`);
+                            const professionData = await professionResponse.json();
+
+                            // Заполняем поле номера профессии
+                            document.getElementById('edit_profession_number').value = professionData.professionNumber || '';
+                        } catch (error) {
+                            console.error('Ошибка загрузки данных профессии:', error);
+                        }
+                    } else {
+                        // Очищаем поле если профессия не выбрана
+                        document.getElementById('edit_profession_number').value = '';
+                    }
+                });
+
+            } catch (error) {
+                console.error('Ошибка загрузки профессий:', error);
+            }
+        }
+
+        // Загрузка данных при открытии страницы
+        document.addEventListener('DOMContentLoaded', function () {
+            loadStudents();
+            loadCompanies();
+            loadProfessions();
+            loadEditCompanies();
+            loadEditProfessions();
+
+            // Обработчик кнопки Добавить сотрудника
+            const addEmployeeBtn = document.getElementById('addEmployeeBtn');
+            const employeeModal = document.getElementById('employeeModal');
+            const closeEmployeeModal = document.getElementById('closeEmployeeModal');
+            const cancelEmployeeBtn = document.getElementById('cancelEmployeeBtn');
+
+            addEmployeeBtn.addEventListener('click', () => {
+                employeeModal.style.display = 'flex';
+                mainContent.classList.add('blur-background');
+                header.classList.add('blur-background');
+            });
+
+            closeEmployeeModal.addEventListener('click', () => {
+                employeeModal.style.display = 'none';
+                mainContent.classList.remove('blur-background');
+                header.classList.remove('blur-background');
+            });
+
+            cancelEmployeeBtn.addEventListener('click', () => {
+                employeeModal.style.display = 'none';
+                mainContent.classList.remove('blur-background');
+                header.classList.remove('blur-background');
+            });
+
+            // Закрытие по клику вне модального окна
+            window.addEventListener('click', (e) => {
+                if (e.target === employeeModal) {
+                    employeeModal.style.display = 'none';
+                    mainContent.classList.remove('blur-background');
+                    header.classList.remove('blur-background');
+                }
+            });
+
+            // Обработчики для формы редактирования
+            const editEmployeeModal = document.getElementById('editEmployeeModal');
+            const closeEditEmployeeModal = document.getElementById('closeEditEmployeeModal');
+            const cancelEditEmployeeBtn = document.getElementById('cancelEditEmployeeBtn');
+
+            // Обработчик кнопок редактирования в таблице
+            document.addEventListener('click', async (e) => {
+                if (e.target.closest('.edit-employee-btn')) {
+                    const studentId = e.target.closest('.edit-employee-btn').getAttribute('data-student-id');
+                    console.log('Редактирование студента с ID:', studentId);
+
+                    try {
+                        // Загружаем данные студента
+                        await loadStudentData(studentId);
+
+                        // Открываем модальное окно
+                        editEmployeeModal.style.display = 'flex';
+                        mainContent.classList.add('blur-background');
+                        header.classList.add('blur-background');
+                    } catch (error) {
+                        console.error('Ошибка загрузки данных студента:', error);
+                        alert('Ошибка загрузки данных студента');
+                    }
+                }
+            });
+
+            closeEditEmployeeModal.addEventListener('click', () => {
+                editEmployeeModal.style.display = 'none';
+                mainContent.classList.remove('blur-background');
+                header.classList.remove('blur-background');
+                clearEditForm();
+            });
+
+            cancelEditEmployeeBtn.addEventListener('click', () => {
+                editEmployeeModal.style.display = 'none';
+                mainContent.classList.remove('blur-background');
+                header.classList.remove('blur-background');
+                clearEditForm();
+            });
+
+            // Закрытие по клику вне модального окна редактирования
+            window.addEventListener('click', (e) => {
+                if (e.target === editEmployeeModal) {
+                    editEmployeeModal.style.display = 'none';
+                    mainContent.classList.remove('blur-background');
+                    header.classList.remove('blur-background');
+                    clearEditForm();
+                }
+            });
+        });
+        // Переключение между вкладками
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+
+                // Удаляем активные классы у всех кнопок и контента
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.classList.remove('border-teal-600');
+                    btn.classList.remove('text-teal-600');
+                });
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Добавляем активные классы к текущей кнопке и контенту
+                button.classList.add('active');
+                button.classList.add('border-teal-600');
+                button.classList.add('text-teal-600');
+                document.getElementById(`${tabId}Tab`).classList.add('active');
+            });
+        });
+
+        // Переключение между вкладками формы редактирования
+        const editTabButtons = document.querySelectorAll('.edit-tab-btn');
+        const editTabContents = document.querySelectorAll('.edit-tab-content');
+
+        editTabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+
+                // Удаляем активные классы у всех кнопок и контента
+                editTabButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.classList.remove('border-teal-600');
+                    btn.classList.remove('text-teal-600');
+                });
+                editTabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Добавляем активные классы к текущей кнопке и контенту
+                button.classList.add('active');
+                button.classList.add('border-teal-600');
+                button.classList.add('text-teal-600');
+                document.getElementById(`${tabId}Tab`).classList.add('active');
+            });
+        });
 
         authBtn.addEventListener('click', () => {
             authModal.style.display = 'flex';
@@ -253,28 +1180,209 @@
         // Обработка формы входа
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            
+
             // Здесь должна быть логика авторизации
             console.log('Попытка входа:', { username, password });
-            
+
             // Временная имитация успешного входа
             setTimeout(() => {
                 authModal.style.display = 'none';
                 mainContent.classList.remove('blur-background');
                 header.classList.remove('blur-background');
-                
+
                 // Меняем кнопку на профиль пользователя
                 authBtn.innerHTML = `
-                    <i class="fas fa-user-circle"></i>
-                    <span>${username}</span>
-                `;
-                
+                                                            <i class="fas fa-user-circle"></i>
+                                                            <span>${username}</span>
+                                                        `;
+
                 // Показываем уведомление об успешном входе
                 alert(`Добро пожаловать, ${username}!`);
             }, 1000);
+        });
+
+        // Обработка формы добавления сотрудника
+        document.getElementById('employeeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const count = document.querySelector('input[type="number"]').value;
+            const getValue = (elementId) => {
+                const value = document.getElementById(elementId).value;
+                return value.trim() === '' ? null : value;
+            };
+
+            const formData = {
+                Contract: {
+                    NumberUVM: getValue('uvm_contract_number'),
+                    Number3Party: getValue('tripartite_contract_number'),
+                    Date3Party: getValue('tripartite_contract_date'),
+                    Number2Party: getValue('bipartite_contract_number'),
+                    Date2Party: getValue('bipartite_contract_date'),
+                    GroupNumber: getValue('group_number'),
+                    DateOfDispatch: getValue('shipment_date'),
+                    MailCompany: getValue('postal_company'),
+                    DateReturn: getValue('return_date')
+                },
+                FinanceDoc: {
+                    PaymentOfContribution: document.getElementById('payment_contribution').checked,
+                    PaymentOfContributionYear: document.getElementById('payment_contribution_year').checked,
+                    CheckNumber: getValue('receipt_number'),
+                    CheckDate: getValue('receipt_date'),
+                    CardIsReady: document.getElementById('card_ready').checked,
+                    CardIsGet: document.getElementById('card_get').checked
+                },
+                PersonalData: {
+                    Surname: getValue('surname'),
+                    Name: getValue('name'),
+                    Patronymic: getValue('patronymic'),
+                    SurnameEn: getValue('surname_en'),
+                    NameEn: getValue('name_en'),
+                    PatronymicEn: getValue('patronymic_en'),
+                    Birthday: getValue('birth_date'),
+                    PassportSeries: getValue('passport_series'),
+                    PassportNumber: getValue('passport_number'),
+                    PassportDateOfIssue: getValue('passport_issue_date'),
+                    PassportDateEnd: getValue('passport_expiry_date'),
+                    PlaceOfBirth: getValue('birth_place'),
+                    CityOfRegistration: getValue('registration_city'),
+                    AddressRegistration: getValue('registration_address'),
+                    AddressRegistrationIndex: getValue('registration_zip')
+                },
+                Visa: {
+                    InviteNumber: getValue('invitation_number'),
+                    ArrivalDate: getValue('arrival_date'),
+                    VisaId: getValue('visa_id'),
+                    VisaSeries: getValue('visa_form_series'),
+                    VisaNumber: getValue('visa_number'),
+                    VisaIssueDate: getValue('visa_issue_date'),
+                    VisaReceiptDate: getValue('visa_receipt_date'),
+                    VisaValidityDate: getValue('visa_expiry_date')
+                },
+                Student: {
+                    "CompanyId": getValue('company'),
+                    "ProfessionId": getValue('profession'),
+                    "CuratorId": getValue('curator')
+                }
+            };
+
+            try {
+                const response = await fetch(`https://localhost:7229/student?count=${count}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert('Сотрудник успешно добавлен');
+                    document.getElementById('employeeModal').style.display = 'none';
+                    mainContent.classList.remove('blur-background');
+                    header.classList.remove('blur-background');
+                    loadStudents(); // Обновляем список сотрудников
+                } else {
+                    throw new Error('Ошибка при добавлении сотрудника');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при добавлении сотрудника');
+            }
+        });
+
+        // Обработка формы редактирования сотрудника
+        document.getElementById('editEmployeeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const getValue = (elementId) => {
+                const value = document.getElementById(elementId).value;
+                return value.trim() === '' ? null : value;
+            };
+
+            const formData = {
+                Contract: {
+                    NumberUVM: getValue('edit_uvm_contract_number'),
+                    Number3Party: getValue('edit_tripartite_contract_number'),
+                    Date3Party: getValue('edit_tripartite_contract_date'),
+                    Number2Party: getValue('edit_bipartite_contract_number'),
+                    Date2Party: getValue('edit_bipartite_contract_date'),
+                    GroupNumber: getValue('edit_group_number'),
+                    DateOfDispatch: getValue('edit_shipment_date'),
+                    MailCompany: getValue('edit_postal_company'),
+                    DateReturn: getValue('edit_return_date')
+                },
+                FinanceDoc: {
+                    PaymentOfContribution: document.getElementById('edit_payment_contribution').checked,
+                    PaymentOfContributionYear: document.getElementById('edit_payment_contribution_year').checked,
+                    CheckNumber: getValue('edit_receipt_number'),
+                    CheckDate: getValue('edit_receipt_date'),
+                    CardIsReady: document.getElementById('edit_card_ready').checked,
+                    CardIsGet: document.getElementById('edit_card_get').checked
+                },
+                PersonalData: {
+                    Surname: getValue('edit_surname'),
+                    Name: getValue('edit_name'),
+                    Patronymic: getValue('edit_patronymic'),
+                    SurnameEn: getValue('edit_surname_en'),
+                    NameEn: getValue('edit_name_en'),
+                    PatronymicEn: getValue('edit_patronymic_en'),
+                    Birthday: getValue('edit_birth_date'),
+                    PassportSeries: getValue('edit_passport_series'),
+                    PassportNumber: getValue('edit_passport_number'),
+                    PassportDateOfIssue: getValue('edit_passport_issue_date'),
+                    PassportDateEnd: getValue('edit_passport_expiry_date'),
+                    PlaceOfBirth: getValue('edit_birth_place'),
+                    CityOfRegistration: getValue('edit_registration_city'),
+                    AddressRegistration: getValue('edit_registration_address'),
+                    AddressRegistrationIndex: getValue('edit_registration_zip')
+                },
+                Visa: {
+                    InviteNumber: getValue('edit_invitation_number'),
+                    ArrivalDate: getValue('edit_arrival_date'),
+                    VisaId: getValue('edit_visa_id'),
+                    VisaSeries: getValue('edit_visa_form_series'),
+                    VisaNumber: getValue('edit_visa_number'),
+                    VisaIssueDate: getValue('edit_visa_issue_date'),
+                    VisaReceiptDate: getValue('edit_visa_receipt_date'),
+                    VisaValidityDate: getValue('edit_visa_expiry_date')
+                },
+                Student: {
+                    "CompanyId": getValue('edit_company'),
+                    "ProfessionId": getValue('edit_profession'),
+                    "CuratorId": getValue('edit_curator')
+                }
+            };
+
+            const formDataWithId = {
+                formData: formData,
+                idList: [studentId]
+            };
+
+            try {
+                // Здесь должен быть PUT запрос для обновления данных
+                const response = await fetch(`https://localhost:7229/student`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formDataWithId)
+                });
+
+                if (response.ok) {
+                    alert('Данные сотрудника успешно обновлены');
+                    document.getElementById('editEmployeeModal').style.display = 'none';
+                    mainContent.classList.remove('blur-background');
+                    header.classList.remove('blur-background');
+                    loadStudents(); // Обновляем список сотрудников
+                } else {
+                    throw new Error('Ошибка при обновлении данных сотрудника');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка при обновлении данных сотрудника');
+            }
         });
     </script>
 </body>

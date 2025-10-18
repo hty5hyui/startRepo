@@ -2,6 +2,7 @@
 using Npgsql;
 using studentServer.Entity;
 using studentServer.repo.Data;
+using studentServer.Service;
 
 namespace studentServer.repo
 {
@@ -13,15 +14,81 @@ namespace studentServer.repo
             return await _dbContext.Students.ToListAsync();
         }
 
-        public async Task<Student> GetStudentByIdAsync(int id)
+        public async Task<StudentDataDTO> GetStudentByIdAsync(int id)
         {
-            return await _dbContext.Students.FindAsync(id);
+            
+
+            var data = await _dbContext.Students
+                                       .Include(s => s.Contract)
+                                       .Include(s => s.FinanceDoc)
+                                       .Include(s => s.PersonalData)
+                                       .Include(s => s.VISA)
+                                       .FirstOrDefaultAsync(s => s.Id == id);
+
+
+            if (data != null)
+            {
+                StudentDataDTO studentDataDTO = new StudentDataDTO
+                {
+                    student = new StudentDTO
+                    {
+                        Id = id,
+                        CompanyId = data.CompanyId,
+                        ProfessionId = data.ProfessionId,
+                        CuratorId = data.CuratorId
+                    },
+                    contract = EntityMapper.ToContractDTO(data.Contract),
+                    financeDoc = EntityMapper.ToFinanceDocDTO(data.FinanceDoc),
+                    personalData = EntityMapper.ToPersonalDataDTO(data.PersonalData),
+                    visa = EntityMapper.ToVISADTO(data.VISA)
+                };
+
+                return studentDataDTO;
+            }
+            else
+            {
+                return new StudentDataDTO();
+            }
+            
         }
 
-        public async Task SetStudentAsync(Student student)
+        public async Task AddStudentAsync(StudentDataDTO studentData)
         {
-            await _dbContext.Students.AddAsync(student);
-            await _dbContext.SaveChangesAsync();
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                Student student = EntityMapper.ToStudent(studentData.student);
+                _dbContext.Students.Add(student);
+                await _dbContext.SaveChangesAsync();
+
+                FinanceDoc financeDoc = EntityMapper.ToFinanceDoc(studentData.financeDoc);
+                financeDoc.Id = student.Id;
+                _dbContext.FinanceDoc.Add(financeDoc);
+                await _dbContext.SaveChangesAsync();
+
+                VISA visa = EntityMapper.ToVISA(studentData.visa);
+                visa.Id = student.Id;
+                _dbContext.VISA.Add(visa);
+                await _dbContext.SaveChangesAsync();
+
+                PersonalData personalData = EntityMapper.ToPersonalData(studentData.personalData);
+                personalData.Id = student.Id;
+                _dbContext.PersonalData.Add(personalData);
+                await _dbContext.SaveChangesAsync();
+
+                Contract contract = EntityMapper.ToContract(studentData.contract);
+                contract.Id = student.Id;
+                _dbContext.Contract.Add(contract);
+                await _dbContext.SaveChangesAsync();
+
+                // Если все операции успешны, подтверждаем транзакцию
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при добавлении студента: {ex.Message}");
+            }
+
         }
 
         public async Task UpdateStudentAsync(Student student)
@@ -38,24 +105,21 @@ namespace studentServer.repo
 
         public async Task<List<StudentPreview>> GetStudentPreviewAsync(int page)
         {
-            return await _dbContext.Students.OrderBy(a => a.Id)
-                                            .Select(s => new StudentPreview
-                                            {
-                                                Id = s.Id,
-                                                Surname = s.PersonalData.Surname,
-                                                Name = s.PersonalData.Name,
-                                                Patronymic = s.PersonalData.Patronymic,
-                                                PassportSeries = s.PersonalData.PassportSeries,
-                                                PassportNumber = s.PersonalData.PassportNumber,
-                                                GroupNumber = s.Contract.GroupNumber,
-                                                CompanyName = s.Company != null ? s.Company.Name : null,
-                                                ProfessionName = s.Profession != null ? s.Profession.ProfessionName : null,
-                                                Curator = s.Curator
-                                            })
-                                            .Skip((page - 1) * pageSize)
-                                            .Take(pageSize)
-                                            .ToListAsync();
-        }
+           return await  _dbContext.Students.Select(s => new StudentPreview
+                                                        {
+                                                            Id = s.Id,
+                                                            Surname = s.PersonalData.Surname,
+                                                            Name = s.PersonalData.Name,
+                                                            Patronymic = s.PersonalData.Patronymic,
+                                                            PassportSeries = s.PersonalData.PassportSeries,
+                                                            PassportNumber = s.PersonalData.PassportNumber,
+                                                            GroupNumber = s.Contract.GroupNumber,
+                                                            CompanyName = s.Company.Name,
+                                                            ProfessionName = s.Profession.ProfessionName,
+                                                            Curator = s.Curator.Name
+                                                        })
+                                                        .ToListAsync();
+        }     
     }
 }
  

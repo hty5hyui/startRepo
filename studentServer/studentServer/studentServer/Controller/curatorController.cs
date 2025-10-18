@@ -6,15 +6,15 @@ namespace studentServer.Controller
 {
     [ApiController]
     [Route("[controller]")]
-    public class companyController(companyCRUD companyService) : ControllerBase
+    public class curatorController(curatorCRUD curatorService): ControllerBase
     {
-        [HttpGet("allCompany")]
-        public async Task<IActionResult> GetAllCompany([FromQuery] int page)
+        [HttpGet("allCurator")]
+        public async Task<IActionResult> GetAllCurator()
         {
             try
             {
-                List<CompanyDTO> companyList = await companyService.getAllCompanyDataAsync(page);
-                return new JsonResult(companyList);
+                List<CuratorDTO> CuratortList = await curatorService.GetAllCuratorAsync();
+                return new JsonResult(CuratortList);
             }
             catch (Exception ex)
             {
@@ -23,13 +23,13 @@ namespace studentServer.Controller
             }
         }
 
-        [HttpGet("allCompanyName")]
-        public async Task<IActionResult> GetAllCompanyName()
+        [HttpGet("curator")]
+        public async Task<IActionResult> GetCuratorById([FromQuery] int id)
         {
             try
             {
-                List<CompanyNameDTO> companyList = await companyService.getAllCompanyNameAsync();
-                return new JsonResult(companyList);
+                string curator = await curatorService.GetCuratorDataAsync(id);
+                return new JsonResult(curator);
             }
             catch (Exception ex)
             {
@@ -38,29 +38,12 @@ namespace studentServer.Controller
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetCompanyData([FromQuery] int idCompany)
+        [HttpPost("curator")]
+        public async Task<IActionResult> SetCurator([FromBody] Curator curator)
         {
             try
             {
-                Company company = await companyService.getCompanyDataAsync(idCompany);
-                return new JsonResult(company);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-            $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
-        }
-
-
-
-        [HttpPatch]
-        public async Task<IActionResult> PatchCompany([FromBody] Company newData)
-        {
-            try
-            {
-                await companyService.patchCompanyAsync(newData);
+                await curatorService.SetCuratorAsync(curator);
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)
@@ -70,12 +53,12 @@ namespace studentServer.Controller
             }
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddCompany([FromBody] Company newCompany)
+        [HttpPatch("curator")]
+        public async Task<IActionResult> UpdateCurator([FromBody] Curator curator)
         {
             try
             {
-                await companyService.addCompanyAsync(newCompany);
+                await curatorService.UpdateCuratorAsync(curator);
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)
@@ -85,12 +68,12 @@ namespace studentServer.Controller
             }
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteCompany([FromQuery] int idCompany)
+        [HttpDelete("curator")]
+        public async Task<IActionResult> DeleteCurator([FromBody] int idCurator)
         {
             try
             {
-                await companyService.deleteCompanyAsync(idCompany);
+                await curatorService.DeleteCuratorAsync(idCurator);
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)

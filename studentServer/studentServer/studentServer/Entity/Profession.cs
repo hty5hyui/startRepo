@@ -14,4 +14,11 @@ namespace studentServer.Entity
         //---------Связь с таблицей Student один ко многим---------
         public virtual ICollection<Student> Students { get; set; }
     }
+
+    public class ProfessionDTO
+    {
+        public int? Id { get; set; }
+        public string ProfessionName { get; set; }
+        public string ProfessionNumber { get; set; }
+    }
 }

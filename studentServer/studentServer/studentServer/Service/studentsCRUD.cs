@@ -1,6 +1,7 @@
-﻿using studentServer.Entity;
+﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using studentServer.Entity;
 using studentServer.repo;
-using studentServer.TempService;
 
 namespace studentServer.Service
 {
@@ -11,9 +12,9 @@ namespace studentServer.Service
             return await repository.GetStudentPreviewAsync(page);
         }
 
-        public async Task<StudentData> getStudentDataAsync(int idStudent)
+        public async Task<StudentDataDTO> getStudentDataAsync(int idStudent)
         {
-            return studentGenerator.GenerateRandomStudent();
+            return await repository.GetStudentByIdAsync(idStudent);
         }
 
 
@@ -24,12 +25,12 @@ namespace studentServer.Service
 
         public async Task patchStudentsyAsync(PatchStudent newStudentsData)
         {
-
+            Console.WriteLine(JsonConvert.SerializeObject(newStudentsData));
         }
 
-        public async Task addStudentsAsync(StudentData newStudentData, int count)
+        public async Task addStudentsAsync(StudentDataDTO newStudentData, int count)
         {
-
+            await repository.AddStudentAsync(newStudentData);
         }       
     }
 }

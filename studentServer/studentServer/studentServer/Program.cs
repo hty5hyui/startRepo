@@ -22,6 +22,9 @@ builder.Services.AddScoped<studentController>();
 builder.Services.AddScoped<companyRepo>();
 builder.Services.AddScoped<companyCRUD>();
 builder.Services.AddScoped<companyController>();
+builder.Services.AddScoped<professionRepo>();
+builder.Services.AddScoped<professionCRUD>();
+builder.Services.AddScoped<professionController>();
 //--------------
 builder.Services.AddScoped<RandomDataSetInBase>();
 builder.Services.AddScoped<testController>();

@@ -14,7 +14,7 @@ namespace studentServer.Controller
         {
             try
             {
-                List<Profession> ProfessiontList = await professionService.GetAllProfessionAsync();
+                List<ProfessionDTO> ProfessiontList = await professionService.GetAllProfessionAsync();
                 return new JsonResult(ProfessiontList);
             }
             catch (Exception ex)
@@ -29,7 +29,7 @@ namespace studentServer.Controller
         {
             try
             {
-                Profession profession = await professionService.GetProfessionByIdAsync(id);
+                ProfessionDTO profession = await professionService.GetProfessionByIdAsync(id);
                 return new JsonResult(profession);
             }
             catch (Exception ex)

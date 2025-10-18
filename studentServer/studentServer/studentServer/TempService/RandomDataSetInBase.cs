@@ -8,7 +8,7 @@ namespace studentServer.TempService
         {
             for (int i = 0; i < 10; i++)
             {
-                repository.SetCompanyAsync(companyGenerator.GenerateRandomCompany()).Wait();
+                //repository.SetCompanyAsync(companyGenerator.GenerateRandomCompany()).Wait();
             }    
         }
     }

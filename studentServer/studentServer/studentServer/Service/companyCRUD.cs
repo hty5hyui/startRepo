@@ -7,9 +7,14 @@ namespace studentServer.Service
 {
     public class companyCRUD(companyRepo repository)
     {
-        public async Task<List<Company>> getAllCompanyDataAsync(int page)
+        public async Task<List<CompanyDTO>> getAllCompanyDataAsync(int page)
         {
             return await repository.GetAllCompanyAsync(page);
+        }
+
+        public async Task<List<CompanyNameDTO>> getAllCompanyNameAsync()
+        {
+            return await repository.GetAllCompanyNameAsync();
         }
 
         public async Task<Company> getCompanyDataAsync(int idCompany)

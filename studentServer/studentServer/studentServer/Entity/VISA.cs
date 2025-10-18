@@ -1,0 +1,37 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+
+namespace studentServer.Entity
+{
+    [Table("VISA")]
+    public class VISA
+    {
+        [Key]
+        public int Id { get; set; }
+        public string? InviteNumber { get; set; }
+        public DateOnly? ArrivalDate { get; set; }
+        public string? VisaId { get; set; }
+        public string? VisaSeries { get; set; }
+        public string? VisaNumber { get; set; }
+        public DateOnly? VisaIssueDate { get; set; }
+        public DateOnly? VisaReceiptDate { get; set; }
+        public DateOnly? VisaValidityDate { get; set; }
+
+        // Навигационное свойство обратно к главной сущности
+        public virtual Student Student { get; set; }
+    }
+
+    public class VISADTO
+    {
+        public int Id { get; set; }
+        public string? InviteNumber { get; set; }
+        public DateOnly? ArrivalDate { get; set; }
+        public string? VisaId { get; set; }
+        public string? VisaSeries { get; set; }
+        public string? VisaNumber { get; set; }
+        public DateOnly? VisaIssueDate { get; set; }
+        public DateOnly? VisaReceiptDate { get; set; }
+        public DateOnly? VisaValidityDate { get; set; }
+    }
+}

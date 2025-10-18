@@ -29,7 +29,7 @@ namespace studentServer.Controller
         {
             try
             {
-                StudentData student = await studentsService.getStudentDataAsync(idStudent);
+                StudentDataDTO student = await studentsService.getStudentDataAsync(idStudent);
                 return new JsonResult(student);
             }
             catch (Exception ex)
@@ -71,11 +71,12 @@ namespace studentServer.Controller
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddStudents([FromQuery] int count, [FromBody] StudentData newStudentData)
+        public async Task<IActionResult> AddStudents([FromQuery] int count, [FromBody] StudentDataDTO newStudentData)
         {
             try
             {
                 await studentsService.addStudentsAsync(newStudentData, count);
+                
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)
