@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\index.html" />
     <None Include="wwwroot\student.html" />
   </ItemGroup>
 

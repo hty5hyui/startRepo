@@ -64,6 +64,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+//Для использования автоматического предоставления страниц
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
 //Используем CORS

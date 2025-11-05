@@ -57,6 +57,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const authModal = document.getElementById('authModal');
     const closeModalBtn = document.getElementById('closeModal');
     const loginForm = document.getElementById('loginForm');
+    
+    // Убеждаемся, что модальное окно авторизации закрыто при загрузке
+    if (authModal) {
+        authModal.style.display = 'none';
+        authModal.classList.add('hidden');
+    }
 
     // Модальное окно добавления сотрудника
     const addEmployeeBtn = document.getElementById('addEmployeeBtn');

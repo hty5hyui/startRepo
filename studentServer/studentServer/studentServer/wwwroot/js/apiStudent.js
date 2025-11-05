@@ -2,7 +2,7 @@
  * Модуль для работы с API студентов
  */
 
-const API_BASE_URL = 'https://localhost:7229';
+import { API_BASE_URL } from './config.js';
 
 /**
  * Загружает список студентов с пагинацией

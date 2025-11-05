@@ -1,4 +1,8 @@
-const API_BASE_URL = 'https://localhost:7229';
+/**
+ * Модуль для работы с API компаний
+ */
+
+import { API_BASE_URL } from './config.js';
 
 export async function fetchCompanies(page = 1) {
     const response = await fetch(`${API_BASE_URL}/company/allCompany?page=${page}`);
