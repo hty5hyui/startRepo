@@ -41,6 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Таблица
     const studentsTableBody = document.getElementById('studentsTableBody');
+    const searchInput = document.getElementById('searchInput');
+
+    // Хранилище списка студентов
+    let allStudents = [];
 
     // --- Вспомогательные функции ---
 
@@ -95,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => notification.remove(), 500);
         }, 3000);
     }
-    
+
     // --- НОВЫЕ ФУНКЦИИ ДЛЯ КНОПОК ---
 
     /**
@@ -123,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         button.disabled = false;
     }
-    
+
     // --- КОНЕЦ НОВЫХ ФУНКЦИЙ ---
 
     /**
@@ -142,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function clearForm(formElement) {
         formElement.reset(); // Самый простой способ сбросить форму
-        
+
         // Дополнительно сбрасываем "readonly" поля, которые не сбрасываются .reset()
         const readonlyInputs = formElement.querySelectorAll('input[readonly]');
         readonlyInputs.forEach(input => input.value = '');
@@ -314,36 +318,75 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadStudents() {
         try {
             const response = await fetch(`${API_BASE_URL}/student/allStudents?page=1`);
-            const students = await response.json();
-
-            studentsTableBody.innerHTML = students.map(student => `
-                <tr class="hover:bg-blue-50 transition">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.id}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
-                        ${student.surname} ${student.name} ${student.patronymic}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                        ${student.passportSeries} ${student.passportNumber}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.groupNumber}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.companyName}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.professionName}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.curator}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                        <div class="flex space-x-2">
-                            <button class="text-teal-600 hover:text-teal-800 edit-employee-btn" data-student-id="${student.id}" aria-label="Редактировать">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="text-red-600 hover:text-red-800 delete-employee-btn" data-student-id="${student.id}" aria-label="Удалить">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+            allStudents = await response.json();
+            renderStudents(allStudents);
         } catch (error) {
             console.error('Ошибка загрузки данных:', error);
         }
+    }
+
+    /**
+     * Рендерит строки таблицы на основе переданного списка студентов
+     * @param {Array} students - список студентов для отображения
+     */
+    function renderStudents(students) {
+        studentsTableBody.innerHTML = students.map((student, index) => `
+            <tr class="hover:bg-blue-50 transition">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${index + 1}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
+                    ${[student.surname, student.name, student.patronymic].filter(Boolean).join(' ')}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    ${[student.passportSeries, student.passportNumber].filter(Boolean).join(' ')}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.groupNumber ?? ''}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.companyName ?? ''}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.professionName ?? ''}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.curator ?? ''}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    <div class="flex space-x-2">
+                        <button class="text-teal-600 hover:text-teal-800 edit-employee-btn" data-student-id="${student.id}" aria-label="Редактировать">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="text-red-600 hover:text-red-800 delete-employee-btn" data-student-id="${student.id}" aria-label="Удалить">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    /**
+     * Фильтрует студентов по строке поиска и перерисовывает таблицу
+     * @param {string} query - строка запроса
+     */
+    function filterAndRender(query) {
+        const q = (query || '').toLowerCase().trim();
+        if (!q) {
+            renderStudents(allStudents);
+            return;
+        }
+
+        const filtered = allStudents.filter((s) => {
+            const fio = [s.surname, s.name, s.patronymic].filter(Boolean).join(' ').toLowerCase();
+            const passport = [s.passportSeries, s.passportNumber].filter(Boolean).join(' ').toLowerCase();
+            const group = (s.groupNumber ?? '').toString().toLowerCase();
+            const company = (s.companyName ?? '').toLowerCase();
+            const profession = (s.professionName ?? '').toLowerCase();
+            const curator = (s.curator ?? '').toLowerCase();
+
+            return (
+                fio.includes(q) ||
+                passport.includes(q) ||
+                group.includes(q) ||
+                company.includes(q) ||
+                profession.includes(q) ||
+                curator.includes(q)
+            );
+        });
+
+        renderStudents(filtered);
     }
 
     /**
@@ -742,6 +785,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Первичная загрузка данных ---
     loadStudents();
+    // Поиск по таблице
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => filterAndRender(e.target.value));
+    }
     // Загружаем компании для обеих форм
     loadCompanies('company', 'director', 'company_address', 'practice_address');
     loadCompanies('edit_company', 'edit_director', 'edit_company_address', 'edit_practice_address');
