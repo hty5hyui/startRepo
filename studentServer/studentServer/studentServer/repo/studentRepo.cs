@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Npgsql;
 using studentServer.Entity;
 using studentServer.repo.Data;
@@ -142,23 +143,70 @@ namespace studentServer.repo
             }
         }
 
-        public async Task<List<StudentPreview>> GetStudentPreviewAsync(int page)
+        internal async Task<StudentPreviewPageData> GetStudentPreviewAsync(int page)
         {
-           return await  _dbContext.Students.Select(s => new StudentPreview
-                                                        {
-                                                            Id = s.Id,
-                                                            Surname = s.PersonalData.Surname,
-                                                            Name = s.PersonalData.Name,
-                                                            Patronymic = s.PersonalData.Patronymic,
-                                                            PassportSeries = s.PersonalData.PassportSeries,
-                                                            PassportNumber = s.PersonalData.PassportNumber,
-                                                            GroupNumber = s.Contract.GroupNumber,
-                                                            CompanyName = s.Company.Name,
-                                                            ProfessionName = s.Profession.ProfessionName,
-                                                            Curator = s.Curator.Name
-                                                        })
-                                                        .ToListAsync();
-        }     
+            StudentPreviewPageData data = new StudentPreviewPageData();
+
+            data.studentPreviews = await _dbContext.Students.OrderByDescending(student => student.Id)
+                                                                              .Skip((page - 1) * pageSize)
+                                                                              .Take(pageSize)
+                                                                              .Select(s => new StudentPreview
+                                                                              {
+                                                                                  Id = s.Id,
+                                                                                  Surname = s.PersonalData.Surname,
+                                                                                  Name = s.PersonalData.Name,
+                                                                                  Patronymic = s.PersonalData.Patronymic,
+                                                                                  PassportSeries = s.PersonalData.PassportSeries,
+                                                                                  PassportNumber = s.PersonalData.PassportNumber,
+                                                                                  GroupNumber = s.Contract.GroupNumber,
+                                                                                  CompanyName = s.Company.Name,
+                                                                                  ProfessionName = s.Profession.ProfessionName,
+                                                                                  Curator = s.Curator.Name
+                                                                              }).ToListAsync();
+
+            int rowCount = await _dbContext.Students.CountAsync();
+            data.pageCount = (int)Math.Ceiling((double)rowCount / pageSize);
+
+            return data;
+        }
+
+        internal async Task<StudentPreviewPageData> GetStudentPreviewSearchAsync(PageSearchEntity pageQuery)
+        {
+            StudentPreviewPageData data = new StudentPreviewPageData();
+
+            IQueryable<Student> baseQuery = _dbContext.Students
+                                                      .Include(table => table.PersonalData)
+                                                      .Include(table => table.Contract)
+                                                      .Include(table => table.Company)
+                                                      .Include(table => table.FinanceDoc)
+                                                      .Include(table => table.VISA)
+                                                      .Include(table => table.Profession)
+                                                      .Include(table => table.Curator);
+
+            IQueryable<Student> filteredQuery = queryBuilder.ApplyFilters(baseQuery, pageQuery.searchFilter!);
+
+            data.studentPreviews = await filteredQuery.OrderByDescending(student => student.Id)
+                                                      .Skip((pageQuery.page - 1) * pageSize)
+                                                      .Take(pageSize)
+                                                      .Select(s => new StudentPreview
+                                                      {
+                                                          Id = s.Id,
+                                                          Surname = s.PersonalData.Surname,
+                                                          Name = s.PersonalData.Name,
+                                                          Patronymic = s.PersonalData.Patronymic,
+                                                          PassportSeries = s.PersonalData.PassportSeries,
+                                                          PassportNumber = s.PersonalData.PassportNumber,
+                                                          GroupNumber = s.Contract.GroupNumber,
+                                                          CompanyName = s.Company.Name,
+                                                          ProfessionName = s.Profession.ProfessionName,
+                                                          Curator = s.Curator.Name
+                                                      }).ToListAsync();
+
+            int rowCount = await filteredQuery.CountAsync();
+            data.pageCount = (int)Math.Ceiling((double)rowCount / pageSize);
+
+            return data;
+        }
     }
 }
  

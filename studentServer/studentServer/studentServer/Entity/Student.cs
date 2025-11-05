@@ -13,12 +13,6 @@ namespace studentServer.Entity
         public VISADTO visa { get; set; } = new VISADTO();
     }
 
-    //public class PatchStudent
-    //{
-    //    public List<int> idList { get; set; } = [];
-    //    public StudentDataDTO data { get; set; } = new StudentDataDTO();
-    //}
-
     public class StudentPreview
     {
         public int Id { get; set; }
@@ -31,6 +25,12 @@ namespace studentServer.Entity
         public string? CompanyName { get; set; }
         public string? ProfessionName { get; set; }
         public string? Curator { get; set; }
+    }
+
+    public class StudentPreviewPageData
+    {
+        public int pageCount { get; set; }
+        public List<StudentPreview>? studentPreviews { get; set; }
     }
 
     //Изменил на более простую структуру

@@ -10,13 +10,13 @@ namespace studentServer.Controller
     [Route("[controller]")]
     public class studentController(studentsCRUD studentsService) :ControllerBase
     {
-        [HttpGet("allStudents")]
-        public async Task<IActionResult> GetStudentPreviewAsync([FromQuery] int page)
+        [HttpPost("allStudents")]
+        public async Task<IActionResult> GetStudentPreviewAsync([FromBody] PageSearchEntity filterQuery)
         {
             try
             {
-                List<StudentPreview> studentList = await studentsService.getStudentPreviewAsync(page);
-                return new JsonResult(studentList);
+                StudentPreviewPageData studentDataList = await studentsService.getStudentPreviewAsync(filterQuery);
+                return new JsonResult(studentDataList);
             }
             catch (Exception ex)
             {

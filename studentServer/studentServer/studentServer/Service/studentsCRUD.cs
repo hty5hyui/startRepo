@@ -7,9 +7,20 @@ namespace studentServer.Service
 {
     public class studentsCRUD(studentRepo repository)
     {
-        public async Task<List<StudentPreview>> getStudentPreviewAsync(int page)
+        public async Task<StudentPreviewPageData> getStudentPreviewAsync(PageSearchEntity pageQuery)
         {
-            return await repository.GetStudentPreviewAsync(page);
+            StudentPreviewPageData studentPreviewPageData = new StudentPreviewPageData();
+
+            if (pageQuery.searchFilter == null)
+            {
+                studentPreviewPageData =  await repository.GetStudentPreviewAsync(pageQuery.page);
+            }
+            else
+            {
+                studentPreviewPageData = await repository.GetStudentPreviewSearchAsync(pageQuery);
+            }
+
+            return studentPreviewPageData;
         }
 
         public async Task<StudentDataDTO> getStudentDataAsync(int idStudent)
