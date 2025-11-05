@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using studentServer.Controller;
@@ -30,6 +31,13 @@ builder.Services.AddScoped<RandomDataSetInBase>();
 builder.Services.AddScoped<testController>();
 //--------------
 //------------------------------------------------------------------------------
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Конвертер который умеет читать и писать Enum в виде строк, а не только цифр.
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 
 builder.Services.AddSwaggerGen(c =>

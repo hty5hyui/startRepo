@@ -4,61 +4,62 @@
 
 // Определение полей для поиска (имена полей соответствуют C# свойствам)
 export const searchFields = [
-    { key: 'Surname', label: 'Фамилия', type: 'string' },
-    { key: 'Name', label: 'Имя', type: 'string' },
-    { key: 'Patronymic', label: 'Отчество', type: 'string' },
-    { key: 'SurnameEn', label: 'Фамилия (EN)', type: 'string' },
-    { key: 'NameEn', label: 'Имя (EN)', type: 'string' },
-    { key: 'PatronymicEn', label: 'Отчество (EN)', type: 'string' },
-    { key: 'Birthday', label: 'Дата рождения', type: 'date' },
-    { key: 'PassportSeries', label: 'Серия паспорта', type: 'string' },
-    { key: 'PassportNumber', label: 'Номер паспорта', type: 'string' },
-    { key: 'PassportDateOfIssue', label: 'Дата выдачи паспорта', type: 'date' },
-    { key: 'PassportDateEnd', label: 'Дата окончания паспорта', type: 'date' },
-    { key: 'PlaceOfBirth', label: 'Место рождения', type: 'string' },
-    { key: 'CityOfRegistration', label: 'Город прописки', type: 'string' },
-    { key: 'AddressRegistration', label: 'Адрес прописки', type: 'string' },
-    { key: 'AddressRegistrationIndex', label: 'Индекс адреса прописки', type: 'string' },
-    { key: 'PaymentOfContribution', label: 'Оплата взноса', type: 'bool' },
-    { key: 'PaymentOfContributionYear', label: 'Оплата годового взноса', type: 'bool' },
-    { key: 'CheckNumber', label: 'Номер квитанции', type: 'string' },
-    { key: 'CheckDate', label: 'Дата квитанции', type: 'date' },
-    { key: 'CardIsReady', label: 'Оформление карты', type: 'bool' },
-    { key: 'CardIsGet', label: 'Выдача карты', type: 'bool' },
-    { key: 'NumberUVM', label: 'Номер договора УВМ', type: 'string' },
-    { key: 'Number3Party', label: 'Номер 3-х стороннего договора', type: 'string' },
-    { key: 'Date3Party', label: 'Дата 3-х стороннего договора', type: 'date' },
-    { key: 'Number2Party', label: 'Номер 2-х стороннего договора', type: 'string' },
-    { key: 'Date2Party', label: 'Дата 2-х стороннего договора', type: 'date' },
-    { key: 'GroupNumber', label: 'Номер группы', type: 'string' },
-    { key: 'DateOfDispatch', label: 'Дата отправки', type: 'date' },
-    { key: 'MailCompany', label: 'Почтовая компания', type: 'string' },
-    { key: 'DateReturn', label: 'Дата возврата', type: 'date' },
-    { key: 'InviteNumber', label: 'Номер приглашения', type: 'string' },
-    { key: 'ArrivalDate', label: 'Дата прибытия', type: 'date' },
-    { key: 'VisaId', label: 'Идентификатор визы', type: 'string' },
-    { key: 'VisaSeries', label: 'Серия визы', type: 'string' },
-    { key: 'VisaNumber', label: 'Номер визы', type: 'string' },
-    { key: 'VisaIssueDate', label: 'Дата выдачи визы', type: 'date' },
-    { key: 'VisaReceiptDate', label: 'Дата получения визы', type: 'date' },
-    { key: 'VisaValidityDate', label: 'Виза действительна до', type: 'date' },
-    { key: 'CompanyName', label: 'Название компании', type: 'string' },
-    { key: 'PracticeAddress', label: 'Адрес практики', type: 'string' },
-    { key: 'INN', label: 'ИНН', type: 'string' },
-    { key: 'KPP', label: 'КПП', type: 'string' },
-    { key: 'OGRN', label: 'ОГРН', type: 'string' },
-    { key: 'PaymantAccount', label: 'Расчетный счет', type: 'string' },
-    { key: 'Bank', label: 'Банк', type: 'string' },
-    { key: 'CorrespondentAccount', label: 'Корреспондентский счет', type: 'string' },
-    { key: 'BIK', label: 'БИК', type: 'string' },
-    { key: 'CompanyMail', label: 'Почта компании', type: 'string' },
-    { key: 'Director', label: 'Директор', type: 'string' },
-    { key: 'HeadOfTheCompany', label: 'Руководитель компании', type: 'string' },
-    { key: 'CompanyAddress', label: 'Адрес компании', type: 'string' },
-    { key: 'ProfessionName', label: 'Название профессии', type: 'string' },
-    { key: 'ProfessionNumber', label: 'Номер профессии', type: 'string' },
-    { key: 'CuratorName', label: 'Имя куратора', type: 'string' }
-];
+        { key: 'Student.Id', label: 'ID студента', type: 'int' },
+        { key: 'PersonalData.Surname', label: 'Фамилия', type: 'string' },
+        { key: 'PersonalData.Name', label: 'Имя', type: 'string' },
+        { key: 'PersonalData.Patronymic', label: 'Отчество', type: 'string' },
+        { key: 'PersonalData.SurnameEn', label: 'Фамилия (EN)', type: 'string' },
+        { key: 'PersonalData.NameEn', label: 'Имя (EN)', type: 'string' },
+        { key: 'PersonalData.PatronymicEn', label: 'Отчество (EN)', type: 'string' },
+        { key: 'PersonalData.Birthday', label: 'Дата рождения', type: 'date' },
+        { key: 'PersonalData.PassportSeries', label: 'Серия паспорта', type: 'string' },
+        { key: 'PersonalData.PassportNumber', label: 'Номер паспорта', type: 'string' },
+        { key: 'PersonalData.PassportDateOfIssue', label: 'Дата выдачи паспорта', type: 'date' },
+        { key: 'PersonalData.PassportDateEnd', label: 'Дата окончания паспорта', type: 'date' },
+        { key: 'PersonalData.PlaceOfBirth', label: 'Место рождения', type: 'string' },
+        { key: 'PersonalData.CityOfRegistration', label: 'Город прописки', type: 'string' },
+        { key: 'PersonalData.AddressRegistration', label: 'Адрес прописки', type: 'string' },
+        { key: 'PersonalData.AddressRegistrationIndex', label: 'Индекс адреса прописки', type: 'string' },
+        { key: 'FinanceDoc.PaymentOfContribution', label: 'Оплата взноса', type: 'bool' },
+        { key: 'FinanceDoc.PaymentOfContributionYear', label: 'Оплата годового взноса', type: 'bool' },
+        { key: 'FinanceDoc.CheckNumber', label: 'Номер квитанции', type: 'string' },
+        { key: 'FinanceDoc.CheckDate', label: 'Дата квитанции', type: 'date' },
+        { key: 'FinanceDoc.CardIsReady', label: 'Оформление карты', type: 'bool' },
+        { key: 'FinanceDoc.CardIsGet', label: 'Выдача карты', type: 'bool' },
+        { key: 'Contract.NumberUVM', label: 'Номер договора УВМ', type: 'string' },
+        { key: 'Contract.Number3Party', label: 'Номер 3-х стороннего договора', type: 'string' },
+        { key: 'Contract.Date3Party', label: 'Дата 3-х стороннего договора', type: 'date' },
+        { key: 'Contract.Number2Party', label: 'Номер 2-х стороннего договора', type: 'string' },
+        { key: 'Contract.Date2Party', label: 'Дата 2-х стороннего договора', type: 'date' },
+        { key: 'Contract.GroupNumber', label: 'Номер группы', type: 'string' },
+        { key: 'Contract.DateOfDispatch', label: 'Дата отправки', type: 'date' },
+        { key: 'Contract.MailCompany', label: 'Почтовая компания', type: 'string' },
+        { key: 'Contract.DateReturn', label: 'Дата возврата', type: 'date' },
+        { key: 'VISA.InviteNumber', label: 'Номер приглашения', type: 'string' },
+        { key: 'VISA.ArrivalDate', label: 'Дата прибытия', type: 'date' },
+        { key: 'VISA.VisaId', label: 'Идентификатор визы', type: 'string' },
+        { key: 'VISA.VisaSeries', label: 'Серия визы', type: 'string' },
+        { key: 'VISA.VisaNumber', label: 'Номер визы', type: 'string' },
+        { key: 'VISA.VisaIssueDate', label: 'Дата выдачи визы', type: 'date' },
+        { key: 'VISA.VisaReceiptDate', label: 'Дата получения визы', type: 'date' },
+        { key: 'VISA.VisaValidityDate', label: 'Виза действительна до', type: 'date' },
+        { key: 'Company.CompanyName', label: 'Название компании', type: 'string' },
+        { key: 'Company.PracticeAddress', label: 'Адрес практики', type: 'string' },
+        { key: 'Company.INN', label: 'ИНН', type: 'string' },
+        { key: 'Company.KPP', label: 'КПП', type: 'string' },
+        { key: 'Company.OGRN', label: 'ОГРН', type: 'string' },
+        { key: 'Company.PaymantAccount', label: 'Расчетный счет', type: 'string' },
+        { key: 'Company.Bank', label: 'Банк', type: 'string' },
+        { key: 'Company.CorrespondentAccount', label: 'Корреспондентский счет', type: 'string' },
+        { key: 'Company.BIK', label: 'БИК', type: 'string' },
+        { key: 'Company.CompanyMail', label: 'Почта компании', type: 'string' },
+        { key: 'Company.Director', label: 'Директор', type: 'string' },
+        { key: 'Company.HeadOfTheCompany', label: 'Руководитель компании', type: 'string' },
+        { key: 'Company.CompanyAddress', label: 'Адрес компании', type: 'string' },
+        { key: 'Profession.ProfessionName', label: 'Название профессии', type: 'string' },
+        { key: 'Profession.ProfessionNumber', label: 'Номер профессии', type: 'string' },
+        { key: 'Curator.Name', label: 'Имя куратора', type: 'string' }
+    ];
 
 let searchFieldCounter = 0;
 
@@ -84,6 +85,7 @@ export function createSearchField() {
     modeSelect.id = `${fieldId}_mode`;
     modeSelect.innerHTML = `
         <option value="contains">Содержит</option>
+        <option value="equals">Равно</option>
         <option value="notEmpty">Не пусто</option>
         <option value="empty">Пусто</option>
         <option value="greater">Больше</option>
@@ -114,20 +116,32 @@ export function createSearchField() {
                 valueInput.type = 'date';
                 valueInput.placeholder = 'Выберите дату';
                 valueInput.style.display = 'block';
-                // Восстанавливаем стандартные режимы для дат
+                // Режимы для дат (без "Содержит")
                 modeSelect.innerHTML = `
-                    <option value="contains">Содержит</option>
+                    <option value="equals">Равно</option>
                     <option value="notEmpty">Не пусто</option>
                     <option value="empty">Пусто</option>
                     <option value="greater">Больше</option>
                     <option value="less">Меньше</option>
                 `;
             } else if (selectedField.type === 'bool') {
-                // Для булевых полей используем выбор "Да"/"Нет"
+                // Для булевых полей используем выбор "Да"/"Нет" (только Equals)
                 valueInput.style.display = 'none';
                 modeSelect.innerHTML = `
                     <option value="true">Да</option>
                     <option value="false">Нет</option>
+                `;
+            } else if (selectedField.type === 'int') {
+                // Для числовых полей (без "Содержит")
+                valueInput.type = 'number';
+                valueInput.placeholder = 'Введите число';
+                valueInput.style.display = 'block';
+                modeSelect.innerHTML = `
+                    <option value="equals">Равно</option>
+                    <option value="notEmpty">Не пусто</option>
+                    <option value="empty">Пусто</option>
+                    <option value="greater">Больше</option>
+                    <option value="less">Меньше</option>
                 `;
             } else {
                 valueInput.type = 'text';
@@ -136,6 +150,7 @@ export function createSearchField() {
                 // Восстанавливаем стандартные режимы для строк
                 modeSelect.innerHTML = `
                     <option value="contains">Содержит</option>
+                    <option value="equals">Равно</option>
                     <option value="notEmpty">Не пусто</option>
                     <option value="empty">Пусто</option>
                     <option value="greater">Больше</option>
@@ -172,22 +187,24 @@ export function createSearchField() {
 }
 
 /**
- * Собирает данные поиска и формирует searchFilter для запроса
+ * Маппинг режимов поиска на MatchMode enum
+ */
+const matchModeMap = {
+    'contains': 'Contains',
+    'equals': 'Equals',
+    'empty': 'IsNull',
+    'notEmpty': 'IsNotNull',
+    'greater': 'GreaterThan',
+    'less': 'LessThan'
+};
+
+/**
+ * Собирает данные поиска и формирует массив FilterDescriptor для запроса
  * 
- * Примечание: searchFilter соответствует структуре C# класса.
- * Сервер должен интерпретировать режимы поиска:
- * - "Пусто" (empty): значение null
- * - "Не пусто" (notEmpty): специальные маркеры в зависимости от типа поля
- * - "Содержит" (contains): значение для поиска по вхождению
- * - "Больше" (greater) / "Меньше" (less): значение для сравнения
- * 
- * Для режимов "Больше" и "Меньше" сервер должен определить операцию сравнения
- * на основе типа поля (дата, число, строка).
- * 
- * @returns {Object|null} объект searchFilter или null, если нет критериев поиска
+ * @returns {Array<FilterDescriptor>|null} массив FilterDescriptor или null, если нет критериев поиска
  */
 export function buildSearchFilter(searchFieldsContainer) {
-    const searchFilter = {};
+    const filterDescriptors = [];
     
     // Проверка на существование контейнера
     if (!searchFieldsContainer) {
@@ -238,44 +255,66 @@ export function buildSearchFilter(searchFieldsContainer) {
         if (!fieldInfo) return;
 
         // Обработка разных режимов поиска
+        let matchMode;
+        let filterValue = null;
+
         if (fieldInfo.type === 'bool') {
-            // Для булевых полей используем значение из режима (true/false)
-            searchFilter[fieldKey] = mode === 'true';
+            // Для булевых полей используем Equals с boolean значением
+            // mode будет "true" или "false" (строки)
+            matchMode = 'Equals';
+            filterValue = mode === 'true';
         } else if (mode === 'empty') {
-            // Для "Пусто" передаем null
-            searchFilter[fieldKey] = null;
+            // Для "Пусто" используем IsNull, значение null
+            matchMode = 'IsNull';
+            filterValue = null;
         } else if (mode === 'notEmpty') {
-            // Для "Не пусто" - передаем специальное значение
-            // Сервер должен интерпретировать это как "поле не пустое"
-            if (fieldInfo.type === 'date') {
-                // Для дат передаем минимальную дату как индикатор "не пусто"
-                searchFilter[fieldKey] = '1900-01-01';
-            } else {
-                // Для строк передаем пустую строку (не null)
-                searchFilter[fieldKey] = '';
+            // Для "Не пусто" используем IsNotNull, значение null
+            matchMode = 'IsNotNull';
+            filterValue = null;
+        } else {
+            // Преобразуем режим поиска в MatchMode для не-булевых полей
+            matchMode = matchModeMap[mode];
+            if (!matchMode) {
+                console.warn(`Неизвестный режим поиска: ${mode}`);
+                return;
             }
-        } else if (value) {
+            
             // Для других режимов нужное значение
-            if (fieldInfo.type === 'date') {
-                // Для дат "Больше" и "Меньше" передаем дату
-                searchFilter[fieldKey] = value; // Дата в формате YYYY-MM-DD
-            } else {
-                // Для строковых полей
-                if (mode === 'contains') {
-                    searchFilter[fieldKey] = value; // "Содержит" - передаем значение как есть
-                } else if (mode === 'greater' || mode === 'less') {
-                    // Для "Больше" и "Меньше" строковых полей также передаем значение
-                    // Сервер должен интерпретировать это соответственно
-                    searchFilter[fieldKey] = value;
+            if (value) {
+                if (fieldInfo.type === 'date') {
+                    // Для дат передаем дату в формате YYYY-MM-DD
+                    filterValue = value;
+                } else if (fieldInfo.type === 'int') {
+                    // Для числовых полей преобразуем в число
+                    const numValue = parseInt(value, 10);
+                    if (!isNaN(numValue)) {
+                        filterValue = numValue;
+                    } else {
+                        console.warn(`Неверное числовое значение: ${value}`);
+                        return; // Пропускаем это поле, если значение не число
+                    }
                 } else {
-                    searchFilter[fieldKey] = value;
+                    // Для строковых полей
+                    filterValue = value;
+                }
+            } else {
+                // Если нет значения и это не IsNull/IsNotNull, пропускаем
+                if (mode !== 'empty' && mode !== 'notEmpty') {
+                    return;
                 }
             }
         }
+
+        // Создаем FilterDescriptor
+        filterDescriptors.push({
+            FieldName: fieldKey,
+            MatchMode: matchMode,
+            Value: filterValue
+        });
     });
 
     // Возвращаем null если нет критериев поиска
-    return Object.keys(searchFilter).length > 0 ? searchFilter : null;
+    return filterDescriptors.length > 0 ? filterDescriptors : null;
 }
 
 /**

@@ -7,15 +7,15 @@ const API_BASE_URL = 'https://localhost:7229';
 /**
  * Загружает список студентов с пагинацией
  * @param {number} page - номер страницы
- * @param {Object} searchFilter - объект с критериями поиска (опционально)
+ * @param {Array<FilterDescriptor>|null} searchFilter - массив FilterDescriptor с критериями поиска (опционально)
  * @returns {Promise<Object>} объект с полями pageCount и studentPreviews
  */
 export async function loadStudents(page = 1, searchFilter = null) {
     try {
         const requestBody = { page };
         
-        // Если есть критерии поиска, добавляем searchFilter
-        if (searchFilter && Object.keys(searchFilter).length > 0) {
+        // Если есть критерии поиска, добавляем searchFilter как массив
+        if (searchFilter && Array.isArray(searchFilter) && searchFilter.length > 0) {
             requestBody.searchFilter = searchFilter;
         }
 
