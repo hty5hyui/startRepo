@@ -4,7 +4,6 @@
 
 // Определение полей для поиска (имена полей соответствуют C# свойствам)
 export const searchFields = [
-        { key: 'Student.Id', label: 'ID студента', type: 'int' },
         { key: 'PersonalData.Surname', label: 'Фамилия', type: 'string' },
         { key: 'PersonalData.Name', label: 'Имя', type: 'string' },
         { key: 'PersonalData.Patronymic', label: 'Отчество', type: 'string' },
