@@ -63,6 +63,9 @@ export function renderStudents(students, studentsTableBody, tableContainer, pagi
     const startIndex = (currentPage - 1) * itemsPerPage;
     studentsTableBody.innerHTML = students.map((student, index) => `
         <tr class="hover:bg-blue-50 transition">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                <input type="checkbox" class="student-checkbox h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded cursor-pointer" data-student-id="${student.id}" aria-label="Выделить студента">
+            </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${startIndex + index + 1}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800">
                 ${[student.surname, student.name, student.patronymic].filter(Boolean).join(' ')}

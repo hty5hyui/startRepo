@@ -95,6 +95,31 @@ export async function updateStudent(formData) {
 }
 
 /**
+ * Групповое обновление студентов
+ * @param {Object} formData - Данные для обновления (только измененные поля, остальные null)
+ * @param {Array<string>} idList - Массив ID студентов для обновления
+ * @returns {Promise<Response>}
+ */
+export async function updateStudentsGroup(formData, idList) {
+    try {
+        const requestData = {
+            ...formData,
+            idList: idList
+        };
+        
+        const response = await fetch(`${API_BASE_URL}/student/group`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
+        });
+        return response;
+    } catch (error) {
+        console.error('Ошибка группового обновления студентов:', error);
+        throw error;
+    }
+}
+
+/**
  * Удаляет студентов
  * @param {Array<string>} idStudents - Массив ID студентов для удаления
  * @returns {Promise<Response>}

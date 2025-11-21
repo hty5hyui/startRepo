@@ -10,6 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styleStudent.css">
+    <link rel="stylesheet" href="css/triStateCheckbox.css">
 </head>
 <body class="bg-blue-50 min-h-screen">
     <header class="bg-teal-700 text-blue-50 shadow-lg">
@@ -32,10 +33,16 @@
     <main class="container mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-8">
             <h2 class="text-3xl font-bold text-teal-800">Редактор базы сотрудников</h2>
-            <button id="addEmployeeBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
-                <i class="fas fa-plus"></i>
-                <span>Добавить сотрудника</span>
-            </button>
+            <div class="flex space-x-3">
+                <button id="editSelectedBtn" class="bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition flex items-center space-x-2 hidden">
+                    <i class="fas fa-edit"></i>
+                    <span>Редактировать выделенные (<span id="selectedCount">0</span>)</span>
+                </button>
+                <button id="addEmployeeBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Добавить сотрудника</span>
+                </button>
+            </div>
         </div>
         <!-- Поиск -->
         <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
@@ -77,6 +84,9 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-teal-50">
                         <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">
+                                <input type="checkbox" id="selectAllCheckbox" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded cursor-pointer" aria-label="Выделить все">
+                            </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">№</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">ФИО</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Паспорт</th>

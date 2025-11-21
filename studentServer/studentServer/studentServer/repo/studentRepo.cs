@@ -20,6 +20,7 @@ namespace studentServer.repo
             
 
             var data = await _dbContext.Students
+                                       .AsNoTracking()
                                        .Include(s => s.Contract)
                                        .Include(s => s.FinanceDoc)
                                        .Include(s => s.PersonalData)

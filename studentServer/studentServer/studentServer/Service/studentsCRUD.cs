@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using studentServer.Entity;
 using studentServer.repo;
@@ -40,6 +41,28 @@ namespace studentServer.Service
         public async Task patchStudentsAsync(StudentDataDTO newStudentsData)
         {
            await repository.UpdateStudentAsync(newStudentsData);
+        }
+
+        public async Task patchGroupStudentsAsync(StudentGroupDataDTO newStudentsData)
+        {
+            StudentDataDTO patchData = EntityMapper.ToStudentDataDTO(newStudentsData);
+
+            foreach (int idUser in newStudentsData.idList)
+            {
+                try
+                {
+                    //Выгружаем старые данные
+                    StudentDataDTO oldData = await repository.GetStudentByIdAsync(idUser);
+
+                    DtoMerger.ApplyPatch(oldData, patchData);
+                    //измененные даныне записываем
+                    await patchStudentsAsync(oldData);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Ошибка при груповом изменении данных пользователя {idUser}: {ex.Message}");
+                }
+            }
         }
 
         public async Task addStudentsAsync(StudentDataDTO newStudentData, int count)

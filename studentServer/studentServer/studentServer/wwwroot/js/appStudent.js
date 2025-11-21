@@ -21,6 +21,7 @@ import {
     loadStudents as apiLoadStudents,
     addStudent,
     updateStudent,
+    updateStudentsGroup,
     deleteStudent,
     loadCompanyData,
     loadProfessionData
@@ -40,6 +41,13 @@ import {
     clearSearch as clearSearchFields,
     searchFields
 } from './search.js';
+
+import {
+    initTriStateCheckboxes,
+    resetTriStateCheckboxes,
+    removeTriStateCheckboxes,
+    getTriStateValue
+} from './triStateCheckbox.js';
 
 // Ждем, пока вся HTML-структура (DOM) будет загружена, прежде чем выполнять скрипт
 document.addEventListener('DOMContentLoaded', () => {
@@ -102,6 +110,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     let pageCount = 1;
     let currentSearchFilter = null;
+
+    // Состояние выделения студентов и группового редактирования
+    let selectedStudentIds = new Set();
+    let isGroupEditMode = false;
+    let initialFormValues = {};
+    let changedFields = new Set();
+    let triStateControllers = null;
+
+    // Элементы для группового редактирования
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const editSelectedBtn = document.getElementById('editSelectedBtn');
+    const selectedCountSpan = document.getElementById('selectedCount');
 
     // --- Обертки для функций с правильными параметрами ---
 
@@ -186,6 +206,195 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Ошибка загрузки данных студента:', error);
             throw error;
         }
+    }
+
+    /**
+     * Обновляет счетчик и видимость кнопки группового редактирования
+     */
+    function updateGroupEditButton() {
+        const count = selectedStudentIds.size;
+        if (selectedCountSpan) {
+            selectedCountSpan.textContent = count;
+        }
+        if (editSelectedBtn) {
+            if (count > 0) {
+                editSelectedBtn.classList.remove('hidden');
+            } else {
+                editSelectedBtn.classList.add('hidden');
+            }
+        }
+    }
+
+    /**
+     * Обработчик изменения чекбокса студента
+     */
+    function handleStudentCheckboxChange(e) {
+        const checkbox = e.target;
+        const studentId = checkbox.dataset.studentId;
+        
+        if (checkbox.checked) {
+            selectedStudentIds.add(studentId);
+        } else {
+            selectedStudentIds.delete(studentId);
+        }
+        
+        updateGroupEditButton();
+        updateSelectAllCheckbox();
+    }
+
+    /**
+     * Обновляет состояние чекбокса "Выделить все"
+     */
+    function updateSelectAllCheckbox() {
+        if (!selectAllCheckbox) return;
+        
+        const checkboxes = document.querySelectorAll('.student-checkbox');
+        const checkedCount = document.querySelectorAll('.student-checkbox:checked').length;
+        
+        selectAllCheckbox.checked = checkboxes.length > 0 && checkedCount === checkboxes.length;
+        selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
+    }
+
+    /**
+     * Обработчик чекбокса "Выделить все"
+     */
+    function handleSelectAllChange(e) {
+        const checkboxes = document.querySelectorAll('.student-checkbox');
+        const isChecked = e.target.checked;
+        
+        selectedStudentIds.clear();
+        
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+            if (isChecked) {
+                selectedStudentIds.add(checkbox.dataset.studentId);
+            }
+        });
+        
+        updateGroupEditButton();
+    }
+
+    /**
+     * Сохраняет начальные значения формы для отслеживания изменений
+     */
+    function saveInitialFormValues(form) {
+        initialFormValues = {};
+        changedFields.clear();
+        
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            if (input.name) {
+                initialFormValues[input.name] = input.value;
+            }
+        });
+    }
+
+    /**
+     * Отслеживает изменения полей формы
+     */
+    function trackFormChanges(e) {
+        const input = e.target;
+        if (!input.name && !input.id) return;
+        
+        const fieldName = input.name || input.id;
+        
+        // Для трехпозиционных чекбоксов проверяем их состояние
+        if (input.type === 'checkbox' && triStateControllers && triStateControllers[input.id]) {
+            const currentValue = getTriStateValue(input.id);
+            // Добавляем в измененные поля, если значение не null
+            if (currentValue !== null) {
+                changedFields.add(fieldName);
+            } else {
+                changedFields.delete(fieldName);
+            }
+        } else {
+            // Для обычных полей
+            if (input.value !== initialFormValues[fieldName]) {
+                changedFields.add(fieldName);
+            } else {
+                changedFields.delete(fieldName);
+            }
+        }
+    }
+
+    /**
+     * Открывает форму для группового редактирования
+     */
+    function openGroupEditForm() {
+        if (selectedStudentIds.size === 0) {
+            showErrorMessage('Не выбраны студенты для редактирования');
+            return;
+        }
+        
+        isGroupEditMode = true;
+        
+        // Список ID чекбоксов для группового редактирования
+        const checkboxIds = [
+            'edit_payment_contribution',
+            'edit_payment_contribution_year',
+            'edit_card_ready',
+            'edit_card_get'
+        ];
+        
+        // Удаляем старые трехпозиционные чекбоксы если они есть
+        if (triStateControllers) {
+            removeTriStateCheckboxes(checkboxIds);
+            triStateControllers = null;
+        }
+        
+        // Очищаем форму
+        clearForm(editEmployeeForm);
+        
+        // Инициализируем трехпозиционные чекбоксы для группового редактирования
+        triStateControllers = initTriStateCheckboxes(editEmployeeForm, checkboxIds);
+        
+        // Сохраняем начальные значения (пустые для группового редактирования)
+        saveInitialFormValues(editEmployeeForm);
+        
+        // Меняем заголовок модального окна
+        const modalTitle = editEmployeeModal.querySelector('h3');
+        if (modalTitle) {
+            modalTitle.innerHTML = `
+                Групповое редактирование (выбрано: ${selectedStudentIds.size})
+                <span class="text-sm font-normal text-gray-600 block mt-1">
+                    <i class="fas fa-info-circle"></i> Заполните только поля, которые нужно изменить
+                </span>
+            `;
+        }
+        
+        // Открываем модальное окно
+        openModalWrapper(editEmployeeModal);
+        
+        // Загружаем компании и профессии
+        loadCompanies('edit_company', 'edit_director', 'edit_company_address', 'edit_practice_address', loadCompanyData);
+        loadProfessions('edit_profession', 'edit_profession_number', loadProfessionData);
+    }
+
+    /**
+     * Получает только измененные поля формы
+     */
+    function getChangedFormData(form) {
+        const formData = {};
+        
+        changedFields.forEach(fieldName => {
+            // Ищем поле по name или id
+            let input = form.querySelector(`[name="${fieldName}"]`);
+            if (!input) {
+                input = form.querySelector(`#${fieldName}`);
+            }
+            
+            if (input) {
+                // Проверяем, является ли это трехпозиционным чекбоксом
+                if (input.type === 'checkbox' && triStateControllers && triStateControllers[input.id]) {
+                    const value = getTriStateValue(input.id);
+                    formData[fieldName] = value;
+                } else {
+                    formData[fieldName] = getValue(fieldName) || null;
+                }
+            }
+        });
+        
+        return formData;
     }
 
     // --- Обработчики событий ---
@@ -293,71 +502,167 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         disableButton(submitEditEmployeeBtn, 'Обновление...');
 
-        const formData = {
-            Contract: {
-                NumberUVM: getValue('edit_uvm_contract_number'),
-                Number3Party: getValue('edit_tripartite_contract_number'),
-                Date3Party: getValue('edit_tripartite_contract_date'),
-                Number2Party: getValue('edit_bipartite_contract_number'),
-                Date2Party: getValue('edit_bipartite_contract_date'),
-                GroupNumber: getValue('edit_group_number'),
-                DateOfDispatch: getValue('edit_shipment_date'),
-                MailCompany: getValue('edit_postal_company'),
-                DateReturn: getValue('edit_return_date')
-            },
-            FinanceDoc: {
-                PaymentOfContribution: document.getElementById('edit_payment_contribution').checked,
-                PaymentOfContributionYear: document.getElementById('edit_payment_contribution_year').checked,
-                CheckNumber: getValue('edit_receipt_number'),
-                CheckDate: getValue('edit_receipt_date'),
-                CardIsReady: document.getElementById('edit_card_ready').checked,
-                CardIsGet: document.getElementById('edit_card_get').checked
-            },
-            PersonalData: {
-                Surname: getValue('edit_surname'),
-                Name: getValue('edit_name'),
-                Patronymic: getValue('edit_patronymic'),
-                SurnameEn: getValue('edit_surname_en'),
-                NameEn: getValue('edit_name_en'),
-                PatronymicEn: getValue('edit_patronymic_en'),
-                Birthday: getValue('edit_birth_date'),
-                PassportSeries: getValue('edit_passport_series'),
-                PassportNumber: getValue('edit_passport_number'),
-                PassportDateOfIssue: getValue('edit_passport_issue_date'),
-                PassportDateEnd: getValue('edit_passport_expiry_date'),
-                PlaceOfBirth: getValue('edit_birth_place'),
-                CityOfRegistration: getValue('edit_registration_city'),
-                AddressRegistration: getValue('edit_registration_address'),
-                AddressRegistrationIndex: getValue('edit_registration_zip')
-            },
-            Visa: {
-                InviteNumber: getValue('edit_invitation_number'),
-                ArrivalDate: getValue('edit_arrival_date'),
-                VisaId: getValue('edit_visa_id'),
-                VisaSeries: getValue('edit_visa_form_series'),
-                VisaNumber: getValue('edit_visa_number'),
-                VisaIssueDate: getValue('edit_visa_issue_date'),
-                VisaReceiptDate: getValue('edit_visa_receipt_date'),
-                VisaValidityDate: getValue('edit_visa_expiry_date')
-            },
-            Student: {
-                "Id": currentStudentId,
-                "CompanyId": getValue('edit_company'),
-                "ProfessionId": getValue('edit_profession'),
-                "CuratorId": getValue('edit_curator')
-            }
-        };
-
         try {
-            const response = await updateStudent(formData);
-            currentStudentId = null;
+            // Проверяем режим группового редактирования
+            if (isGroupEditMode) {
+                // Групповое редактирование - отправляем только измененные поля
+                const changedData = getChangedFormData(editEmployeeForm);
+                
+                // Создаем структуру с null для неизменённых полей
+                const formData = {
+                    Contract: {
+                        NumberUVM: changedData.edit_uvm_contract_number || null,
+                        Number3Party: changedData.edit_tripartite_contract_number || null,
+                        Date3Party: changedData.edit_tripartite_contract_date || null,
+                        Number2Party: changedData.edit_bipartite_contract_number || null,
+                        Date2Party: changedData.edit_bipartite_contract_date || null,
+                        GroupNumber: changedData.edit_group_number || null,
+                        DateOfDispatch: changedData.edit_shipment_date || null,
+                        MailCompany: changedData.edit_postal_company || null,
+                        DateReturn: changedData.edit_return_date || null
+                    },
+                    FinanceDoc: {
+                        PaymentOfContribution: changedData.edit_payment_contribution !== undefined ? changedData.edit_payment_contribution : null,
+                        PaymentOfContributionYear: changedData.edit_payment_contribution_year !== undefined ? changedData.edit_payment_contribution_year : null,
+                        CheckNumber: changedData.edit_receipt_number || null,
+                        CheckDate: changedData.edit_receipt_date || null,
+                        CardIsReady: changedData.edit_card_ready !== undefined ? changedData.edit_card_ready : null,
+                        CardIsGet: changedData.edit_card_get !== undefined ? changedData.edit_card_get : null
+                    },
+                    PersonalData: {
+                        Surname: changedData.edit_surname || null,
+                        Name: changedData.edit_name || null,
+                        Patronymic: changedData.edit_patronymic || null,
+                        SurnameEn: changedData.edit_surname_en || null,
+                        NameEn: changedData.edit_name_en || null,
+                        PatronymicEn: changedData.edit_patronymic_en || null,
+                        Birthday: changedData.edit_birth_date || null,
+                        PassportSeries: changedData.edit_passport_series || null,
+                        PassportNumber: changedData.edit_passport_number || null,
+                        PassportDateOfIssue: changedData.edit_passport_issue_date || null,
+                        PassportDateEnd: changedData.edit_passport_expiry_date || null,
+                        PlaceOfBirth: changedData.edit_birth_place || null,
+                        CityOfRegistration: changedData.edit_registration_city || null,
+                        AddressRegistration: changedData.edit_registration_address || null,
+                        AddressRegistrationIndex: changedData.edit_registration_zip || null
+                    },
+                    Visa: {
+                        InviteNumber: changedData.edit_invitation_number || null,
+                        ArrivalDate: changedData.edit_arrival_date || null,
+                        VisaId: changedData.edit_visa_id || null,
+                        VisaSeries: changedData.edit_visa_form_series || null,
+                        VisaNumber: changedData.edit_visa_number || null,
+                        VisaIssueDate: changedData.edit_visa_issue_date || null,
+                        VisaReceiptDate: changedData.edit_visa_receipt_date || null,
+                        VisaValidityDate: changedData.edit_visa_expiry_date || null
+                    },
+                    Student: {
+                        CompanyId: changedData.edit_company || null,
+                        ProfessionId: changedData.edit_profession || null,
+                        CuratorId: changedData.edit_curator || null
+                    }
+                };
 
-            if (response.ok) {
-                showSuccessMessage('Данные сотрудника успешно обновлены');
-                closeModalWrapper(editEmployeeModal);
-                loadStudents(currentPage, currentSearchFilter);
+                const response = await updateStudentsGroup(formData, Array.from(selectedStudentIds));
+
+                if (response.ok) {
+                    showSuccessMessage(`Успешно обновлено студентов: ${selectedStudentIds.size}`);
+                    
+                    // Удаляем трехпозиционные чекбоксы
+                    const checkboxIds = [
+                        'edit_payment_contribution',
+                        'edit_payment_contribution_year',
+                        'edit_card_ready',
+                        'edit_card_get'
+                    ];
+                    removeTriStateCheckboxes(checkboxIds);
+                    triStateControllers = null;
+                    
+                    closeModalWrapper(editEmployeeModal);
+                    isGroupEditMode = false;
+                    changedFields.clear();
+                    selectedStudentIds.clear();
+                    updateGroupEditButton();
+                    
+                    // Восстанавливаем заголовок
+                    const modalTitle = editEmployeeModal.querySelector('h3');
+                    if (modalTitle) {
+                        modalTitle.textContent = 'Редактирование сотрудника';
+                    }
+                    
+                    loadStudents(currentPage, currentSearchFilter);
+                } else {
+                    const errorText = await response.text();
+                    showErrorMessage(`Ошибка группового обновления: ${errorText}`);
+                }
             } else {
-                throw new Error('Ошибка при обновлении данных сотрудника');
+                // Обычное редактирование одного студента
+                const formData = {
+                    Contract: {
+                        NumberUVM: getValue('edit_uvm_contract_number'),
+                        Number3Party: getValue('edit_tripartite_contract_number'),
+                        Date3Party: getValue('edit_tripartite_contract_date'),
+                        Number2Party: getValue('edit_bipartite_contract_number'),
+                        Date2Party: getValue('edit_bipartite_contract_date'),
+                        GroupNumber: getValue('edit_group_number'),
+                        DateOfDispatch: getValue('edit_shipment_date'),
+                        MailCompany: getValue('edit_postal_company'),
+                        DateReturn: getValue('edit_return_date')
+                    },
+                    FinanceDoc: {
+                        PaymentOfContribution: document.getElementById('edit_payment_contribution')?.checked || false,
+                        PaymentOfContributionYear: document.getElementById('edit_payment_contribution_year')?.checked || false,
+                        CheckNumber: getValue('edit_receipt_number'),
+                        CheckDate: getValue('edit_receipt_date'),
+                        CardIsReady: document.getElementById('edit_card_ready')?.checked || false,
+                        CardIsGet: document.getElementById('edit_card_get')?.checked || false
+                    },
+                    PersonalData: {
+                        Surname: getValue('edit_surname'),
+                        Name: getValue('edit_name'),
+                        Patronymic: getValue('edit_patronymic'),
+                        SurnameEn: getValue('edit_surname_en'),
+                        NameEn: getValue('edit_name_en'),
+                        PatronymicEn: getValue('edit_patronymic_en'),
+                        Birthday: getValue('edit_birth_date'),
+                        PassportSeries: getValue('edit_passport_series'),
+                        PassportNumber: getValue('edit_passport_number'),
+                        PassportDateOfIssue: getValue('edit_passport_issue_date'),
+                        PassportDateEnd: getValue('edit_passport_expiry_date'),
+                        PlaceOfBirth: getValue('edit_birth_place'),
+                        CityOfRegistration: getValue('edit_registration_city'),
+                        AddressRegistration: getValue('edit_registration_address'),
+                        AddressRegistrationIndex: getValue('edit_registration_zip')
+                    },
+                    Visa: {
+                        InviteNumber: getValue('edit_invitation_number'),
+                        ArrivalDate: getValue('edit_arrival_date'),
+                        VisaId: getValue('edit_visa_id'),
+                        VisaSeries: getValue('edit_visa_form_series'),
+                        VisaNumber: getValue('edit_visa_number'),
+                        VisaIssueDate: getValue('edit_visa_issue_date'),
+                        VisaReceiptDate: getValue('edit_visa_receipt_date'),
+                        VisaValidityDate: getValue('edit_visa_expiry_date')
+                    },
+                    Student: {
+                        Id: currentStudentId,
+                        CompanyId: getValue('edit_company'),
+                        ProfessionId: getValue('edit_profession'),
+                        CuratorId: getValue('edit_curator')
+                    }
+                };
+
+                const response = await updateStudent(formData);
+                currentStudentId = null;
+
+                if (response.ok) {
+                    showSuccessMessage('Данные сотрудника успешно обновлены');
+                    closeModalWrapper(editEmployeeModal);
+                    loadStudents(currentPage, currentSearchFilter);
+                } else {
+                    const errorText = await response.text();
+                    showErrorMessage(`Ошибка при обновлении данных сотрудника: ${errorText}`);
+                }
             }
         } catch (error) {
             console.error('Ошибка:', error);
@@ -369,12 +674,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Обработка кликов по кнопкам в таблице (Редактировать, Удалить)
     studentsTableBody.addEventListener('click', async (e) => {
+        // Чекбоксы студентов
+        if (e.target.classList.contains('student-checkbox')) {
+            handleStudentCheckboxChange(e);
+            return;
+        }
+
         // Кнопка Редактировать
         const editButton = e.target.closest('.edit-employee-btn');
         if (editButton) {
             const studentId = editButton.dataset.studentId;
             console.log('Редактирование студента с ID:', studentId);
             currentStudentId = studentId;
+            
+            // Убедимся, что режим группового редактирования выключен
+            isGroupEditMode = false;
+            
+            // Удаляем трехпозиционные чекбоксы если они остались
+            if (triStateControllers) {
+                const checkboxIds = [
+                    'edit_payment_contribution',
+                    'edit_payment_contribution_year',
+                    'edit_card_ready',
+                    'edit_card_get'
+                ];
+                removeTriStateCheckboxes(checkboxIds);
+                triStateControllers = null;
+            }
+            
+            // Очищаем changedFields
+            changedFields.clear();
+            
+            // Восстанавливаем заголовок
+            const modalTitle = editEmployeeModal.querySelector('h3');
+            if (modalTitle) {
+                modalTitle.textContent = 'Редактирование сотрудника';
+            }
 
             try {
                 await loadStudentData(studentId);
@@ -395,6 +730,20 @@ document.addEventListener('DOMContentLoaded', () => {
             openModalWrapper(deleteModal);
         }
     });
+
+    // Обработчик чекбокса "Выделить все"
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', handleSelectAllChange);
+    }
+
+    // Обработчик кнопки "Редактировать выделенные"
+    if (editSelectedBtn) {
+        editSelectedBtn.addEventListener('click', openGroupEditForm);
+    }
+
+    // Отслеживание изменений в форме редактирования
+    editEmployeeForm.addEventListener('input', trackFormChanges);
+    editEmployeeForm.addEventListener('change', trackFormChanges);
 
     // Обработка подтверждения удаления
     confirmDeleteBtn.addEventListener('click', async () => {
@@ -438,8 +787,52 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Окно редактирования сотрудника
-    closeEditEmployeeModalBtn.addEventListener('click', () => closeModalWrapper(editEmployeeModal));
-    cancelEditEmployeeBtn.addEventListener('click', () => closeModalWrapper(editEmployeeModal));
+    closeEditEmployeeModalBtn.addEventListener('click', () => {
+        // Удаляем трехпозиционные чекбоксы если были активированы
+        if (triStateControllers) {
+            const checkboxIds = [
+                'edit_payment_contribution',
+                'edit_payment_contribution_year',
+                'edit_card_ready',
+                'edit_card_get'
+            ];
+            removeTriStateCheckboxes(checkboxIds);
+            triStateControllers = null;
+        }
+        
+        closeModalWrapper(editEmployeeModal);
+        isGroupEditMode = false;
+        changedFields.clear();
+        
+        // Восстанавливаем заголовок
+        const modalTitle = editEmployeeModal.querySelector('h3');
+        if (modalTitle) {
+            modalTitle.textContent = 'Редактирование сотрудника';
+        }
+    });
+    cancelEditEmployeeBtn.addEventListener('click', () => {
+        // Удаляем трехпозиционные чекбоксы если были активированы
+        if (triStateControllers) {
+            const checkboxIds = [
+                'edit_payment_contribution',
+                'edit_payment_contribution_year',
+                'edit_card_ready',
+                'edit_card_get'
+            ];
+            removeTriStateCheckboxes(checkboxIds);
+            triStateControllers = null;
+        }
+        
+        closeModalWrapper(editEmployeeModal);
+        isGroupEditMode = false;
+        changedFields.clear();
+        
+        // Восстанавливаем заголовок
+        const modalTitle = editEmployeeModal.querySelector('h3');
+        if (modalTitle) {
+            modalTitle.textContent = 'Редактирование сотрудника';
+        }
+    });
 
     // Окно удаления
     closeDeleteModalBtn.addEventListener('click', () => closeModalWrapper(deleteModal));

@@ -25,7 +25,7 @@ namespace studentServer.Entity
 
     public class ContractDTO
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string? NumberUVM { get; set; }
         public string? Number3Party { get; set; }
         public DateOnly? Date3Party { get; set; }

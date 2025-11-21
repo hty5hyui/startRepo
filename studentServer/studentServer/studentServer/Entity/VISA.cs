@@ -24,7 +24,7 @@ namespace studentServer.Entity
 
     public class VISADTO
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string? InviteNumber { get; set; }
         public DateOnly? ArrivalDate { get; set; }
         public string? VisaId { get; set; }

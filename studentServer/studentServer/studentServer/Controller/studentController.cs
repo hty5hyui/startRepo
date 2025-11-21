@@ -59,8 +59,6 @@ namespace studentServer.Controller
         [HttpPatch]
         public async Task<IActionResult> PatchStudents([FromBody] StudentDataDTO newStudentsData)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(newStudentsData));
-
             try
             {
                 await studentsService.patchStudentsAsync(newStudentsData);
@@ -72,6 +70,22 @@ namespace studentServer.Controller
             $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
             }
         }
+
+        [HttpPatch("group")]
+        public async Task<IActionResult> PatchGroupStudents([FromBody] StudentGroupDataDTO newStudentsData)
+        {
+            try
+            {
+                await studentsService.patchGroupStudentsAsync(newStudentsData);
+                return StatusCode(StatusCodes.Status200OK);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+            $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
+            }
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> AddStudents([FromQuery] int count, [FromBody] StudentDataDTO newStudentData)

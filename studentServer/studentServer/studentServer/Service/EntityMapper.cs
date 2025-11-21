@@ -17,7 +17,7 @@ namespace studentServer.Service
 
             return new Student
             {
-                Id = studentDTO.Id,
+                Id = studentDTO.Id == null ? 0 : (int)studentDTO.Id,
                 CompanyId = studentDTO.CompanyId,
                 ProfessionId = studentDTO.ProfessionId,
                 CuratorId = studentDTO.CuratorId
@@ -61,7 +61,7 @@ namespace studentServer.Service
 
             return new Contract
             {
-                Id = contractDTO.Id,
+                Id = contractDTO.Id == null ? 0 : (int)contractDTO.Id,
                 NumberUVM = contractDTO.NumberUVM,
                 Number3Party = contractDTO.Number3Party,
                 Date3Party = contractDTO.Date3Party,
@@ -105,7 +105,7 @@ namespace studentServer.Service
 
             return new PersonalData
             {
-                Id = personalDataDTO.Id,
+                Id = personalDataDTO.Id == null ? 0 : (int)personalDataDTO.Id,
                 Surname = personalDataDTO.Surname,
                 Name = personalDataDTO.Name,
                 Patronymic = personalDataDTO.Patronymic,
@@ -146,7 +146,7 @@ namespace studentServer.Service
 
             return new FinanceDoc
             {
-                Id = financeDocDTO.Id,
+                Id = financeDocDTO.Id == null ? 0 : (int)financeDocDTO.Id,
                 PaymentOfContribution = financeDocDTO.PaymentOfContribution,
                 PaymentOfContributionYear = financeDocDTO.PaymentOfContributionYear,
                 CheckNumber = financeDocDTO.CheckNumber,
@@ -179,7 +179,7 @@ namespace studentServer.Service
 
             return new VISA
             {
-                Id = visaDTO.Id,
+                Id = visaDTO.Id == null ? 0 : (int)visaDTO.Id,
                 InviteNumber = visaDTO.InviteNumber,
                 ArrivalDate = visaDTO.ArrivalDate,
                 VisaId = visaDTO.VisaId,
@@ -211,6 +211,20 @@ namespace studentServer.Service
                 Id = professionDTO.Id,
                 ProfessionName = professionDTO.ProfessionName,
                 ProfessionNumber = professionDTO.ProfessionNumber
+            };
+        }
+        //----------------------------------------------------------------------------------------------------
+        public static StudentDataDTO ToStudentDataDTO(StudentGroupDataDTO data)
+        {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+
+            return new StudentDataDTO
+            {
+                student = data.student,
+                contract = data.contract,
+                financeDoc = data.financeDoc,
+                personalData = data.personalData,
+                visa = data.visa
             };
         }
         //----------------------------------------------------------------------------------------------------

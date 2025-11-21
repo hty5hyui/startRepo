@@ -4,9 +4,19 @@ using System.Text.Json.Serialization;
 
 namespace studentServer.Entity
 {
+    public class StudentGroupDataDTO
+    {
+        public List<int> idList { get; set; }
+        public StudentDTO student { get; set; } = new StudentDTO();
+        public ContractDTO contract { get; set; } = new ContractDTO();
+        public FinanceDocDTO financeDoc { get; set; } = new FinanceDocDTO();
+        public PersonalDataDTO personalData { get; set; } = new PersonalDataDTO();
+        public VISADTO visa { get; set; } = new VISADTO();
+    }
+
     public class StudentDataDTO
     {
-        public StudentDTO student{ get; set; } = new StudentDTO();
+        public StudentDTO student { get; set; } = new StudentDTO();
         public ContractDTO contract { get; set; } = new ContractDTO();
         public FinanceDocDTO financeDoc { get; set; } = new FinanceDocDTO();
         public PersonalDataDTO personalData { get; set; } = new PersonalDataDTO();
@@ -59,7 +69,7 @@ namespace studentServer.Entity
 
     public class StudentDTO
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int? CompanyId { get; set; }
         public int? ProfessionId { get; set; }
         public int? CuratorId { get; set; }
