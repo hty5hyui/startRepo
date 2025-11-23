@@ -1,6 +1,10 @@
-﻿namespace studentServer.Controller
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace studentServer.Controller
 {
-    public class documentEditorController
+    [ApiController]
+    [Route("[controller]")]
+    public class documentEditorController: ControllerBase
     {
     }
 }
