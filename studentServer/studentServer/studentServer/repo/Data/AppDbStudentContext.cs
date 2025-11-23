@@ -14,6 +14,8 @@ namespace studentServer.repo.Data
         public DbSet<Company> Company { get; set; }
         public DbSet<Curator> Curator { get; set; }
 
+        public DbSet<DocumentTemplate> DocumentTemplate { get; set; }
+
         public AppDbStudentContext(DbContextOptions options) : base(options)
         {
             Database.EnsureCreated();

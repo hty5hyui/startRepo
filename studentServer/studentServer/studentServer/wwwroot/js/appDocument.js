@@ -1,0 +1,238 @@
+/**
+ * Главный файл приложения для работы с шаблонами документов
+ */
+
+import {
+    openModal,
+    closeModal,
+    showSuccessMessage,
+    showErrorMessage,
+    disableButton,
+    enableButton,
+    getValue,
+    clearForm
+} from './utils.js';
+
+import {
+    loadDocumentTemplates,
+    loadDocumentTemplatePdf,
+    uploadDocumentTemplate,
+    deleteDocumentTemplate
+} from './apiDocument.js';
+
+import { AuthModal } from './auth.js';
+
+// Инициализация приложения после загрузки DOM
+document.addEventListener('DOMContentLoaded', () => {
+    // Инициализация модального окна авторизации
+    new AuthModal();
+
+    // --- Переменные состояния ---
+    const mainContent = document.querySelector('main');
+    const header = document.querySelector('header');
+
+    // --- Поиск DOM-элементов ---
+
+    // Модальное окно добавления шаблона
+    const addTemplateBtn = document.getElementById('addTemplateBtn');
+    const addTemplateModal = document.getElementById('addTemplateModal');
+    const closeAddTemplateModalBtn = document.getElementById('closeAddTemplateModal');
+    const cancelAddTemplateBtn = document.getElementById('cancelAddTemplateBtn');
+    const addTemplateForm = document.getElementById('addTemplateForm');
+    const submitAddTemplateBtn = document.getElementById('submitAddTemplateBtn');
+
+    // Таблица
+    const templatesTableBody = document.getElementById('templatesTableBody');
+
+    // --- Обертки для функций с правильными параметрами ---
+    const openModalWrapper = (modalElement) => openModal(modalElement, mainContent, header);
+    const closeModalWrapper = (modalElement) => closeModal(modalElement, mainContent, header);
+
+    /**
+     * Форматирует дату для отображения
+     * @param {string} dateString - строка даты в формате ISO
+     * @returns {string} отформатированная дата
+     */
+    function formatDate(dateString) {
+        if (!dateString) return '-';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ru-RU', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+
+    /**
+     * Отображает шаблоны документов в таблице
+     * @param {Array} templates - массив шаблонов
+     */
+    function renderTemplates(templates) {
+        if (!templates || templates.length === 0) {
+            templatesTableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">Нет шаблонов документов</td>
+                </tr>
+            `;
+            return;
+        }
+
+        templatesTableBody.innerHTML = templates.map((template, index) => `
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${index + 1}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${template.documentName || '-'}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(template.createdAt)}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button class="view-template-btn text-teal-600 hover:text-teal-900 mr-4" data-template-id="${template.id}" title="Просмотреть">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="delete-template-btn text-red-600 hover:text-red-900" data-template-id="${template.id}" title="Удалить">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    /**
+     * Загружает и отображает список шаблонов
+     */
+    async function loadTemplates() {
+        try {
+            templatesTableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">Загрузка...</td>
+                </tr>
+            `;
+
+            const templates = await loadDocumentTemplates(1);
+            renderTemplates(templates);
+        } catch (error) {
+            console.error('Ошибка загрузки шаблонов:', error);
+            showErrorMessage('Ошибка загрузки шаблонов документов');
+            templatesTableBody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="px-6 py-4 text-center text-red-500">Ошибка загрузки данных</td>
+                </tr>
+            `;
+        }
+    }
+
+    /**
+     * Открывает PDF файл шаблона в новой вкладке
+     * @param {number} templateId - ID шаблона
+     */
+    async function viewTemplate(templateId) {
+        try {
+            const blob = await loadDocumentTemplatePdf(templateId);
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+            // Освобождаем память после загрузки
+            setTimeout(() => window.URL.revokeObjectURL(url), 100);
+        } catch (error) {
+            console.error('Ошибка загрузки PDF:', error);
+            showErrorMessage('Ошибка загрузки PDF файла');
+        }
+    }
+
+    /**
+     * Обработчик удаления шаблона (заглушка)
+     * @param {number} templateId - ID шаблона
+     */
+    async function handleDeleteTemplate(templateId) {
+        // Заглушка - пока не реализовано
+        console.log('Удаление шаблона с ID:', templateId);
+        showSuccessMessage('Функция удаления будет реализована позже');
+    }
+
+    // --- Обработчики событий ---
+
+    // Обработка формы добавления шаблона
+    addTemplateForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        disableButton(submitAddTemplateBtn, 'Загрузка...');
+
+        const templateName = getValue('templateName');
+        const fileInput = document.getElementById('templateFile');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            showErrorMessage('Пожалуйста, выберите файл');
+            enableButton(submitAddTemplateBtn);
+            return;
+        }
+
+        // Проверка расширения файла
+        const fileName = file.name.toLowerCase();
+        if (!fileName.endsWith('.doc') && !fileName.endsWith('.docx')) {
+            showErrorMessage('Файл должен быть формата .doc или .docx');
+            enableButton(submitAddTemplateBtn);
+            return;
+        }
+
+        try {
+            const response = await uploadDocumentTemplate(file, templateName);
+
+            if (response.ok) {
+                showSuccessMessage('Шаблон успешно загружен');
+                closeModalWrapper(addTemplateModal);
+                clearForm(addTemplateForm);
+                loadTemplates();
+            } else {
+                const errorText = await response.text();
+                showErrorMessage(`Ошибка при загрузке шаблона: ${errorText}`);
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            showErrorMessage('Произошла ошибка при загрузке шаблона');
+        } finally {
+            enableButton(submitAddTemplateBtn);
+        }
+    });
+
+    // Обработка кликов по кнопкам в таблице
+    templatesTableBody.addEventListener('click', async (e) => {
+        // Кнопка Просмотреть
+        const viewButton = e.target.closest('.view-template-btn');
+        if (viewButton) {
+            const templateId = parseInt(viewButton.dataset.templateId);
+            await viewTemplate(templateId);
+            return;
+        }
+
+        // Кнопка Удалить
+        const deleteButton = e.target.closest('.delete-template-btn');
+        if (deleteButton) {
+            const templateId = parseInt(deleteButton.dataset.templateId);
+            await handleDeleteTemplate(templateId);
+            return;
+        }
+    });
+
+    // --- Инициализация модальных окон ---
+
+    // Окно добавления шаблона
+    addTemplateBtn.addEventListener('click', () => openModalWrapper(addTemplateModal));
+    closeAddTemplateModalBtn.addEventListener('click', () => {
+        closeModalWrapper(addTemplateModal);
+        clearForm(addTemplateForm);
+    });
+    cancelAddTemplateBtn.addEventListener('click', () => {
+        closeModalWrapper(addTemplateModal);
+        clearForm(addTemplateForm);
+    });
+
+    // Закрытие модального окна добавления шаблона по клику на фон
+    window.addEventListener('click', (e) => {
+        if (e.target === addTemplateModal) {
+            closeModalWrapper(addTemplateModal);
+            clearForm(addTemplateForm);
+        }
+    });
+
+    // --- Первичная загрузка данных ---
+    loadTemplates();
+});
+
