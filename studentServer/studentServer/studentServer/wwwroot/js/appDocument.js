@@ -10,14 +10,16 @@ import {
     disableButton,
     enableButton,
     getValue,
-    clearForm
+    clearForm,
+    createDeleteModal
 } from './utils.js';
 
 import {
     loadDocumentTemplates,
     loadDocumentTemplatePdf,
     uploadDocumentTemplate,
-    deleteDocumentTemplate
+    deleteDocumentTemplate,
+    downloadDocumentTemplate
 } from './apiDocument.js';
 
 import { AuthModal } from './auth.js';
@@ -30,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Переменные состояния ---
     const mainContent = document.querySelector('main');
     const header = document.querySelector('header');
+    let currentTemplateIdToDelete = null;
 
     // --- Поиск DOM-элементов ---
 
@@ -40,6 +43,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelAddTemplateBtn = document.getElementById('cancelAddTemplateBtn');
     const addTemplateForm = document.getElementById('addTemplateForm');
     const submitAddTemplateBtn = document.getElementById('submitAddTemplateBtn');
+
+    // Модальное окно удаления
+    const deleteModal = createDeleteModal();
+    // Обновляем текст сообщения для шаблонов документов
+    const deleteModalMessage = deleteModal.querySelector('.mb-6 p');
+    if (deleteModalMessage) {
+        deleteModalMessage.textContent = 'Вы уверены, что хотите удалить этот шаблон документа? Это действие нельзя отменить.';
+    }
+    const closeDeleteModalBtn = deleteModal.querySelector('#closeDeleteModal');
+    const cancelDeleteBtn = deleteModal.querySelector('#cancelDelete');
+    const confirmDeleteBtn = deleteModal.querySelector('#confirmDelete');
 
     // Таблица
     const templatesTableBody = document.getElementById('templatesTableBody');
@@ -85,6 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${template.documentName || '-'}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(template.createdAt)}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button class="download-template-btn text-blue-600 hover:text-blue-900 mr-4" data-template-id="${template.id}" title="Скачать">
+                        <i class="fas fa-download"></i>
+                    </button>
                     <button class="view-template-btn text-teal-600 hover:text-teal-900 mr-4" data-template-id="${template.id}" title="Просмотреть">
                         <i class="fas fa-eye"></i>
                     </button>
@@ -138,13 +155,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Обработчик удаления шаблона (заглушка)
+     * Обработчик скачивания шаблона
      * @param {number} templateId - ID шаблона
      */
-    async function handleDeleteTemplate(templateId) {
-        // Заглушка - пока не реализовано
-        console.log('Удаление шаблона с ID:', templateId);
-        showSuccessMessage('Функция удаления будет реализована позже');
+    async function handleDownloadTemplate(templateId) {
+        try {
+            await downloadDocumentTemplate(templateId);
+            showSuccessMessage('Файл успешно скачан');
+        } catch (error) {
+            console.error('Ошибка скачивания:', error);
+            if (error.message === 'NotFound') {
+                showErrorMessage('Файл не найден');
+            } else {
+                showErrorMessage('Ошибка при скачивании файла');
+            }
+        }
+    }
+
+    /**
+     * Обработчик удаления шаблона
+     * @param {number} templateId - ID шаблона
+     */
+    function handleDeleteTemplate(templateId) {
+        currentTemplateIdToDelete = templateId;
+        openModalWrapper(deleteModal);
     }
 
     // --- Обработчики событий ---
@@ -194,6 +228,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Обработка кликов по кнопкам в таблице
     templatesTableBody.addEventListener('click', async (e) => {
+        // Кнопка Скачать
+        const downloadButton = e.target.closest('.download-template-btn');
+        if (downloadButton) {
+            const templateId = parseInt(downloadButton.dataset.templateId);
+            await handleDownloadTemplate(templateId);
+            return;
+        }
+
         // Кнопка Просмотреть
         const viewButton = e.target.closest('.view-template-btn');
         if (viewButton) {
@@ -206,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deleteButton = e.target.closest('.delete-template-btn');
         if (deleteButton) {
             const templateId = parseInt(deleteButton.dataset.templateId);
-            await handleDeleteTemplate(templateId);
+            handleDeleteTemplate(templateId);
             return;
         }
     });
@@ -229,6 +271,51 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === addTemplateModal) {
             closeModalWrapper(addTemplateModal);
             clearForm(addTemplateForm);
+        }
+    });
+
+    // Обработка подтверждения удаления
+    confirmDeleteBtn.addEventListener('click', async () => {
+        if (!currentTemplateIdToDelete) return;
+
+        try {
+            const response = await deleteDocumentTemplate(currentTemplateIdToDelete);
+
+            if (response.ok) {
+                showSuccessMessage('Шаблон успешно удален');
+                loadTemplates(); // Обновляем список шаблонов
+                closeModalWrapper(deleteModal);
+            } else {
+                if (response.status === 404) {
+                    showErrorMessage('Шаблон не найден');
+                } else {
+                    const errorText = await response.text();
+                    showErrorMessage(`Ошибка при удалении шаблона: ${errorText || 'Неизвестная ошибка'}`);
+                }
+            }
+        } catch (error) {
+            console.error('Ошибка удаления:', error);
+            showErrorMessage('Произошла ошибка при удалении шаблона');
+        } finally {
+            currentTemplateIdToDelete = null;
+        }
+    });
+
+    // Окно удаления
+    closeDeleteModalBtn.addEventListener('click', () => {
+        closeModalWrapper(deleteModal);
+        currentTemplateIdToDelete = null;
+    });
+    cancelDeleteBtn.addEventListener('click', () => {
+        closeModalWrapper(deleteModal);
+        currentTemplateIdToDelete = null;
+    });
+
+    // Закрытие модального окна удаления по клику на фон
+    window.addEventListener('click', (e) => {
+        if (e.target === deleteModal) {
+            closeModalWrapper(deleteModal);
+            currentTemplateIdToDelete = null;
         }
     });
 

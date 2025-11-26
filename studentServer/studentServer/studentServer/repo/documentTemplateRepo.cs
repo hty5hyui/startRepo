@@ -37,5 +37,11 @@ namespace studentServer.repo
                                                                               .ToListAsync();
             return documentTemplatesPreview;
         }
+
+        internal async Task DeleteDocumentTemplateAsync(DocumentTemplate template)
+        {
+            _dbContext.Remove(template);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

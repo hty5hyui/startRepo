@@ -7,7 +7,7 @@ namespace studentServer.Service
 {
     public class documentTemplateCRUD(documentTemplateRepo repository)
     {
-        public async Task UploadDocumentTemplateAsync(IFormFile file, string templateName)
+        internal async Task UploadDocumentTemplateAsync(IFormFile file, string templateName)
         {
 
             DocumentTemplate template;
@@ -28,30 +28,43 @@ namespace studentServer.Service
             await repository.UploadDocumentTemplateAsync(template);
         }
 
-        public async Task<byte[]> GetDocumentTemplateByIdAsync(int id)
+        internal async Task<byte[]> GetDocumentTemplatePDFByIdAsync(int id)
         {
             DocumentTemplate template = await repository.GetDocumentTemplateByIdAsync(id);
 
             using (var inputStream = new MemoryStream(template.Content))
             {
-                // 3. Загружаем документ в Aspose
-                // (Библиотека сама определит, что это .docx)
+                //Загружаем документ в Aspose
+                //(Библиотека сама определит, что это .docx)
                 Document doc = new Document(inputStream);
 
-                // 4. Готовим поток для результата (PDF)
+                //Готовим поток для результата (PDF)
                 using (MemoryStream outputStream = new MemoryStream())
                 {
                     // Сохраняем документ как PDF в выходной поток
                     doc.Save(outputStream, SaveFormat.Pdf);
-                    
+
                     return outputStream.ToArray();
                 }
             }
         }
 
-        public async Task<List<DocumentTemplate>> GetAllPreviewDocumentTemplateAsync(int page)
+        internal async Task<DocumentTemplate> GetDocumentTemplateByIdAsync(int id)
+        {
+            DocumentTemplate template = await repository.GetDocumentTemplateByIdAsync(id);
+            return template;
+
+        }
+
+        internal async Task<List<DocumentTemplate>> GetAllPreviewDocumentTemplateAsync(int page)
         {
             return await repository.GetAllPreviewDocumentTemplateAsync(page);
+        }
+
+        internal async Task DeleteDocumentTemplateAsync(int id)
+        {
+            DocumentTemplate template = new DocumentTemplate { Id = id };
+            await repository.DeleteDocumentTemplateAsync(template);
         }
     }
 }

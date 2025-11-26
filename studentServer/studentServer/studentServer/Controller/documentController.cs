@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using studentServer.Entity;
 using studentServer.Service;
 
@@ -36,7 +37,7 @@ namespace studentServer.Controller
         {
             try
             {
-                byte[] pdfBytes =  await documentService.GetDocumentTemplateByIdAsync(id);
+                byte[] pdfBytes =  await documentService.GetDocumentTemplatePDFByIdAsync(id);
                 return File(pdfBytes, "application/pdf");
             }
             catch (Exception ex)
@@ -46,6 +47,38 @@ namespace studentServer.Controller
             }
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteDocumentTemplateById([FromQuery] int id)
+        {
+            try
+            {
+                await documentService.DeleteDocumentTemplateAsync(id);
+                return StatusCode(StatusCodes.Status200OK);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+           $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
+            }
+        }
+
+
+        [HttpGet("download")]
+        public async Task<IActionResult> DownloadDocumentTemplateById([FromQuery] int id)
+        {
+            try
+            {
+                DocumentTemplate template = await documentService.GetDocumentTemplateByIdAsync(id);
+                if(template.Content == null) return NotFound("Шаблон не найден");
+                Console.WriteLine(template.DocumentName);
+                return File(template.Content, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", template.DocumentName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+           $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
+            }
+        }
 
         [HttpGet("all")]
         public async Task<IActionResult> GetDocumentTemplatePreview([FromQuery] int page)
