@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using studentServer.Entity;
-using studentServer.Service;
+using studentServer.Entity.DBEntity;
+using studentServer.Service.CRUD;
+using Syncfusion.DocIO.DLS;
 
 namespace studentServer.Controller
 {
@@ -37,7 +38,7 @@ namespace studentServer.Controller
         {
             try
             {
-                byte[] pdfBytes =  await documentService.GetDocumentTemplatePDFByIdAsync(id);
+                byte[] pdfBytes =  await documentService.GetDocumentTemplatePDFByIdAsync(id);   
                 return File(pdfBytes, "application/pdf");
             }
             catch (Exception ex)

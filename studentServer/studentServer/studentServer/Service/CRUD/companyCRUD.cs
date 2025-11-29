@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using studentServer.Entity;
+using studentServer.Entity.DBEntity;
 using studentServer.repo;
 using studentServer.TempService;
 
-namespace studentServer.Service
+namespace studentServer.Service.CRUD
 {
     public class companyCRUD(companyRepo repository)
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using studentServer.Entity;
-using studentServer.Service;
+using studentServer.Entity.DBEntity;
+using studentServer.Service.CRUD;
 
 namespace studentServer.Controller
 {

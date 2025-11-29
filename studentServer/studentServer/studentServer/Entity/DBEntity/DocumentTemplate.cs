@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace studentServer.Entity
+namespace studentServer.Entity.DBEntity
 {
     public class DocumentTemplate
     {
         [Key]
-        public int Id { get; set;}
+        public int Id { get; set; }
         [Required]
         public string DocumentName { get; set; }
 

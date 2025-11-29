@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace studentServer.Entity
+namespace studentServer.Entity.DBEntity
 {
     [Table("Company")]
     public class Company

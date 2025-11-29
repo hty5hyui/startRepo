@@ -1,4 +1,4 @@
-﻿using studentServer.Entity;
+﻿using studentServer.Entity.DBEntity;
 
 namespace studentServer.Service
 {

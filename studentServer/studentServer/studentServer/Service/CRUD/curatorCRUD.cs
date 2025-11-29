@@ -1,7 +1,7 @@
-﻿using studentServer.Entity;
+﻿using studentServer.Entity.DBEntity;
 using studentServer.repo;
 
-namespace studentServer.Service
+namespace studentServer.Service.CRUD
 {
     public class curatorCRUD(curatorRepo repository)
     {
@@ -10,7 +10,7 @@ namespace studentServer.Service
             return await repository.GetAllCuratorAsync();
         }
 
-        public async Task<String> GetCuratorDataAsync(int idCurator)
+        public async Task<string> GetCuratorDataAsync(int idCurator)
         {
             return await repository.GetCuratorByIdAsync(idCurator);
         }

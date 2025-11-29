@@ -1,9 +1,10 @@
-﻿using Aspose.Words;
-using Microsoft.EntityFrameworkCore;
-using studentServer.Entity;
+﻿using System.IO.Pipelines;
+using Aspose.Words;
+using studentServer.Entity.DBEntity;
 using studentServer.repo;
+using studentServer.Service.FileOperation;
 
-namespace studentServer.Service
+namespace studentServer.Service.CRUD
 {
     public class documentTemplateCRUD(documentTemplateRepo repository)
     {
@@ -32,21 +33,11 @@ namespace studentServer.Service
         {
             DocumentTemplate template = await repository.GetDocumentTemplateByIdAsync(id);
 
-            using (var inputStream = new MemoryStream(template.Content))
+            return await Task.Run(() =>
             {
-                //Загружаем документ в Aspose
-                //(Библиотека сама определит, что это .docx)
-                Document doc = new Document(inputStream);
-
-                //Готовим поток для результата (PDF)
-                using (MemoryStream outputStream = new MemoryStream())
-                {
-                    // Сохраняем документ как PDF в выходной поток
-                    doc.Save(outputStream, SaveFormat.Pdf);
-
-                    return outputStream.ToArray();
-                }
-            }
+                byte[] replaceWord = WordReplacer.PlaceholderReplace(template.Content);
+                return ConvertFileService.ConvertWordToPDF(replaceWord);
+            });
         }
 
         internal async Task<DocumentTemplate> GetDocumentTemplateByIdAsync(int id)

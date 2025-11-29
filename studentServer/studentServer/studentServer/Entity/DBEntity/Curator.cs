@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace studentServer.Entity
+namespace studentServer.Entity.DBEntity
 {
     [Table("Curator")]
     public class Curator

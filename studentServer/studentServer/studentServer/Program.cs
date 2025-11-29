@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 using studentServer.Controller;
 using studentServer.repo;
 using studentServer.repo.Data;
-using studentServer.Service;
+using studentServer.Service.CRUD;
 using studentServer.TempService;
 
 var builder = WebApplication.CreateBuilder(args);

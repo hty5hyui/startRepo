@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using studentServer.Entity;
+using studentServer.Entity.DBEntity;
 using studentServer.repo;
 
-namespace studentServer.Service
+namespace studentServer.Service.CRUD
 {
     public class studentsCRUD(studentRepo repository)
     {
@@ -14,7 +15,7 @@ namespace studentServer.Service
 
             if (pageQuery.searchFilter == null)
             {
-                studentPreviewPageData =  await repository.GetStudentPreviewAsync(pageQuery.page);
+                studentPreviewPageData = await repository.GetStudentPreviewAsync(pageQuery.page);
             }
             else
             {
@@ -33,14 +34,14 @@ namespace studentServer.Service
         {
             foreach (var id in idCompany)
             {
-                Student student = new Student{Id = id};
+                Student student = new Student { Id = id };
                 await repository.DeleteStudentAsync(student);
             }
         }
 
         public async Task patchStudentsAsync(StudentDataDTO newStudentsData)
         {
-           await repository.UpdateStudentAsync(newStudentsData);
+            await repository.UpdateStudentAsync(newStudentsData);
         }
 
         public async Task patchGroupStudentsAsync(StudentGroupDataDTO newStudentsData)
@@ -70,7 +71,7 @@ namespace studentServer.Service
             for (int i = 0; i < count; i++)
             {
                 await repository.AddStudentAsync(newStudentData);
-            }   
-        }       
+            }
+        }
     }
 }

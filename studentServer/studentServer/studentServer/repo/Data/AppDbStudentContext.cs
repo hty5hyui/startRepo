@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using studentServer.Entity;
+using studentServer.Entity.DBEntity;
 
 namespace studentServer.repo.Data
 {

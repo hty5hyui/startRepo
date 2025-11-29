@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace studentServer.Entity
+namespace studentServer.Entity.DBEntity
 {
     public class StudentGroupDataDTO
     {

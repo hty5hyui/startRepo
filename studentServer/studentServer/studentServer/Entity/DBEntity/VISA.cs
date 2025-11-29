@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace studentServer.Entity
+namespace studentServer.Entity.DBEntity
 {
     [Table("VISA")]
     public class VISA

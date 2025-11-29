@@ -1,7 +1,7 @@
-﻿using studentServer.Entity;
+﻿using studentServer.Entity.DBEntity;
 using studentServer.repo;
 
-namespace studentServer.Service
+namespace studentServer.Service.CRUD
 {
     public class professionCRUD(professionRepo repository)
     {

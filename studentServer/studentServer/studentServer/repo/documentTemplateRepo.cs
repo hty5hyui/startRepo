@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using studentServer.Entity;
+using studentServer.Entity.DBEntity;
 using studentServer.repo.Data;
 using System.Linq;
 

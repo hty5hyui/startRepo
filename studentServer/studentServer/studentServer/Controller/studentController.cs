@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using studentServer.Entity;
+using studentServer.Entity.DBEntity;
 using studentServer.repo;
-using studentServer.Service;
+using studentServer.Service.CRUD;
 
 namespace studentServer.Controller
 {
