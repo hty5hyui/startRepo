@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.querySelector('main');
     const header = document.querySelector('header');
     let currentTemplateIdToDelete = null;
+    let currentPage = 1;
+    let pageCount = 1;
+    let currentSearchFilter = null;
 
     // --- Поиск DOM-элементов ---
 
@@ -57,6 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Таблица
     const templatesTableBody = document.getElementById('templatesTableBody');
+    const paginationContainer = document.getElementById('paginationContainer');
+
+    // Поиск
+    const searchInput = document.getElementById('searchInput');
+    const searchBtn = document.getElementById('searchBtn');
 
     // --- Обертки для функций с правильными параметрами ---
     const openModalWrapper = (modalElement) => openModal(modalElement, mainContent, header);
@@ -114,18 +122,79 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Загружает и отображает список шаблонов
+     * Рендерит пагинацию
+     * @param {number} currentPage - текущая страница
+     * @param {number} pageCount - общее количество страниц
+     * @param {Function} onPageChange - функция обработки изменения страницы
      */
-    async function loadTemplates() {
+    function renderPagination(currentPage, pageCount, onPageChange) {
+        if (!paginationContainer) return;
+
+        paginationContainer.innerHTML = `
+            <div class="flex items-center justify-between px-6 py-3 bg-teal-50">
+                <div class="flex items-center space-x-2">
+                    <button 
+                        id="prevPageBtn" 
+                        class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}"
+                        ${currentPage === 1 ? 'disabled' : ''}
+                    >
+                        Назад
+                    </button>
+                    <span class="px-4 py-2 text-sm font-medium text-gray-700">
+                        Страница ${currentPage} из ${pageCount}
+                    </span>
+                    <button 
+                        id="nextPageBtn" 
+                        class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50 ${currentPage === pageCount ? 'opacity-50 cursor-not-allowed' : ''}"
+                        ${currentPage === pageCount ? 'disabled' : ''}
+                    >
+                        Вперед
+                    </button>
+                </div>
+            </div>
+        `;
+
+        const prevBtn = paginationContainer.querySelector('#prevPageBtn');
+        const nextBtn = paginationContainer.querySelector('#nextPageBtn');
+
+        if (prevBtn && currentPage > 1) {
+            prevBtn.addEventListener('click', () => onPageChange(currentPage - 1));
+        }
+
+        if (nextBtn && currentPage < pageCount) {
+            nextBtn.addEventListener('click', () => onPageChange(currentPage + 1));
+        }
+    }
+
+    /**
+     * Обработчик изменения страницы
+     * @param {number} page - номер страницы
+     */
+    function handlePageChange(page) {
+        loadTemplates(page, currentSearchFilter);
+    }
+
+    /**
+     * Загружает и отображает список шаблонов
+     * @param {number} page - номер страницы
+     * @param {Array|null} searchFilter - фильтр поиска (опционально)
+     */
+    async function loadTemplates(page = 1, searchFilter = null) {
         try {
+            currentPage = page;
+            currentSearchFilter = searchFilter;
             templatesTableBody.innerHTML = `
                 <tr>
                     <td colspan="4" class="px-6 py-4 text-center text-gray-500">Загрузка...</td>
                 </tr>
             `;
 
-            const templates = await loadDocumentTemplates(1);
+            const result = await loadDocumentTemplates(page, searchFilter);
+            pageCount = result.pageCount || 1;
+            const templates = result.documentTemplatePreview || [];
+            
             renderTemplates(templates);
+            renderPagination(currentPage, pageCount, handlePageChange);
         } catch (error) {
             console.error('Ошибка загрузки шаблонов:', error);
             showErrorMessage('Ошибка загрузки шаблонов документов');
@@ -135,6 +204,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             `;
         }
+    }
+
+    /**
+     * Выполняет поиск шаблонов
+     */
+    function performSearch() {
+        const searchText = searchInput.value.trim();
+        
+        if (searchText === '') {
+            // Если поле пустое, очищаем фильтр и загружаем все шаблоны
+            currentSearchFilter = null;
+            loadTemplates(1, null);
+            return;
+        }
+
+        // Создаем фильтр поиска
+        const searchFilter = [
+            {
+                FieldName: "DocumentName",
+                MatchMode: "Contains",
+                Value: searchText
+            }
+        ];
+
+        // Сбрасываем на первую страницу при новом поиске
+        loadTemplates(1, searchFilter);
     }
 
     /**
@@ -213,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showSuccessMessage('Шаблон успешно загружен');
                 closeModalWrapper(addTemplateModal);
                 clearForm(addTemplateForm);
-                loadTemplates();
+                loadTemplates(currentPage, currentSearchFilter);
             } else {
                 const errorText = await response.text();
                 showErrorMessage(`Ошибка при загрузке шаблона: ${errorText}`);
@@ -283,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 showSuccessMessage('Шаблон успешно удален');
-                loadTemplates(); // Обновляем список шаблонов
+                loadTemplates(currentPage, currentSearchFilter); // Обновляем список шаблонов
                 closeModalWrapper(deleteModal);
             } else {
                 if (response.status === 404) {
@@ -319,7 +414,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- Обработчики поиска ---
+    
+    // Обработчик кнопки поиска
+    if (searchBtn) {
+        searchBtn.addEventListener('click', performSearch);
+    }
+
+    // Обработчик нажатия Enter в поле поиска
+    if (searchInput) {
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+
     // --- Первичная загрузка данных ---
-    loadTemplates();
+    loadTemplates(1, null);
 });
 

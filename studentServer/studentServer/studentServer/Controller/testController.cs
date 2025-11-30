@@ -1,19 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using studentServer.Service;
-using studentServer.TempService;
 
 namespace studentServer.Controller
 {
     [ApiController]
     [Route("[controller]")]
-    public class testController(RandomDataSetInBase testBase) : ControllerBase
+    public class testController: ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> TEST()
         {
             try
             {
-                testBase.setInBaseCompany();
                 return StatusCode(StatusCodes.Status200OK);
             }
             catch (Exception ex)

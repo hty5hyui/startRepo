@@ -1,5 +1,6 @@
 ﻿using System.IO.Pipelines;
 using Aspose.Words;
+using studentServer.Entity;
 using studentServer.Entity.DBEntity;
 using studentServer.repo;
 using studentServer.Service.FileOperation;
@@ -47,9 +48,20 @@ namespace studentServer.Service.CRUD
 
         }
 
-        internal async Task<List<DocumentTemplate>> GetAllPreviewDocumentTemplateAsync(int page)
+        internal async Task<DocumentTemplatePreviewPageData> GetAllPreviewDocumentTemplateAsync(PageSearchEntity pageQuery)
         {
-            return await repository.GetAllPreviewDocumentTemplateAsync(page);
+            DocumentTemplatePreviewPageData documentTemplatePreviewPageData = new DocumentTemplatePreviewPageData();
+
+            if (pageQuery.searchFilter == null)
+            {
+                documentTemplatePreviewPageData = await repository.GetAllPreviewDocumentTemplateAsync(pageQuery.page);
+            }
+            else
+            {
+                documentTemplatePreviewPageData = await repository.GetPreviewDocumentTemplateSearchAsync(pageQuery);
+            }
+
+            return documentTemplatePreviewPageData;
         }
 
         internal async Task DeleteDocumentTemplateAsync(int id)

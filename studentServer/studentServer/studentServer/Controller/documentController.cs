@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using studentServer.Entity;
 using studentServer.Entity.DBEntity;
 using studentServer.Service.CRUD;
 using Syncfusion.DocIO.DLS;
@@ -81,12 +82,12 @@ namespace studentServer.Controller
             }
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetDocumentTemplatePreview([FromQuery] int page)
+        [HttpPost("all")]
+        public async Task<IActionResult> GetDocumentTemplatePreview([FromBody] PageSearchEntity filterQuery)
         {
             try
             {
-                List<DocumentTemplate> templates = await documentService.GetAllPreviewDocumentTemplateAsync(page);
+                DocumentTemplatePreviewPageData templates = await documentService.GetAllPreviewDocumentTemplateAsync(filterQuery);
                 return new JsonResult(templates);
             }
             catch (Exception ex)
@@ -95,6 +96,5 @@ namespace studentServer.Controller
            $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
             }
         }
-
     }
 }

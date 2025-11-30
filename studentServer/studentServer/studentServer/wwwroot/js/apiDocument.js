@@ -5,25 +5,34 @@
 import { API_BASE_URL } from './config.js';
 
 /**
- * Загружает список всех шаблонов документов
+ * Загружает список всех шаблонов документов с пагинацией
  * @param {number} page - номер страницы
- * @returns {Promise<Array>} массив шаблонов документов
+ * @param {Array<FilterDescriptor>|null} searchFilter - массив FilterDescriptor с критериями поиска (опционально)
+ * @returns {Promise<Object>} объект с полями pageCount и documentTemplatePreview
  */
-export async function loadDocumentTemplates(page = 1) {
+export async function loadDocumentTemplates(page = 1, searchFilter = null) {
     try {
-        const response = await fetch(`${API_BASE_URL}/document/all?page=${page}`, {
-            method: 'GET',
+        const requestBody = { page };
+        
+        // Если есть критерии поиска, добавляем searchFilter как массив
+        if (searchFilter && Array.isArray(searchFilter) && searchFilter.length > 0) {
+            requestBody.searchFilter = searchFilter;
+        }
+
+        const response = await fetch(`${API_BASE_URL}/document/all`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const templates = await response.json();
-        return templates;
+        const result = await response.json();
+        return result; // { pageCount, documentTemplatePreview }
     } catch (error) {
         console.error('Ошибка загрузки шаблонов документов:', error);
         throw error;

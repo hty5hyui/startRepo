@@ -35,4 +35,8 @@
     <PackageReference Include="Syncfusion.EJ2.WordEditor.AspNet.Core" Version="31.2.12" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TempService\" />
+  </ItemGroup>
+
 </Project>

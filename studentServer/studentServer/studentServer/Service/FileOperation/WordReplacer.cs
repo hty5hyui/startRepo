@@ -1,7 +1,4 @@
-﻿using System.Buffers;
-using System.Text.RegularExpressions;
-using studentServer.Entity.DBEntity;
-using Syncfusion.DocIO.DLS;
+﻿using studentServer.Entity.DBEntity;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 
@@ -43,23 +40,30 @@ namespace studentServer.Service.FileOperation
 
         public static byte[] BaseReplace(byte[] word, StudentDataDTO studentData)
         {
-            using var inputStream = new MemoryStream(word);
-            using var outputStream = new MemoryStream();
+            using MemoryStream inputStream = new MemoryStream(word);
+            using MemoryStream outputStream = new MemoryStream();
 
             Formatting highlightFormat = new Formatting();
             highlightFormat.Highlight = Highlight.yellow;
 
-
-            StringReplaceTextOptions options = new StringReplaceTextOptions
-            {
-                SearchValue = "{Name}",
-                NewValue = "Иван Иванов",
-                TrackChanges = false
-            };
+            Dictionary<string, string?> dictinaryData = ReplacePlaceholderDictionaryService.BuildDictionary(studentData);            
 
             using (DocX document = DocX.Load(inputStream))
             {
-                document.ReplaceText(options);
+                foreach (string key in dictinaryData.Keys)
+                {
+                    if(document.FindAll(key).Count() > 0)
+                    {
+                        StringReplaceTextOptions options = new StringReplaceTextOptions
+                        {
+                            SearchValue = key,
+                            NewValue = dictinaryData[key],
+                            TrackChanges = false
+                        };
+                        document.ReplaceText(options);
+                    }  
+                }
+                
                 document.SaveAs(outputStream);
             }
 

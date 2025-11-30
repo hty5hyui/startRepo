@@ -11,7 +11,7 @@
  * @param {number} currentPage - текущая страница (для расчета индекса)
  * @param {number} itemsPerPage - количество элементов на странице
  */
-export function renderStudents(students, studentsTableBody, tableContainer, paginationContainer, currentPage = 1, itemsPerPage = 10) {
+export function renderStudents(students, studentsTableBody, tableContainer, paginationContainer, currentPage = 1, itemsPerPage = 30) {
     // Если нет студентов, показываем сообщение "Ничего не найдено"
     if (!students || students.length === 0) {
         const table = tableContainer?.querySelector('table');

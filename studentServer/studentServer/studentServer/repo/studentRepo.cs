@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Npgsql;
 using studentServer.Entity;
 using studentServer.Entity.DBEntity;
 using studentServer.repo.Data;

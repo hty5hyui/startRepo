@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using studentServer.Entity.DBEntity;
 using studentServer.repo;
-using studentServer.TempService;
 
 namespace studentServer.Service.CRUD
 {

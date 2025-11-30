@@ -5,7 +5,7 @@ using studentServer.Controller;
 using studentServer.repo;
 using studentServer.repo.Data;
 using studentServer.Service.CRUD;
-using studentServer.TempService;
+using studentServer.Service.FileOperation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,8 +32,10 @@ builder.Services.AddScoped<professionController>();
 builder.Services.AddScoped<documentTemplateRepo>();
 builder.Services.AddScoped<documentTemplateCRUD>();
 builder.Services.AddScoped<documentController>();
+
+builder.Services.AddScoped<OperationService>();
+builder.Services.AddScoped<operationController>();
 //--------------
-builder.Services.AddScoped<RandomDataSetInBase>();
 builder.Services.AddScoped<testController>();
 //--------------
 //------------------------------------------------------------------------------
