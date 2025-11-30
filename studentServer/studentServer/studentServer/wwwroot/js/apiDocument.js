@@ -166,3 +166,34 @@ export async function deleteDocumentTemplate(id) {
     }
 }
 
+/**
+ * Создает документы для выбранных пользователей
+ * @param {Array<number>} userIds - массив ID пользователей
+ * @param {number} documentId - ID шаблона документа
+ * @returns {Promise<Blob>} архив с документами
+ */
+export async function makeDocuments(userIds, documentId) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/operation/makeDocumet`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: userIds,
+                documentId: documentId
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        return blob;
+    } catch (error) {
+        console.error('Ошибка создания документов:', error);
+        throw error;
+    }
+}
+

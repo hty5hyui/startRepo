@@ -28,6 +28,11 @@ import {
 } from './apiStudent.js';
 
 import {
+    loadDocumentTemplates,
+    makeDocuments
+} from './apiDocument.js';
+
+import {
     renderStudents,
     renderPagination,
     loadCompanies,
@@ -122,6 +127,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
     const editSelectedBtn = document.getElementById('editSelectedBtn');
     const selectedCountSpan = document.getElementById('selectedCount');
+    const prepareDocumentsBtn = document.getElementById('prepareDocumentsBtn');
+    const selectedCountForDocs = document.getElementById('selectedCountForDocs');
+
+    // Модальное окно выбора шаблона
+    const selectTemplateModal = document.getElementById('selectTemplateModal');
+    const closeSelectTemplateModal = document.getElementById('closeSelectTemplateModal');
+    const cancelSelectTemplateBtn = document.getElementById('cancelSelectTemplateBtn');
+    const confirmSelectTemplateBtn = document.getElementById('confirmSelectTemplateBtn');
+    const templateSelect = document.getElementById('templateSelect');
+    const templateLoadingOverlay = document.getElementById('templateLoadingOverlay');
+    const archiveGenerationModal = document.getElementById('archiveGenerationModal');
 
     // --- Обертки для функций с правильными параметрами ---
 
@@ -145,12 +161,25 @@ document.addEventListener('DOMContentLoaded', () => {
             currentPage = page;
             currentSearchFilter = searchFilter;
 
+            // Очищаем выделение при переключении страницы
+            // При переключении страницы выделение сбрасывается
+            selectedStudentIds.clear();
+            if (selectAllCheckbox) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            }
+
             const result = await apiLoadStudents(page, searchFilter);
             pageCount = result.pageCount || 1;
             const students = result.studentPreviews || [];
 
             renderStudents(students, studentsTableBody, tableContainer, paginationContainer, currentPage);
             renderPagination(paginationContainer, currentPage, pageCount, handlePageChange);
+            
+            // Обновляем состояние кнопок после рендеринга
+            updateGroupEditButton();
+            // Обновляем состояние чекбокса "Выделить все" после рендеринга
+            updateSelectAllCheckbox();
         } catch (error) {
             console.error('Ошибка загрузки данных:', error);
             showErrorMessage('Ошибка загрузки данных студентов');
@@ -209,18 +238,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Обновляет счетчик и видимость кнопки группового редактирования
+     * Обновляет счетчик и видимость кнопок группового редактирования и подготовки документов
      */
     function updateGroupEditButton() {
         const count = selectedStudentIds.size;
         if (selectedCountSpan) {
             selectedCountSpan.textContent = count;
         }
+        if (selectedCountForDocs) {
+            selectedCountForDocs.textContent = count;
+        }
         if (editSelectedBtn) {
             if (count > 0) {
                 editSelectedBtn.classList.remove('hidden');
             } else {
                 editSelectedBtn.classList.add('hidden');
+            }
+        }
+        if (prepareDocumentsBtn) {
+            if (count > 0) {
+                prepareDocumentsBtn.classList.remove('hidden');
+            } else {
+                prepareDocumentsBtn.classList.add('hidden');
             }
         }
     }
@@ -262,8 +301,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const checkboxes = document.querySelectorAll('.student-checkbox');
         const isChecked = e.target.checked;
         
-        selectedStudentIds.clear();
+        // Очищаем только ID студентов с текущей страницы перед установкой нового состояния
+        checkboxes.forEach(checkbox => {
+            const studentId = checkbox.dataset.studentId;
+            selectedStudentIds.delete(studentId); // Удаляем ID текущей страницы
+        });
         
+        // Теперь устанавливаем новое состояние для всех чекбоксов на текущей странице
         checkboxes.forEach(checkbox => {
             checkbox.checked = isChecked;
             if (isChecked) {
@@ -740,6 +784,136 @@ document.addEventListener('DOMContentLoaded', () => {
     if (editSelectedBtn) {
         editSelectedBtn.addEventListener('click', openGroupEditForm);
     }
+
+    /**
+     * Загружает список шаблонов документов в выпадающий список
+     */
+    async function loadTemplatesToSelect() {
+        try {
+            templateLoadingOverlay.classList.remove('hidden');
+            templateSelect.innerHTML = '<option value="">Загрузка шаблонов...</option>';
+            templateSelect.disabled = true;
+
+            const result = await loadDocumentTemplates(1, null);
+            const templates = result.documentTemplatePreview || [];
+
+            templateSelect.innerHTML = '<option value="">Выберите шаблон...</option>';
+            templates.forEach(template => {
+                const option = document.createElement('option');
+                option.value = template.id;
+                option.textContent = template.documentName || `Шаблон #${template.id}`;
+                templateSelect.appendChild(option);
+            });
+
+            templateSelect.disabled = false;
+            confirmSelectTemplateBtn.disabled = templates.length === 0;
+        } catch (error) {
+            console.error('Ошибка загрузки шаблонов:', error);
+            showErrorMessage('Ошибка загрузки списка шаблонов');
+            templateSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+        } finally {
+            templateLoadingOverlay.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Открывает модальное окно выбора шаблона
+     */
+    async function openSelectTemplateModal() {
+        if (selectedStudentIds.size === 0) {
+            showErrorMessage('Не выбраны студенты для подготовки документов');
+            return;
+        }
+
+        openModalWrapper(selectTemplateModal);
+        await loadTemplatesToSelect();
+    }
+
+    /**
+     * Создает документы для выбранных студентов
+     */
+    async function createDocuments() {
+        const selectedTemplateId = templateSelect.value;
+        if (!selectedTemplateId) {
+            showErrorMessage('Пожалуйста, выберите шаблон документа');
+            return;
+        }
+
+        const userIds = Array.from(selectedStudentIds).map(id => parseInt(id));
+        if (userIds.length === 0) {
+            showErrorMessage('Не выбраны студенты');
+            return;
+        }
+
+        try {
+            // Закрываем модальное окно выбора шаблона
+            closeModalWrapper(selectTemplateModal);
+            
+            // Показываем модальное окно ожидания
+            openModalWrapper(archiveGenerationModal);
+
+            // Отправляем запрос на создание документов
+            const blob = await makeDocuments(userIds, parseInt(selectedTemplateId));
+
+            // Скрываем модальное окно ожидания
+            closeModalWrapper(archiveGenerationModal);
+
+            // Скачиваем архив
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `documents_${new Date().getTime()}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            showSuccessMessage('Документы успешно подготовлены');
+        } catch (error) {
+            console.error('Ошибка создания документов:', error);
+            closeModalWrapper(archiveGenerationModal);
+            showErrorMessage('Ошибка при подготовке документов');
+        }
+    }
+
+    // Обработчик кнопки "Подготовить документы"
+    if (prepareDocumentsBtn) {
+        prepareDocumentsBtn.addEventListener('click', openSelectTemplateModal);
+    }
+
+    // Обработчики модального окна выбора шаблона
+    if (closeSelectTemplateModal) {
+        closeSelectTemplateModal.addEventListener('click', () => {
+            closeModalWrapper(selectTemplateModal);
+            templateSelect.value = '';
+        });
+    }
+
+    if (cancelSelectTemplateBtn) {
+        cancelSelectTemplateBtn.addEventListener('click', () => {
+            closeModalWrapper(selectTemplateModal);
+            templateSelect.value = '';
+        });
+    }
+
+    if (confirmSelectTemplateBtn) {
+        confirmSelectTemplateBtn.addEventListener('click', createDocuments);
+    }
+
+    // Обновление состояния кнопки подтверждения при выборе шаблона
+    if (templateSelect) {
+        templateSelect.addEventListener('change', () => {
+            confirmSelectTemplateBtn.disabled = !templateSelect.value;
+        });
+    }
+
+    // Закрытие модального окна выбора шаблона по клику на фон
+    window.addEventListener('click', (e) => {
+        if (e.target === selectTemplateModal) {
+            closeModalWrapper(selectTemplateModal);
+            templateSelect.value = '';
+        }
+    });
 
     // Отслеживание изменений в форме редактирования
     editEmployeeForm.addEventListener('input', trackFormChanges);

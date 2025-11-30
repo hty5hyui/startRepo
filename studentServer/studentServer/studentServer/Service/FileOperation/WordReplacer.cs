@@ -54,6 +54,11 @@ namespace studentServer.Service.FileOperation
                 {
                     if(document.FindAll(key).Count() > 0)
                     {
+                        if(dictinaryData[key] == null)
+                        {
+                            throw new Exception($"Ошибка добавления данных пользователя: поле {key} для данного человека не записано в базе");
+                        }
+
                         StringReplaceTextOptions options = new StringReplaceTextOptions
                         {
                             SearchValue = key,

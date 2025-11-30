@@ -38,6 +38,10 @@
                     <i class="fas fa-edit"></i>
                     <span>Редактировать выделенные (<span id="selectedCount">0</span>)</span>
                 </button>
+                <button id="prepareDocumentsBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition flex items-center space-x-2 hidden">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Подготовить документы (<span id="selectedCountForDocs">0</span>)</span>
+                </button>
                 <button id="addEmployeeBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
                     <i class="fas fa-plus"></i>
                     <span>Добавить сотрудника</span>
@@ -647,6 +651,59 @@
                     </button>
                 </form>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно выбора шаблона документа -->
+    <div id="selectTemplateModal" class="auth-modal fixed inset-0 items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-2xl mx-4 relative">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Выбор шаблона документа</h3>
+                    <button id="closeSelectTemplateModal" class="text-gray-500 hover:text-gray-700" aria-label="Закрыть модальное окно">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="templateLoadingOverlay" class="hidden absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-20 rounded-xl">
+                    <div class="flex flex-col items-center">
+                        <div class="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-2"></div>
+                        <p class="text-teal-700 font-medium">Загрузка шаблонов...</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="templateSelect" class="block text-sm font-medium text-gray-700 mb-2">Выберите шаблон документа</label>
+                    <select id="templateSelect" class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                        <option value="">Загрузка шаблонов...</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end space-x-4 pt-4">
+                    <button type="button" id="cancelSelectTemplateBtn" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                        Отмена
+                    </button>
+                    <button type="button" id="confirmSelectTemplateBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2" disabled>
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Подготовить документы</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно ожидания создания архива -->
+    <div id="archiveGenerationModal" class="auth-modal fixed inset-0 items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <h3 class="text-xl font-bold text-stone-700 mb-2">Подготовка документов</h3>
+                    <p class="text-gray-600 text-center">Пожалуйста, подождите. Архив документов готовится...</p>
+                </div>
             </div>
         </div>
     </div>
