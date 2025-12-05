@@ -3,7 +3,7 @@ using studentServer.repo;
 
 namespace studentServer.Service.CRUD
 {
-    public class professionCRUD(professionRepo repository)
+    public class professionCRUD(professionRepo repository, LogService logger)
     {
         public async Task<List<ProfessionDTO>> GetAllProfessionAsync()
         {

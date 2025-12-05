@@ -29,6 +29,7 @@ import {
 
 import {
     loadDocumentTemplates,
+    searchDocumentTemplates,
     makeDocuments
 } from './apiDocument.js';
 
@@ -135,7 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeSelectTemplateModal = document.getElementById('closeSelectTemplateModal');
     const cancelSelectTemplateBtn = document.getElementById('cancelSelectTemplateBtn');
     const confirmSelectTemplateBtn = document.getElementById('confirmSelectTemplateBtn');
-    const templateSelect = document.getElementById('templateSelect');
+    const templateSearchInput = document.getElementById('templateSearchInput');
+    const templateSearchResults = document.getElementById('templateSearchResults');
+    const selectedTemplateId = document.getElementById('selectedTemplateId');
     const templateLoadingOverlay = document.getElementById('templateLoadingOverlay');
     const archiveGenerationModal = document.getElementById('archiveGenerationModal');
 
@@ -785,56 +788,141 @@ document.addEventListener('DOMContentLoaded', () => {
         editSelectedBtn.addEventListener('click', openGroupEditForm);
     }
 
+    // Переменная для хранения debounce таймера
+    let searchDebounceTimer = null;
+    let currentTemplates = [];
+
     /**
-     * Загружает список шаблонов документов в выпадающий список
+     * Утилита для debounce
      */
-    async function loadTemplatesToSelect() {
+    function debounce(func, wait) {
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(searchDebounceTimer);
+                func(...args);
+            };
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(later, wait);
+        };
+    }
+
+    /**
+     * Отображает результаты поиска в выпадающем списке
+     */
+    function renderTemplateResults(templates) {
+        currentTemplates = templates;
+        templateSearchResults.innerHTML = '';
+
+        if (!templates || templates.length === 0) {
+            const noResults = document.createElement('div');
+            noResults.className = 'px-4 py-3 text-gray-500 text-sm';
+            noResults.textContent = 'Шаблоны не найдены';
+            templateSearchResults.appendChild(noResults);
+            templateSearchResults.classList.remove('hidden');
+            return;
+        }
+
+        templates.forEach(template => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'px-4 py-3 hover:bg-teal-50 cursor-pointer border-b border-gray-100 last:border-b-0';
+            resultItem.dataset.templateId = template.id;
+            resultItem.textContent = template.documentName || `Шаблон #${template.id}`;
+            
+            resultItem.addEventListener('click', () => {
+                selectTemplate(template.id, template.documentName || `Шаблон #${template.id}`);
+            });
+            
+            templateSearchResults.appendChild(resultItem);
+        });
+
+        templateSearchResults.classList.remove('hidden');
+    }
+
+    /**
+     * Выбирает шаблон
+     */
+    function selectTemplate(templateId, templateName) {
+        selectedTemplateId.value = templateId;
+        templateSearchInput.value = templateName;
+        templateSearchInput.dataset.selectedName = templateName;
+        templateSearchResults.classList.add('hidden');
+        confirmSelectTemplateBtn.disabled = false;
+    }
+
+    /**
+     * Загружает шаблоны с первой страницы
+     */
+    async function loadInitialTemplates() {
         try {
             templateLoadingOverlay.classList.remove('hidden');
-            templateSelect.innerHTML = '<option value="">Загрузка шаблонов...</option>';
-            templateSelect.disabled = true;
-
             const result = await loadDocumentTemplates(1, null);
             const templates = result.documentTemplatePreview || [];
-
-            templateSelect.innerHTML = '<option value="">Выберите шаблон...</option>';
-            templates.forEach(template => {
-                const option = document.createElement('option');
-                option.value = template.id;
-                option.textContent = template.documentName || `Шаблон #${template.id}`;
-                templateSelect.appendChild(option);
-            });
-
-            templateSelect.disabled = false;
-            confirmSelectTemplateBtn.disabled = templates.length === 0;
+            renderTemplateResults(templates);
         } catch (error) {
             console.error('Ошибка загрузки шаблонов:', error);
             showErrorMessage('Ошибка загрузки списка шаблонов');
-            templateSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            templateSearchResults.classList.add('hidden');
         } finally {
             templateLoadingOverlay.classList.add('hidden');
         }
     }
 
     /**
+     * Выполняет поиск шаблонов
+     */
+    async function performTemplateSearch(searchString) {
+        const trimmedSearch = searchString ? searchString.trim() : '';
+        
+        // Если поле пустое, показываем шаблоны с первой страницы
+        if (!trimmedSearch) {
+            await loadInitialTemplates();
+            return;
+        }
+
+        try {
+            templateLoadingOverlay.classList.remove('hidden');
+            const result = await searchDocumentTemplates(trimmedSearch);
+            const templates = result.documentTemplatePreview || [];
+            renderTemplateResults(templates);
+        } catch (error) {
+            console.error('Ошибка поиска шаблонов:', error);
+            showErrorMessage('Ошибка поиска шаблонов');
+            templateSearchResults.classList.add('hidden');
+        } finally {
+            templateLoadingOverlay.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Debounced функция поиска
+     */
+    const debouncedSearch = debounce(performTemplateSearch, 300);
+
+    /**
      * Открывает модальное окно выбора шаблона
      */
-    async function openSelectTemplateModal() {
+    function openSelectTemplateModal() {
         if (selectedStudentIds.size === 0) {
             showErrorMessage('Не выбраны студенты для подготовки документов');
             return;
         }
 
+        // Очищаем поля при открытии
+        templateSearchInput.value = '';
+        selectedTemplateId.value = '';
+        templateSearchResults.classList.add('hidden');
+        confirmSelectTemplateBtn.disabled = true;
+        currentTemplates = [];
+        
         openModalWrapper(selectTemplateModal);
-        await loadTemplatesToSelect();
     }
 
     /**
      * Создает документы для выбранных студентов
      */
     async function createDocuments() {
-        const selectedTemplateId = templateSelect.value;
-        if (!selectedTemplateId) {
+        const templateIdValue = selectedTemplateId.value;
+        if (!templateIdValue) {
             showErrorMessage('Пожалуйста, выберите шаблон документа');
             return;
         }
@@ -853,7 +941,7 @@ document.addEventListener('DOMContentLoaded', () => {
             openModalWrapper(archiveGenerationModal);
 
             // Отправляем запрос на создание документов
-            const blob = await makeDocuments(userIds, parseInt(selectedTemplateId));
+            const blob = await makeDocuments(userIds, parseInt(templateIdValue));
 
             // Скрываем модальное окно ожидания
             closeModalWrapper(archiveGenerationModal);
@@ -885,14 +973,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeSelectTemplateModal) {
         closeSelectTemplateModal.addEventListener('click', () => {
             closeModalWrapper(selectTemplateModal);
-            templateSelect.value = '';
+            templateSearchInput.value = '';
+            selectedTemplateId.value = '';
+            templateSearchResults.classList.add('hidden');
         });
     }
 
     if (cancelSelectTemplateBtn) {
         cancelSelectTemplateBtn.addEventListener('click', () => {
             closeModalWrapper(selectTemplateModal);
-            templateSelect.value = '';
+            templateSearchInput.value = '';
+            selectedTemplateId.value = '';
+            templateSearchResults.classList.add('hidden');
         });
     }
 
@@ -900,10 +992,50 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmSelectTemplateBtn.addEventListener('click', createDocuments);
     }
 
-    // Обновление состояния кнопки подтверждения при выборе шаблона
-    if (templateSelect) {
-        templateSelect.addEventListener('change', () => {
-            confirmSelectTemplateBtn.disabled = !templateSelect.value;
+    // Обработчик поиска в реальном времени
+    if (templateSearchInput) {
+        templateSearchInput.addEventListener('input', (e) => {
+            const searchValue = e.target.value;
+            // Если пользователь начал вводить новый текст, очищаем выбранный шаблон
+            if (selectedTemplateId.value && searchValue !== templateSearchInput.dataset.selectedName) {
+                selectedTemplateId.value = '';
+                confirmSelectTemplateBtn.disabled = true;
+            }
+            debouncedSearch(searchValue);
+        });
+
+        // Обработка клавиатуры
+        templateSearchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                templateSearchResults.classList.add('hidden');
+                templateSearchInput.blur();
+            } else if (e.key === 'Enter' && selectedTemplateId.value) {
+                e.preventDefault();
+                createDocuments();
+            }
+        });
+
+        // Закрытие выпадающего списка при потере фокуса
+        templateSearchInput.addEventListener('blur', () => {
+            // Используем небольшую задержку, чтобы обработчик клика успел сработать
+            setTimeout(() => {
+                templateSearchResults.classList.add('hidden');
+            }, 200);
+        });
+
+        // Открытие результатов при фокусе (клике на поле)
+        templateSearchInput.addEventListener('focus', async () => {
+            const currentValue = templateSearchInput.value.trim();
+            if (currentValue && currentTemplates.length > 0) {
+                // Если есть значение и уже загружены шаблоны, показываем их
+                renderTemplateResults(currentTemplates);
+            } else if (!currentValue && currentTemplates.length === 0) {
+                // Если поле пустое и шаблоны не загружены, загружаем с первой страницы
+                await loadInitialTemplates();
+            } else if (!currentValue && currentTemplates.length > 0) {
+                // Если поле пустое, но шаблоны есть, показываем их
+                renderTemplateResults(currentTemplates);
+            }
         });
     }
 
@@ -911,7 +1043,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('click', (e) => {
         if (e.target === selectTemplateModal) {
             closeModalWrapper(selectTemplateModal);
-            templateSelect.value = '';
+            templateSearchInput.value = '';
+            selectedTemplateId.value = '';
+            templateSearchResults.classList.add('hidden');
         }
     });
 

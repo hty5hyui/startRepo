@@ -4,7 +4,7 @@ using studentServer.repo;
 
 namespace studentServer.Service.CRUD
 {
-    public class companyCRUD(companyRepo repository)
+    public class companyCRUD(companyRepo repository, LogService logger)
     {
         public async Task<List<CompanyDTO>> getAllCompanyDataAsync(int page)
         {

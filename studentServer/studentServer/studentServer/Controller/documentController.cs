@@ -96,5 +96,19 @@ namespace studentServer.Controller
            $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
             }
         }
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchDocumentTemplatePreview([FromQuery] string str)
+        {
+            try
+            {
+                DocumentTemplatePreviewPageData templates = await documentService.SearchPreviewDocumentTemplateAsync(str);
+                return new JsonResult(templates);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+           $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
+            }
+        }
     }
 }

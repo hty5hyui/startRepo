@@ -35,6 +35,9 @@ builder.Services.AddScoped<documentController>();
 
 builder.Services.AddScoped<OperationService>();
 builder.Services.AddScoped<operationController>();
+
+builder.Services.AddScoped<logRepo>();
+builder.Services.AddScoped<LogService>();
 //--------------
 builder.Services.AddScoped<testController>();
 //--------------

@@ -7,7 +7,7 @@ using studentServer.Service.FileOperation;
 
 namespace studentServer.Service.CRUD
 {
-    public class documentTemplateCRUD(documentTemplateRepo repository)
+    public class documentTemplateCRUD(documentTemplateRepo repository, LogService logger)
     {
         internal async Task UploadDocumentTemplateAsync(IFormFile file, string templateName)
         {
@@ -68,6 +68,12 @@ namespace studentServer.Service.CRUD
         {
             DocumentTemplate template = new DocumentTemplate { Id = id };
             await repository.DeleteDocumentTemplateAsync(template);
+        }
+
+        internal async Task<DocumentTemplatePreviewPageData> SearchPreviewDocumentTemplateAsync(string str)
+        {
+            DocumentTemplatePreviewPageData data = await repository.SearchPreviewDocumentTemplateAsync(str);
+            return data;
         }
     }
 }

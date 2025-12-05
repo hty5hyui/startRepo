@@ -7,7 +7,7 @@ using Xceed.Words.NET;
 
 namespace studentServer.Service.FileOperation
 {
-    public class OperationService(studentsCRUD studentsCRUD, documentTemplateCRUD documentTemplateCRUD)
+    public class OperationService(studentsCRUD studentsCRUD, documentTemplateCRUD documentTemplateCRUD, LogService logger)
     {
         //Формируем документы, собираем в архив и отправляем массив байт
         internal async Task<byte[]> makeStudentDocumentAsync(OperationEntity operationEntity)

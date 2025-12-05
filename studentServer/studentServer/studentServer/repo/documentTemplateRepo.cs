@@ -70,5 +70,20 @@ namespace studentServer.repo
             _dbContext.Remove(template);
             await _dbContext.SaveChangesAsync();
         }
+
+        internal async Task<DocumentTemplatePreviewPageData> SearchPreviewDocumentTemplateAsync(string str)
+        {
+            DocumentTemplatePreviewPageData data = new DocumentTemplatePreviewPageData();
+            data.documentTemplatePreview = await _dbContext.DocumentTemplate.OrderByDescending(i => i.Id)
+                                                                            .Select(dt => new DocumentTemplatePreview
+                                                                            {
+                                                                                Id = dt.Id,
+                                                                                DocumentName = dt.DocumentName,
+                                                                                CreatedAt = dt.CreatedAt,
+                                                                            })
+                                                                            .Where(t => EF.Functions.ILike(t.DocumentName, $"%{str}%"))
+                                                                            .ToListAsync();
+            return data;
+        }
     }
 }

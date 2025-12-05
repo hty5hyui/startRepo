@@ -26,7 +26,6 @@ namespace studentServer.Service.FileOperation
                 SearchValue = "{Name}",
                 NewValue = "Иван Иванов",
                 NewFormatting = highlightFormat
-
             };
 
             using (DocX document = DocX.Load(inputStream))

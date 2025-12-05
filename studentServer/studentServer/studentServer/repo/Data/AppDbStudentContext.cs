@@ -13,6 +13,7 @@ namespace studentServer.repo.Data
         public DbSet<Profession> Profession { get; set; }
         public DbSet<Company> Company { get; set; }
         public DbSet<Curator> Curator { get; set; }
+        public DbSet<LogMessage> LogMessage { get; set; }
 
         public DbSet<DocumentTemplate> DocumentTemplate { get; set; }
 

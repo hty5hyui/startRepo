@@ -3,7 +3,7 @@ using studentServer.repo;
 
 namespace studentServer.Service.CRUD
 {
-    public class curatorCRUD(curatorRepo repository)
+    public class curatorCRUD(curatorRepo repository, LogService logger)
     {
         public async Task<List<CuratorDTO>> GetAllCuratorAsync()
         {

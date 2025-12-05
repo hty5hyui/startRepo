@@ -167,6 +167,33 @@ export async function deleteDocumentTemplate(id) {
 }
 
 /**
+ * Ищет шаблоны документов по строке поиска
+ * @param {string} searchString - строка поиска
+ * @returns {Promise<Object>} объект с полями pageCount и documentTemplatePreview
+ */
+export async function searchDocumentTemplates(searchString) {
+    try {
+        const encodedString = encodeURIComponent(searchString);
+        const response = await fetch(`${API_BASE_URL}/document/search?str=${encodedString}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        return result; // { pageCount, documentTemplatePreview }
+    } catch (error) {
+        console.error('Ошибка поиска шаблонов документов:', error);
+        throw error;
+    }
+}
+
+/**
  * Создает документы для выбранных пользователей
  * @param {Array<number>} userIds - массив ID пользователей
  * @param {number} documentId - ID шаблона документа
