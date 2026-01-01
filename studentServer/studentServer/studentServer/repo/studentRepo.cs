@@ -60,22 +60,18 @@ namespace studentServer.repo
             {
                 Student student = EntityMapper.ToStudent(studentData.student);
                 _dbContext.Students.Add(student);
-                await _dbContext.SaveChangesAsync();
 
                 FinanceDoc financeDoc = EntityMapper.ToFinanceDoc(studentData.financeDoc);
                 financeDoc.Id = student.Id;
                 _dbContext.FinanceDoc.Add(financeDoc);
-                await _dbContext.SaveChangesAsync();
 
                 VISA visa = EntityMapper.ToVISA(studentData.visa);
                 visa.Id = student.Id;
                 _dbContext.VISA.Add(visa);
-                await _dbContext.SaveChangesAsync();
 
                 PersonalData personalData = EntityMapper.ToPersonalData(studentData.personalData);
                 personalData.Id = student.Id;
                 _dbContext.PersonalData.Add(personalData);
-                await _dbContext.SaveChangesAsync();
 
                 Contract contract = EntityMapper.ToContract(studentData.contract);
                 contract.Id = student.Id;
@@ -88,6 +84,7 @@ namespace studentServer.repo
             catch (Exception ex)
             {
                 Console.WriteLine($"Ошибка при добавлении студента: {ex.Message}");
+                await transaction.RollbackAsync();
             }
 
         }
@@ -127,6 +124,7 @@ namespace studentServer.repo
             catch (Exception ex)
             {
                 Console.WriteLine($"Ошибка при обновлении студента: {ex.Message}");
+                await transaction.RollbackAsync();
             }
         }
 

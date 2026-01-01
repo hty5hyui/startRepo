@@ -9,7 +9,7 @@ namespace studentServer.Controller
 {
     [ApiController]
     [Route("[controller]")]
-    public class studentController(studentsCRUD studentsService) :ControllerBase
+    public class StudentController(studentsCRUD studentsService) :ControllerBase
     {
         [HttpPost("allStudents")]
         public async Task<IActionResult> GetStudentPreviewAsync([FromBody] PageSearchEntity filterQuery)

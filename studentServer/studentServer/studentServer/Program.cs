@@ -19,7 +19,7 @@ builder.Services.AddDbContext<AppDbStudentContext>(options =>
 //-----------------------DI-----------------------------------------------------
 builder.Services.AddScoped<studentRepo>();
 builder.Services.AddScoped<studentsCRUD>();
-builder.Services.AddScoped<studentController>();
+builder.Services.AddScoped<StudentController>();
 
 builder.Services.AddScoped<companyRepo>();
 builder.Services.AddScoped<companyCRUD>();
@@ -74,6 +74,27 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+//Применение миграций БД
+//------------------------------------------------------------------------------
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var dbContext = services.GetRequiredService<AppDbStudentContext>();
+        var pendingMigrations = dbContext.Database.GetPendingMigrations();
+        if (pendingMigrations.Any())
+        {
+            dbContext.Database.Migrate();
+        }
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Произошла ошибка при применении миграций БД");
+    }
+}
+//------------------------------------------------------------------------------
 
 //Для использования автоматического предоставления страниц
 app.UseDefaultFiles();

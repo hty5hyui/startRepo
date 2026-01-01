@@ -19,7 +19,7 @@ namespace studentServer.repo.Data
 
         public AppDbStudentContext(DbContextOptions options) : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
