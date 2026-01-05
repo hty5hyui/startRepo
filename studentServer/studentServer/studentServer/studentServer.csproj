@@ -11,6 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="TempService\**" />
+    <Content Remove="TempService\**" />
+    <EmbeddedResource Remove="TempService\**" />
+    <None Remove="TempService\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\student.html" />
   </ItemGroup>
 
@@ -33,10 +40,6 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.1" />
     <PackageReference Include="Syncfusion.EJ2.WordEditor.AspNet.Core" Version="31.2.12" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="TempService\" />
   </ItemGroup>
 
 </Project>

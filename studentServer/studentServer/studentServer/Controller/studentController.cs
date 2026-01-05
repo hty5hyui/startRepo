@@ -14,94 +14,44 @@ namespace studentServer.Controller
         [HttpPost("allStudents")]
         public async Task<IActionResult> GetStudentPreviewAsync([FromBody] PageSearchEntity filterQuery)
         {
-            try
-            {
-                StudentPreviewPageData studentDataList = await studentsService.getStudentPreviewAsync(filterQuery);
-                return new JsonResult(studentDataList);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-            $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            StudentPreviewPageData studentDataList = await studentsService.getStudentPreviewAsync(filterQuery);
+            return new JsonResult(studentDataList);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetStudentData([FromQuery] int idStudent)
         {
-            try
-            {
-                StudentDataDTO student = await studentsService.getStudentDataAsync(idStudent);
-                return new JsonResult(student);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-            $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            StudentDataDTO student = await studentsService.getStudentDataAsync(idStudent);
+            return new JsonResult(student);
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteStudents([FromBody] List<int> idStudents)
         {
-            
-            try
-            {
-                await studentsService.deleteStudentsAsync(idStudents);
-                return StatusCode(StatusCodes.Status200OK);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-            $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            await studentsService.deleteStudentsAsync(idStudents);
+            return StatusCode(StatusCodes.Status200OK);
         }
 
         [HttpPatch]
         public async Task<IActionResult> PatchStudents([FromBody] StudentDataDTO newStudentsData)
         {
-            try
-            {
-                await studentsService.patchStudentsAsync(newStudentsData);
-                return StatusCode(StatusCodes.Status200OK);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-            $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            await studentsService.patchStudentsAsync(newStudentsData);
+            return StatusCode(StatusCodes.Status200OK);
         }
 
         [HttpPatch("group")]
         public async Task<IActionResult> PatchGroupStudents([FromBody] StudentGroupDataDTO newStudentsData)
         {
-            try
-            {
-                await studentsService.patchGroupStudentsAsync(newStudentsData);
-                return StatusCode(StatusCodes.Status200OK);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-            $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            await studentsService.patchGroupStudentsAsync(newStudentsData);
+            return StatusCode(StatusCodes.Status200OK);
         }
 
 
         [HttpPost]
         public async Task<IActionResult> AddStudents([FromQuery] int count, [FromBody] StudentDataDTO newStudentData)
         {
-            try
-            {
-                await studentsService.addStudentsAsync(newStudentData, count);
-                
-                return StatusCode(StatusCodes.Status200OK);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-            $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            await studentsService.addStudentsAsync(newStudentData, count);
+            return StatusCode(StatusCodes.Status200OK);
         }
     }
 }

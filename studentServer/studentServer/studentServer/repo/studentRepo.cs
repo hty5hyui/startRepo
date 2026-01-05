@@ -59,23 +59,19 @@ namespace studentServer.repo
             try
             {
                 Student student = EntityMapper.ToStudent(studentData.student);
-                _dbContext.Students.Add(student);
 
                 FinanceDoc financeDoc = EntityMapper.ToFinanceDoc(studentData.financeDoc);
-                financeDoc.Id = student.Id;
-                _dbContext.FinanceDoc.Add(financeDoc);
-
                 VISA visa = EntityMapper.ToVISA(studentData.visa);
-                visa.Id = student.Id;
-                _dbContext.VISA.Add(visa);
-
                 PersonalData personalData = EntityMapper.ToPersonalData(studentData.personalData);
-                personalData.Id = student.Id;
-                _dbContext.PersonalData.Add(personalData);
-
                 Contract contract = EntityMapper.ToContract(studentData.contract);
-                contract.Id = student.Id;
-                _dbContext.Contract.Add(contract);
+
+                student.FinanceDoc = financeDoc;
+                student.VISA = visa;
+                student.PersonalData = personalData;
+                student.Contract = contract;
+
+                _dbContext.Students.Add(student);
+
                 await _dbContext.SaveChangesAsync();
 
                 // Если все операции успешны, подтверждаем транзакцию

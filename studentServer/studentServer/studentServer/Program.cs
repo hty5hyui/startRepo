@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using studentServer.Controller;
+using studentServer.Filters;
 using studentServer.repo;
 using studentServer.repo.Data;
 using studentServer.Service.CRUD;
@@ -9,7 +10,13 @@ using studentServer.Service.FileOperation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+// Добавление глобального фильтра обработки исключений
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<GlobalExceptionFilter>();
+});
+
+// Добавление контекста БД
 builder.Services.AddDbContext<AppDbStudentContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnectionStudent"));
@@ -38,6 +45,8 @@ builder.Services.AddScoped<operationController>();
 
 builder.Services.AddScoped<logRepo>();
 builder.Services.AddScoped<LogService>();
+
+builder.Services.AddScoped<GlobalExceptionFilter>();
 //--------------
 builder.Services.AddScoped<testController>();
 //--------------
@@ -74,6 +83,7 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
 //Применение миграций БД
 //------------------------------------------------------------------------------
 using (var scope = app.Services.CreateScope())
@@ -82,16 +92,43 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var dbContext = services.GetRequiredService<AppDbStudentContext>();
-        var pendingMigrations = dbContext.Database.GetPendingMigrations();
-        if (pendingMigrations.Any())
+        var logger = services.GetRequiredService<ILogger<Program>>();
+
+        // Проверяем, существует ли БД
+        if (!dbContext.Database.CanConnect())
         {
-            dbContext.Database.Migrate();
+            logger.LogInformation("База данных не найдена. Создание...");
+
+            // Проверяем, есть ли миграции
+            var migrations = dbContext.Database.GetMigrations();
+            if (migrations.Any())
+            {
+                // Если миграции есть - используем их
+                dbContext.Database.Migrate();
+                logger.LogInformation("База данных создана с помощью миграций");
+            }
+            else
+            {
+                // Если миграций нет - создаем БД напрямую (для разработки)
+                dbContext.Database.EnsureCreated();
+                logger.LogWarning("База данных создана через EnsureCreated(). Рекомендуется создать миграции.");
+            }
+        }
+        else
+        {
+            // БД существует - применяем миграции, если есть
+            var pendingMigrations = dbContext.Database.GetPendingMigrations();
+            if (pendingMigrations.Any())
+            {
+                dbContext.Database.Migrate();
+                logger.LogInformation("Применены миграции: {Count}", pendingMigrations.Count());
+            }
         }
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Произошла ошибка при применении миграций БД");
+        logger.LogError(ex, "Ошибка при инициализации базы данных");
     }
 }
 //------------------------------------------------------------------------------

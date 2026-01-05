@@ -22,93 +22,46 @@ namespace studentServer.Controller
             string extension = Path.GetExtension(file.FileName).ToLower();
             if (extension != ".docx" && extension != ".doc")
                 return BadRequest("Файл должен быть формата Word");
-            try
-            {
-                await documentService.UploadDocumentTemplateAsync(file, templateName);
-                return StatusCode(StatusCodes.Status200OK);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-           $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+
+            await documentService.UploadDocumentTemplateAsync(file, templateName);
+            return StatusCode(StatusCodes.Status200OK);
         }
 
         [HttpGet]
         public async Task<IActionResult> GetDocumentTemplateById([FromQuery] int id)
         {
-            try
-            {
-                byte[] pdfBytes =  await documentService.GetDocumentTemplatePDFByIdAsync(id);   
-                return File(pdfBytes, "application/pdf");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-           $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            byte[] pdfBytes = await documentService.GetDocumentTemplatePDFByIdAsync(id);
+            return File(pdfBytes, "application/pdf");
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteDocumentTemplateById([FromQuery] int id)
         {
-            try
-            {
-                await documentService.DeleteDocumentTemplateAsync(id);
-                return StatusCode(StatusCodes.Status200OK);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-           $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            await documentService.DeleteDocumentTemplateAsync(id);
+            return StatusCode(StatusCodes.Status200OK);
         }
 
 
         [HttpGet("download")]
         public async Task<IActionResult> DownloadDocumentTemplateById([FromQuery] int id)
         {
-            try
-            {
-                DocumentTemplate template = await documentService.GetDocumentTemplateByIdAsync(id);
-                if(template.Content == null) return NotFound("Шаблон не найден");
-                Console.WriteLine(template.DocumentName);
-                return File(template.Content, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", template.DocumentName);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-           $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            DocumentTemplate template = await documentService.GetDocumentTemplateByIdAsync(id);
+            if (template.Content == null) return NotFound("Шаблон не найден");
+            Console.WriteLine(template.DocumentName);
+            return File(template.Content, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", template.DocumentName);
         }
 
         [HttpPost("all")]
         public async Task<IActionResult> GetDocumentTemplatePreview([FromBody] PageSearchEntity filterQuery)
         {
-            try
-            {
-                DocumentTemplatePreviewPageData templates = await documentService.GetAllPreviewDocumentTemplateAsync(filterQuery);
-                return new JsonResult(templates);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-           $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            DocumentTemplatePreviewPageData templates = await documentService.GetAllPreviewDocumentTemplateAsync(filterQuery);
+            return new JsonResult(templates);
         }
         [HttpGet("search")]
         public async Task<IActionResult> SearchDocumentTemplatePreview([FromQuery] string str)
         {
-            try
-            {
-                DocumentTemplatePreviewPageData templates = await documentService.SearchPreviewDocumentTemplateAsync(str);
-                return new JsonResult(templates);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-           $"<html><body><h1>Ошибка 500</h1><p>{ex.Message}</p></body></html>");
-            }
+            DocumentTemplatePreviewPageData templates = await documentService.SearchPreviewDocumentTemplateAsync(str);
+            return new JsonResult(templates);
         }
     }
 }
