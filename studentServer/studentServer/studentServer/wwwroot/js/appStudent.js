@@ -1201,9 +1201,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Первичная загрузка данных ---
     loadStudents(1, null);
-    // Загружаем компании для обеих форм
-    loadCompanies('company', 'director', 'company_address', 'practice_address', loadCompanyData);
-    loadCompanies('edit_company', 'edit_director', 'edit_company_address', 'edit_practice_address', loadCompanyData);
+    // Загружаем компании для обеих форм (с куратором)
+    loadCompanies('company', 'director', 'company_address', 'practice_address', loadCompanyData, 'curator');
+    loadCompanies('edit_company', 'edit_director', 'edit_company_address', 'edit_practice_address', loadCompanyData, 'edit_curator');
     // Загружаем профессии для обеих форм
     loadProfessions('profession', 'profession_number', loadProfessionData);
     loadProfessions('edit_profession', 'edit_profession_number', loadProfessionData);

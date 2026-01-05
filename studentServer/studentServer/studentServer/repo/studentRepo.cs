@@ -153,7 +153,7 @@ namespace studentServer.repo
                                                                                   PassportSeries = s.PersonalData.PassportSeries,
                                                                                   PassportNumber = s.PersonalData.PassportNumber,
                                                                                   GroupNumber = s.Contract.GroupNumber,
-                                                                                  CompanyName = s.Company.Name,
+                                                                                  CompanyName = s.Company.NameCompanyRF,
                                                                                   ProfessionName = s.Profession.ProfessionName,
                                                                                   Curator = s.Curator.Name
                                                                               }).ToListAsync();
@@ -191,7 +191,7 @@ namespace studentServer.repo
                                                           PassportSeries = s.PersonalData.PassportSeries,
                                                           PassportNumber = s.PersonalData.PassportNumber,
                                                           GroupNumber = s.Contract.GroupNumber,
-                                                          CompanyName = s.Company.Name,
+                                                          CompanyName = s.Company.NameCompanyRF,
                                                           ProfessionName = s.Profession.ProfessionName,
                                                           Curator = s.Curator.Name
                                                       }).ToListAsync();

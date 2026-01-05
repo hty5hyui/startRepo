@@ -2,7 +2,7 @@
  * Модуль для работы с API студентов
  */
 
-import { API_BASE_URL } from './config.js';
+import { getApiBaseUrlValue } from './config.js';
 
 /**
  * Загружает список студентов с пагинацией
@@ -19,7 +19,7 @@ export async function loadStudents(page = 1, searchFilter = null) {
             requestBody.searchFilter = searchFilter;
         }
 
-        const response = await fetch(`${API_BASE_URL}/student/allStudents`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/student/allStudents`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ export async function loadStudents(page = 1, searchFilter = null) {
  */
 export async function loadStudentData(studentId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/student?idStudent=${studentId}`);
+        const response = await fetch(`${getApiBaseUrlValue()}/student?idStudent=${studentId}`);
         const data = await response.json();
         return data;
     } catch (error) {
@@ -63,7 +63,7 @@ export async function loadStudentData(studentId) {
  */
 export async function addStudent(formData, count) {
     try {
-        const response = await fetch(`${API_BASE_URL}/student?count=${count}`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/student?count=${count}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
@@ -82,7 +82,7 @@ export async function addStudent(formData, count) {
  */
 export async function updateStudent(formData) {
     try {
-        const response = await fetch(`${API_BASE_URL}/student`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/student`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
@@ -107,7 +107,7 @@ export async function updateStudentsGroup(formData, idList) {
             idList: idList
         };
         
-        const response = await fetch(`${API_BASE_URL}/student/group`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/student/group`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestData)
@@ -126,7 +126,7 @@ export async function updateStudentsGroup(formData, idList) {
  */
 export async function deleteStudent(idStudents) {
     try {
-        const response = await fetch(`${API_BASE_URL}/student`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/student`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(idStudents)
@@ -144,7 +144,7 @@ export async function deleteStudent(idStudents) {
  */
 export async function loadCompaniesList() {
     try {
-        const response = await fetch(`${API_BASE_URL}/company/allCompanyName`);
+        const response = await fetch(`${getApiBaseUrlValue()}/company/allCompanyName`);
         const companies = await response.json();
         return companies;
     } catch (error) {
@@ -160,7 +160,7 @@ export async function loadCompaniesList() {
  */
 export async function loadCompanyData(companyId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/company?idCompany=${companyId}`);
+        const response = await fetch(`${getApiBaseUrlValue()}/company?idCompany=${companyId}`);
         const companyData = await response.json();
         return companyData;
     } catch (error) {
@@ -175,7 +175,7 @@ export async function loadCompanyData(companyId) {
  */
 export async function loadProfessionsList() {
     try {
-        const response = await fetch(`${API_BASE_URL}/profession/allProfession`);
+        const response = await fetch(`${getApiBaseUrlValue()}/profession/allProfession`);
         const professions = await response.json();
         return professions;
     } catch (error) {
@@ -191,7 +191,7 @@ export async function loadProfessionsList() {
  */
 export async function loadProfessionData(professionId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/profession/profession?id=${professionId}`);
+        const response = await fetch(`${getApiBaseUrlValue()}/profession/profession?id=${professionId}`);
         const professionData = await response.json();
         return professionData;
     } catch (error) {

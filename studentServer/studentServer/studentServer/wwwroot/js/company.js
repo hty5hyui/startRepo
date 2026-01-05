@@ -64,19 +64,23 @@ async function handleSaveCompany(event) {
 
     // Сначала создаем объект со всеми данными, КРОМЕ id
     const companyData = {
-        name: form.querySelector('input[placeholder="Введите название компании"]').value,
-        inn: form.querySelector('input[placeholder="Введите ИНН"]').value,
-        kpp: form.querySelector('input[placeholder="Введите КПП"]').value,
-        ogrn: form.querySelector('input[placeholder="Введите ОГРН"]').value,
-        paymantAccount: form.querySelector('input[placeholder="Введите расчетный счет"]').value,
-        bank: form.querySelector('input[placeholder="Введите банк"]').value,
-        correspondentAccount: form.querySelector('input[placeholder="Введите корр. счет"]').value,
-        bik: form.querySelector('input[placeholder="Введите БИК"]').value,
-        mail: form.querySelector('input[placeholder="Введите email"]').value,
-        director: form.querySelector('input[placeholder="Введите директора"]').value,
-        headOfTheCompany: form.querySelector('input[placeholder="Введите руководителя"]').value,
-        companyAddress: form.querySelector('input[placeholder="Введите адрес компании"]').value,
-        practiceAddress: form.querySelector('input[placeholder="Введите адрес практики"]').value
+        nameCompanyRF: document.getElementById('nameCompanyRF').value,
+        nameCompanyKNDR: document.getElementById('nameCompanyKNDR').value,
+        companyActivities: document.getElementById('companyActivities').value,
+        inn: document.getElementById('inn').value,
+        kpp: document.getElementById('kpp').value,
+        ogrn: document.getElementById('ogrn').value,
+        paymantAccount: document.getElementById('paymantAccount').value,
+        bank: document.getElementById('bank').value,
+        correspondentAccount: document.getElementById('correspondentAccount').value,
+        bik: document.getElementById('bik').value,
+        mail: document.getElementById('mail').value,
+        director: document.getElementById('director').value,
+        postHeadOfTheCompany: document.getElementById('postHeadOfTheCompany').value,
+        headOfTheCompany: document.getElementById('headOfTheCompany').value,
+        companyAddress: document.getElementById('companyAddress').value,
+        practiceAddress: document.getElementById('practiceAddress').value,
+        curator: document.getElementById('curator').value
     };
 
     if (companyId) {

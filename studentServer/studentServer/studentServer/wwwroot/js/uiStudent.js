@@ -76,7 +76,6 @@ export function renderStudents(students, studentsTableBody, tableContainer, pagi
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.groupNumber ?? ''}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.companyName ?? ''}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.professionName ?? ''}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${student.curator ?? ''}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                 <div class="flex space-x-2">
                     <button class="text-teal-600 hover:text-teal-800 edit-employee-btn" data-student-id="${student.id}" aria-label="Редактировать">
@@ -145,7 +144,7 @@ export function renderPagination(paginationContainer, currentPage, pageCount, on
  * @param {string} practiceId - ID поля для адреса практики
  * @param {Function} loadCompanyData - функция для загрузки данных компании
  */
-export async function loadCompanies(selectId, directorId, addressId, practiceId, loadCompanyDataFn) {
+export async function loadCompanies(selectId, directorId, addressId, practiceId, loadCompanyDataFn, curatorId = null) {
     try {
         const { loadCompaniesList } = await import('./apiStudent.js');
         const companies = await loadCompaniesList();
@@ -158,7 +157,7 @@ export async function loadCompanies(selectId, directorId, addressId, practiceId,
         companies.forEach(company => {
             const option = document.createElement('option');
             option.value = company.id;
-            option.textContent = company.name;
+            option.textContent = company.nameCompanyRF || company.name || '';
             companySelect.appendChild(option);
         });
 
@@ -166,6 +165,7 @@ export async function loadCompanies(selectId, directorId, addressId, practiceId,
             const directorInput = document.getElementById(directorId);
             const addressInput = document.getElementById(addressId);
             const practiceInput = document.getElementById(practiceId);
+            const curatorInput = curatorId ? document.getElementById(curatorId) : null;
 
             if (this.value) {
                 try {
@@ -173,6 +173,9 @@ export async function loadCompanies(selectId, directorId, addressId, practiceId,
                     directorInput.value = companyData.director || '';
                     addressInput.value = companyData.companyAddress || '';
                     practiceInput.value = companyData.practiceAddress || '';
+                    if (curatorInput) {
+                        curatorInput.value = companyData.curator || '';
+                    }
                 } catch (error) {
                     console.error('Ошибка загрузки данных компании:', error);
                 }
@@ -180,6 +183,9 @@ export async function loadCompanies(selectId, directorId, addressId, practiceId,
                 directorInput.value = '';
                 addressInput.value = '';
                 practiceInput.value = '';
+                if (curatorInput) {
+                    curatorInput.value = '';
+                }
             }
         });
 
@@ -310,6 +316,7 @@ export async function loadStudentDataToForm(studentId, editEmployeeForm, loadCom
                 document.getElementById('edit_director').value = companyData.director || '';
                 document.getElementById('edit_company_address').value = companyData.companyAddress || '';
                 document.getElementById('edit_practice_address').value = companyData.practiceAddress || '';
+                document.getElementById('edit_curator').value = companyData.curator || '';
             } catch (error) {
                 console.error('Ошибка загрузки данных компании:', error);
             }

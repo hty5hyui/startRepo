@@ -9,7 +9,7 @@ namespace studentServer.Service
         {
             Dictionary<string, string?> PlaceholderValues = new Dictionary<string, string?>()
             {
-                // ContractDTO+
+                // ContractDTO
                 { "{НОМЕР ДОГОВОРА УВМ}", studentData.contract?.NumberUVM },
                 { "{НОМЕР ДОГОВОРА 3-Х}", studentData.contract?.Number3Party },
                 { "{ДАТА ДОГОВОРА 3-Х}", studentData.contract?.Date3Party?.ToString("dd.MM.yyyy") },
@@ -20,7 +20,7 @@ namespace studentServer.Service
                 { "{ПОЧТА КОМПАНИИ}", studentData.contract?.MailCompany },
                 { "{ДАТА ВОЗВРАТА}", studentData.contract?.DateReturn?.ToString("dd.MM.yyyy") },
 
-                // FinanceDocDTO+
+                // FinanceDocDTO
                 { "{НОМЕР КВИТАНЦИИ}", studentData.financeDoc?.CheckNumber },
                 { "{ДАТА КВИТАНЦИИ}", studentData.financeDoc?.CheckDate?.ToString("dd.MM.yyyy") },
                 { "{ОПЛАТА ВЗНОСА}", studentData.financeDoc?.PaymentOfContribution == true? "да":"нет" },
@@ -53,7 +53,10 @@ namespace studentServer.Service
                 { "{НОМЕР ВИЗЫ}", studentData.visa?.VisaNumber },
                 { "{ДАТА ВЫДАЧИ ВИЗЫ}", studentData.visa?.VisaIssueDate?.ToString("dd.MM.yyyy") },
                 { "{ДАТА ПОЛУЧЕНИЯ ВИЗЫ}", studentData.visa?.VisaReceiptDate?.ToString("dd.MM.yyyy") },
-                { "{ДАТА ДЕЙСТВИЯ ВИЗЫ}", studentData.visa?.VisaValidityDate?.ToString("dd.MM.yyyy") }
+                { "{ДАТА ДЕЙСТВИЯ ВИЗЫ}", studentData.visa?.VisaValidityDate?.ToString("dd.MM.yyyy") },
+
+                //CompanyDTO
+                { "{ID КОМПАНИИ}", studentData.student?.CompanyId.ToString() },
             };
 
             return PlaceholderValues;

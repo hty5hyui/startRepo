@@ -2,10 +2,10 @@
  * Модуль для работы с API компаний
  */
 
-import { API_BASE_URL } from './config.js';
+import { getApiBaseUrlValue } from './config.js';
 
 export async function fetchCompanies(page = 1) {
-    const response = await fetch(`${API_BASE_URL}/company/allCompany?page=${page}`);
+    const response = await fetch(`${getApiBaseUrlValue()}/company/allCompany?page=${page}`);
     if (!response.ok) {
         throw new Error('Ошибка при загрузке компаний');
     }
@@ -13,7 +13,7 @@ export async function fetchCompanies(page = 1) {
 }
 
 export async function fetchCompanyById(companyId) {
-    const response = await fetch(`${API_BASE_URL}/company?idCompany=${companyId}`);
+    const response = await fetch(`${getApiBaseUrlValue()}/company?idCompany=${companyId}`);
     if (!response.ok) {
         throw new Error('Ошибка при загрузке данных компании');
     }
@@ -24,7 +24,7 @@ export async function saveCompany(companyData) {
     const companyId = companyData.id;
     const method = companyId ? 'PATCH' : 'POST';
     
-    const response = await fetch(`${API_BASE_URL}/company`, {
+    const response = await fetch(`${getApiBaseUrlValue()}/company`, {
         method: method,
         headers: {
             'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ export async function saveCompany(companyData) {
 }
 
 export async function deleteCompany(companyId) {
-    const response = await fetch(`${API_BASE_URL}/company?idCompany=${companyId}`, {
+    const response = await fetch(`${getApiBaseUrlValue()}/company?idCompany=${companyId}`, {
         method: 'DELETE'
     });
      if (!response.ok) {

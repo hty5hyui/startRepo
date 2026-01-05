@@ -2,7 +2,7 @@
  * Модуль для работы с API шаблонов документов
  */
 
-import { API_BASE_URL } from './config.js';
+import { getApiBaseUrlValue } from './config.js';
 
 /**
  * Загружает список всех шаблонов документов с пагинацией
@@ -19,7 +19,7 @@ export async function loadDocumentTemplates(page = 1, searchFilter = null) {
             requestBody.searchFilter = searchFilter;
         }
 
-        const response = await fetch(`${API_BASE_URL}/document/all`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/document/all`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ export async function loadDocumentTemplates(page = 1, searchFilter = null) {
  */
 export async function loadDocumentTemplatePdf(id) {
     try {
-        const response = await fetch(`${API_BASE_URL}/document?id=${id}`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/document?id=${id}`, {
             method: 'GET'
         });
 
@@ -73,7 +73,7 @@ export async function uploadDocumentTemplate(file, templateName) {
         const formData = new FormData();
         formData.append('file', file);
 
-        const response = await fetch(`${API_BASE_URL}/document?templateName=${encodeURIComponent(templateName)}`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/document?templateName=${encodeURIComponent(templateName)}`, {
             method: 'POST',
             body: formData
         });
@@ -92,7 +92,7 @@ export async function uploadDocumentTemplate(file, templateName) {
  */
 export async function downloadDocumentTemplate(id) {
     try {
-        const response = await fetch(`${API_BASE_URL}/document/download?id=${id}`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/document/download?id=${id}`, {
             method: 'GET'
         });
 
@@ -152,7 +152,7 @@ export async function downloadDocumentTemplate(id) {
  */
 export async function deleteDocumentTemplate(id) {
     try {
-        const response = await fetch(`${API_BASE_URL}/document?id=${id}`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/document?id=${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
@@ -174,7 +174,7 @@ export async function deleteDocumentTemplate(id) {
 export async function searchDocumentTemplates(searchString) {
     try {
         const encodedString = encodeURIComponent(searchString);
-        const response = await fetch(`${API_BASE_URL}/document/search?str=${encodedString}`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/document/search?str=${encodedString}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -201,7 +201,7 @@ export async function searchDocumentTemplates(searchString) {
  */
 export async function makeDocuments(userIds, documentId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/operation/makeDocumet`, {
+        const response = await fetch(`${getApiBaseUrlValue()}/operation/makeDocumet`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

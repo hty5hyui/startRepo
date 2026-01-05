@@ -33,9 +33,18 @@ export function getApiBaseUrl() {
 }
 
 /**
- * Экспортируем базовый URL для удобства
+ * Экспортируем функцию для получения базового URL
+ * Используем функцию вместо константы, чтобы URL вычислялся динамически
  */
-export const API_BASE_URL = getApiBaseUrl();
+export function getApiBaseUrlValue() {
+    return getApiBaseUrl();
+}
+
+/**
+ * Экспортируем базовый URL для обратной совместимости
+ * ВАЖНО: Используйте getApiBaseUrlValue() для динамического получения URL
+ */
+export const API_BASE_URL = typeof document !== 'undefined' ? getApiBaseUrl() : '';
 
 /**
  * Проверяет, доступен ли API

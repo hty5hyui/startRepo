@@ -42,7 +42,9 @@ export const searchFields = [
         { key: 'VISA.VisaIssueDate', label: 'Дата выдачи визы', type: 'date' },
         { key: 'VISA.VisaReceiptDate', label: 'Дата получения визы', type: 'date' },
         { key: 'VISA.VisaValidityDate', label: 'Виза действительна до', type: 'date' },
-        { key: 'Company.CompanyName', label: 'Название компании', type: 'string' },
+        { key: 'Company.NameCompanyRF', label: 'Название компании РФ', type: 'string' },
+        { key: 'Company.NameCompanyKNDR', label: 'Название компании КНДР', type: 'string' },
+        { key: 'Company.CompanyActivities', label: 'Деятельность компании', type: 'string' },
         { key: 'Company.PracticeAddress', label: 'Адрес практики', type: 'string' },
         { key: 'Company.INN', label: 'ИНН', type: 'string' },
         { key: 'Company.KPP', label: 'КПП', type: 'string' },
@@ -53,11 +55,12 @@ export const searchFields = [
         { key: 'Company.BIK', label: 'БИК', type: 'string' },
         { key: 'Company.CompanyMail', label: 'Почта компании', type: 'string' },
         { key: 'Company.Director', label: 'Директор', type: 'string' },
+        { key: 'Company.PostHeadOfTheCompany', label: 'Должность руководителя компании', type: 'string' },
         { key: 'Company.HeadOfTheCompany', label: 'Руководитель компании', type: 'string' },
         { key: 'Company.CompanyAddress', label: 'Адрес компании', type: 'string' },
+        { key: 'Company.Curator', label: 'Куратор', type: 'string' },
         { key: 'Profession.ProfessionName', label: 'Название профессии', type: 'string' },
-        { key: 'Profession.ProfessionNumber', label: 'Номер профессии', type: 'string' },
-        { key: 'Curator.Name', label: 'Имя куратора', type: 'string' }
+        { key: 'Profession.ProfessionNumber', label: 'Номер профессии', type: 'string' }
     ];
 
 let searchFieldCounter = 0;

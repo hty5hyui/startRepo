@@ -6,39 +6,33 @@ namespace studentServer.repo
 {
     public class companyRepo(AppDbStudentContext _dbContext)
     {
-        int pageSize = 20;
+        int pageSize = 20; //Количество записей на странице
+
         public async Task<List<CompanyDTO>> GetAllCompanyAsync(int page)
         {
-            return await _dbContext.Company.OrderBy(a => a.Name)
+            return await _dbContext.Company.OrderBy(a => a.NameCompanyRF)
                                            .Skip((page - 1)* pageSize)
                                            .Take(pageSize)
                                            .Select(c => new CompanyDTO
                                            {
                                                Id = c.Id,
-                                               Name = c.Name,
-                                               Bank = c.Bank,
-                                               BIK = c.BIK,
+                                               NameCompanyRF = c.NameCompanyRF,
+                                               NameCompanyKNDR = c.NameCompanyKNDR,
                                                CompanyAddress = c.CompanyAddress,
-                                               CorrespondentAccount = c.CorrespondentAccount,
-                                               Director = c.Director,
                                                HeadOfTheCompany = c.HeadOfTheCompany,
                                                INN = c.INN,
-                                               KPP = c.KPP,
-                                               Mail = c.Mail,
-                                               OGRN = c.OGRN,
-                                               PaymantAccount = c.PaymantAccount,
-                                               PracticeAddress = c.PracticeAddress,
+                                               CompanyActivities = c.CompanyActivities
                                            })
                                            .ToListAsync();
         }
 
         public async Task<List<CompanyNameDTO>> GetAllCompanyNameAsync()
         {
-            return await _dbContext.Company.OrderBy(a => a.Name)
+            return await _dbContext.Company.OrderBy(a => a.NameCompanyRF)
                                            .Select(c => new CompanyNameDTO 
                                            {
                                                Id = c.Id,
-                                               Name = c.Name
+                                               Name = c.NameCompanyRF
                                            })
                                            .ToListAsync();
         }
