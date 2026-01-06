@@ -10,7 +10,7 @@ namespace studentServer.Filters
     {
         public async Task OnExceptionAsync(ExceptionContext context)
         {
-
+            Console.WriteLine($"Ошибка при выполнении запроса: {context.Exception.Message}");
             await _logService.addMessageAsync(new LogMessage
             {
                 Message = $"Ошибка при выполнении запроса {context.Exception.Message}",

@@ -309,7 +309,6 @@ export async function loadStudentDataToForm(studentId, editEmployeeForm, loadCom
     if (data.student) {
         document.getElementById('edit_company').value = data.student.companyId || '';
         document.getElementById('edit_profession').value = data.student.professionId || '';
-        document.getElementById('edit_curator').value = data.student.curatorId || '';
 
         // Если выбрана компания, загружаем её данные
         if (data.student.companyId) {

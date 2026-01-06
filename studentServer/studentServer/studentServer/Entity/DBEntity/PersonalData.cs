@@ -16,7 +16,7 @@ namespace studentServer.Entity.DBEntity
         public string? NameEn { get; set; }
         public string? PatronymicEn { get; set; }
         public DateOnly? Birthday { get; set; }
-        public bool isMan { get; set; }
+        public bool? isMan { get; set; }
         public string? PassportSeries { get; set; }
         public string? PassportNumber { get; set; }
         public DateOnly? PassportDateOfIssue { get; set; }
@@ -25,7 +25,7 @@ namespace studentServer.Entity.DBEntity
         public string? CityOfRegistration { get; set; }
         public string? AddressRegistration { get; set; }
         public string? AddressRegistrationIndex { get; set; }
-        public bool isTarget { get; set; } // Целевой или нецелевой
+        public bool? isTarget { get; set; } // Целевой или нецелевой
         public string? GroupNumber { get; set; } // Номер группы
 
         // Навигационное свойство обратно к главной сущности
@@ -42,7 +42,7 @@ namespace studentServer.Entity.DBEntity
         public string? NameEn { get; set; }
         public string? PatronymicEn { get; set; }
         public DateOnly? Birthday { get; set; }
-        public bool isMan { get; set; }
+        public bool? isMan { get; set; }
         public string? PassportSeries { get; set; }
         public string? PassportNumber { get; set; }
         public DateOnly? PassportDateOfIssue { get; set; }
@@ -51,7 +51,7 @@ namespace studentServer.Entity.DBEntity
         public string? CityOfRegistration { get; set; }
         public string? AddressRegistration { get; set; }
         public string? AddressRegistrationIndex { get; set; }
-        public bool isTarget { get; set; } // Целевой или нецелевой
+        public bool? isTarget { get; set; } // Целевой или нецелевой
         public string? GroupNumber { get; set; } // Номер группы
     }
 }

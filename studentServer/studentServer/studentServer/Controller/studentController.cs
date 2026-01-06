@@ -42,7 +42,13 @@ namespace studentServer.Controller
         [HttpPatch("group")]
         public async Task<IActionResult> PatchGroupStudents([FromBody] StudentGroupDataDTO newStudentsData)
         {
+            string text = JsonConvert.SerializeObject(newStudentsData);
+            Console.WriteLine(text);
+
             await studentsService.patchGroupStudentsAsync(newStudentsData);
+
+            
+
             return StatusCode(StatusCodes.Status200OK);
         }
 

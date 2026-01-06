@@ -102,6 +102,8 @@ export async function updateStudent(formData) {
  */
 export async function updateStudentsGroup(formData, idList) {
     try {
+        // Структура должна соответствовать StudentGroupDataDTO на сервере
+        // Распаковываем formData и добавляем idList на верхний уровень
         const requestData = {
             ...formData,
             idList: idList

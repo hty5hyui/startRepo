@@ -52,7 +52,10 @@ import {
     initTriStateCheckboxes,
     resetTriStateCheckboxes,
     removeTriStateCheckboxes,
-    getTriStateValue
+    getTriStateValue,
+    initTriStateSelects,
+    removeTriStateSelects,
+    getTriStateSelectValue
 } from './triStateCheckbox.js';
 
 // Ждем, пока вся HTML-структура (DOM) будет загружена, прежде чем выполнять скрипт
@@ -123,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let initialFormValues = {};
     let changedFields = new Set();
     let triStateControllers = null;
+    let triStateSelectControllers = null;
 
     // Элементы для группового редактирования
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
@@ -343,7 +347,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const input = e.target;
         if (!input.name && !input.id) return;
         
-        const fieldName = input.name || input.id;
+        let fieldName = input.name || input.id;
+        
+        // Проверяем, является ли это скрытым чекбоксом для трехпозиционного select
+        if (input.type === 'checkbox' && input.id && input.id.endsWith('_hidden_checkbox')) {
+            // Извлекаем ID select из ID чекбокса
+            const selectId = input.id.replace('_hidden_checkbox', '');
+            if (selectId === 'edit_gender' || selectId === 'edit_is_target') {
+                fieldName = selectId;
+                if (triStateSelectControllers && triStateSelectControllers[fieldName]) {
+                    const currentValue = getTriStateSelectValue(fieldName);
+                    // Добавляем в измененные поля, если значение не null
+                    if (currentValue !== null) {
+                        changedFields.add(fieldName);
+                    } else {
+                        changedFields.delete(fieldName);
+                    }
+                }
+                return;
+            }
+        }
         
         // Для трехпозиционных чекбоксов проверяем их состояние
         if (input.type === 'checkbox' && triStateControllers && triStateControllers[input.id]) {
@@ -353,6 +376,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 changedFields.add(fieldName);
             } else {
                 changedFields.delete(fieldName);
+            }
+        } else if (fieldName === 'edit_gender' || fieldName === 'edit_is_target') {
+            // Для трехпозиционных select проверяем их состояние
+            if (triStateSelectControllers && triStateSelectControllers[fieldName]) {
+                const currentValue = getTriStateSelectValue(fieldName);
+                // Добавляем в измененные поля, если значение не null
+                if (currentValue !== null) {
+                    changedFields.add(fieldName);
+                } else {
+                    changedFields.delete(fieldName);
+                }
+            } else {
+                // Для обычных select
+                if (input.value !== initialFormValues[fieldName]) {
+                    changedFields.add(fieldName);
+                } else {
+                    changedFields.delete(fieldName);
+                }
             }
         } else {
             // Для обычных полей
@@ -383,10 +424,22 @@ document.addEventListener('DOMContentLoaded', () => {
             'edit_card_get'
         ];
         
+        // Список ID select элементов для группового редактирования
+        const selectIds = [
+            'edit_gender',
+            'edit_is_target'
+        ];
+        
         // Удаляем старые трехпозиционные чекбоксы если они есть
         if (triStateControllers) {
             removeTriStateCheckboxes(checkboxIds);
             triStateControllers = null;
+        }
+        
+        // Удаляем старые трехпозиционные select если они есть
+        if (triStateSelectControllers) {
+            removeTriStateSelects(selectIds);
+            triStateSelectControllers = null;
         }
         
         // Очищаем форму
@@ -394,6 +447,26 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Инициализируем трехпозиционные чекбоксы для группового редактирования
         triStateControllers = initTriStateCheckboxes(editEmployeeForm, checkboxIds);
+        
+        // Инициализируем трехпозиционные select для группового редактирования
+        triStateSelectControllers = initTriStateSelects(editEmployeeForm, [
+            {
+                id: 'edit_gender',
+                labels: {
+                    null: 'не изменять',
+                    true: 'Мужской',
+                    false: 'Женский'
+                }
+            },
+            {
+                id: 'edit_is_target',
+                labels: {
+                    null: 'не изменять',
+                    true: 'Целевой',
+                    false: 'Самостоятельный'
+                }
+            }
+        ]);
         
         // Сохраняем начальные значения (пустые для группового редактирования)
         saveInitialFormValues(editEmployeeForm);
@@ -435,6 +508,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (input.type === 'checkbox' && triStateControllers && triStateControllers[input.id]) {
                     const value = getTriStateValue(input.id);
                     formData[fieldName] = value;
+                } else if (fieldName === 'edit_gender' || fieldName === 'edit_is_target') {
+                    // Для полей пола и типа обучения используем трехпозиционный select
+                    if (triStateSelectControllers && triStateSelectControllers[fieldName]) {
+                        const value = getTriStateSelectValue(fieldName);
+                        formData[fieldName] = value;
+                    } else {
+                        // Если не в режиме группового редактирования, используем обычный select
+                        const value = getValue(fieldName);
+                        if (value !== null && value !== '') {
+                            formData[fieldName] = value === 'true' || value === true;
+                        } else {
+                            formData[fieldName] = null;
+                        }
+                    }
                 } else {
                     formData[fieldName] = getValue(fieldName) || null;
                 }
@@ -522,8 +609,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             Student: {
                 "CompanyId": getValue('company'),
-                "ProfessionId": getValue('profession'),
-                "CuratorId": getValue('curator')
+                "ProfessionId": getValue('profession')
             }
         };
 
@@ -558,59 +644,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 const changedData = getChangedFormData(editEmployeeForm);
                 
                 // Создаем структуру с null для неизменённых полей
+                // Названия полей в camelCase для соответствия C# DTO
                 const formData = {
-                    Contract: {
-                        NumberUVM: changedData.edit_uvm_contract_number || null,
-                        Number3Party: changedData.edit_tripartite_contract_number || null,
-                        Date3Party: changedData.edit_tripartite_contract_date || null,
-                        Number2Party: changedData.edit_bipartite_contract_number || null,
-                        Date2Party: changedData.edit_bipartite_contract_date || null,
-                        DateOfDispatch: changedData.edit_shipment_date || null,
-                        MailCompany: changedData.edit_postal_company || null,
-                        DateReturn: changedData.edit_return_date || null
+                    contract: {
+                        numberUVM: changedData.edit_uvm_contract_number || null,
+                        number3Party: changedData.edit_tripartite_contract_number || null,
+                        date3Party: changedData.edit_tripartite_contract_date || null,
+                        number2Party: changedData.edit_bipartite_contract_number || null,
+                        date2Party: changedData.edit_bipartite_contract_date || null,
+                        dateOfDispatch: changedData.edit_shipment_date || null,
+                        mailCompany: changedData.edit_postal_company || null,
+                        dateReturn: changedData.edit_return_date || null
                     },
-                    FinanceDoc: {
-                        PaymentOfContribution: changedData.edit_payment_contribution !== undefined ? changedData.edit_payment_contribution : null,
-                        PaymentOfContributionYear: changedData.edit_payment_contribution_year !== undefined ? changedData.edit_payment_contribution_year : null,
-                        CheckNumber: changedData.edit_receipt_number || null,
-                        CheckDate: changedData.edit_receipt_date || null,
-                        CardIsReady: changedData.edit_card_ready !== undefined ? changedData.edit_card_ready : null,
-                        CardIsGet: changedData.edit_card_get !== undefined ? changedData.edit_card_get : null
+                    financeDoc: {
+                        paymentOfContribution: changedData.edit_payment_contribution !== undefined ? changedData.edit_payment_contribution : null,
+                        paymentOfContributionYear: changedData.edit_payment_contribution_year !== undefined ? changedData.edit_payment_contribution_year : null,
+                        checkNumber: changedData.edit_receipt_number || null,
+                        checkDate: changedData.edit_receipt_date || null,
+                        cardIsReady: changedData.edit_card_ready !== undefined ? changedData.edit_card_ready : null,
+                        cardIsGet: changedData.edit_card_get !== undefined ? changedData.edit_card_get : null
                     },
-                    PersonalData: {
-                        Surname: changedData.edit_surname || null,
-                        Name: changedData.edit_name || null,
-                        Patronymic: changedData.edit_patronymic || null,
-                        SurnameEn: changedData.edit_surname_en || null,
-                        NameEn: changedData.edit_name_en || null,
-                        PatronymicEn: changedData.edit_patronymic_en || null,
-                        Birthday: changedData.edit_birth_date || null,
-                        isMan: changedData.edit_gender !== undefined ? (changedData.edit_gender === 'true' || changedData.edit_gender === true) : null,
-                        PassportSeries: changedData.edit_passport_series || null,
-                        PassportNumber: changedData.edit_passport_number || null,
-                        PassportDateOfIssue: changedData.edit_passport_issue_date || null,
-                        PassportDateEnd: changedData.edit_passport_expiry_date || null,
-                        PlaceOfBirth: changedData.edit_birth_place || null,
-                        CityOfRegistration: changedData.edit_registration_city || null,
-                        AddressRegistration: changedData.edit_registration_address || null,
-                        AddressRegistrationIndex: changedData.edit_registration_zip || null,
-                        isTarget: changedData.edit_is_target !== undefined ? (changedData.edit_is_target === 'true' || changedData.edit_is_target === true) : null,
-                        GroupNumber: changedData.edit_group_number || null
+                    personalData: {
+                        surname: changedData.edit_surname || null,
+                        name: changedData.edit_name || null,
+                        patronymic: changedData.edit_patronymic || null,
+                        surnameEn: changedData.edit_surname_en || null,
+                        nameEn: changedData.edit_name_en || null,
+                        patronymicEn: changedData.edit_patronymic_en || null,
+                        birthday: changedData.edit_birth_date || null,
+                        isMan: changedData.edit_gender !== undefined && changedData.edit_gender !== null ? (typeof changedData.edit_gender === 'boolean' ? changedData.edit_gender : changedData.edit_gender === 'true' || changedData.edit_gender === true) : null,
+                        passportSeries: changedData.edit_passport_series || null,
+                        passportNumber: changedData.edit_passport_number || null,
+                        passportDateOfIssue: changedData.edit_passport_issue_date || null,
+                        passportDateEnd: changedData.edit_passport_expiry_date || null,
+                        placeOfBirth: changedData.edit_birth_place || null,
+                        cityOfRegistration: changedData.edit_registration_city || null,
+                        addressRegistration: changedData.edit_registration_address || null,
+                        addressRegistrationIndex: changedData.edit_registration_zip || null,
+                        isTarget: changedData.edit_is_target !== undefined && changedData.edit_is_target !== null ? (typeof changedData.edit_is_target === 'boolean' ? changedData.edit_is_target : changedData.edit_is_target === 'true' || changedData.edit_is_target === true) : null,
+                        groupNumber: changedData.edit_group_number || null
                     },
-                    Visa: {
-                        InviteNumber: changedData.edit_invitation_number || null,
-                        ArrivalDate: changedData.edit_arrival_date || null,
-                        VisaId: changedData.edit_visa_id || null,
-                        VisaSeries: changedData.edit_visa_form_series || null,
-                        VisaNumber: changedData.edit_visa_number || null,
-                        VisaIssueDate: changedData.edit_visa_issue_date || null,
-                        VisaReceiptDate: changedData.edit_visa_receipt_date || null,
-                        VisaValidityDate: changedData.edit_visa_expiry_date || null
+                    visa: {
+                        inviteNumber: changedData.edit_invitation_number || null,
+                        arrivalDate: changedData.edit_arrival_date || null,
+                        visaId: changedData.edit_visa_id || null,
+                        visaSeries: changedData.edit_visa_form_series || null,
+                        visaNumber: changedData.edit_visa_number || null,
+                        visaIssueDate: changedData.edit_visa_issue_date || null,
+                        visaReceiptDate: changedData.edit_visa_receipt_date || null,
+                        visaValidityDate: changedData.edit_visa_expiry_date || null
                     },
-                    Student: {
-                        CompanyId: changedData.edit_company || null,
-                        ProfessionId: changedData.edit_profession || null,
-                        CuratorId: changedData.edit_curator || null
+                    student: {
+                        companyId: changedData.edit_company || null,
+                        professionId: changedData.edit_profession || null
                     }
                 };
 
@@ -628,6 +714,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     ];
                     removeTriStateCheckboxes(checkboxIds);
                     triStateControllers = null;
+                    
+                    // Удаляем трехпозиционные select
+                    const selectIds = [
+                        'edit_gender',
+                        'edit_is_target'
+                    ];
+                    removeTriStateSelects(selectIds);
+                    triStateSelectControllers = null;
                     
                     closeModalWrapper(editEmployeeModal);
                     isGroupEditMode = false;
@@ -700,8 +794,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     Student: {
                         Id: currentStudentId,
                         CompanyId: getValue('edit_company'),
-                        ProfessionId: getValue('edit_profession'),
-                        CuratorId: getValue('edit_curator')
+                        ProfessionId: getValue('edit_profession')
                     }
                 };
 
@@ -753,6 +846,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 ];
                 removeTriStateCheckboxes(checkboxIds);
                 triStateControllers = null;
+            }
+            
+            // Удаляем трехпозиционные select если они остались
+            if (triStateSelectControllers) {
+                const selectIds = [
+                    'edit_gender',
+                    'edit_is_target'
+                ];
+                removeTriStateSelects(selectIds);
+                triStateSelectControllers = null;
             }
             
             // Очищаем changedFields
@@ -1114,6 +1217,16 @@ document.addEventListener('DOMContentLoaded', () => {
             triStateControllers = null;
         }
         
+        // Удаляем трехпозиционные select если были активированы
+        if (triStateSelectControllers) {
+            const selectIds = [
+                'edit_gender',
+                'edit_is_target'
+            ];
+            removeTriStateSelects(selectIds);
+            triStateSelectControllers = null;
+        }
+        
         closeModalWrapper(editEmployeeModal);
         isGroupEditMode = false;
         changedFields.clear();
@@ -1135,6 +1248,16 @@ document.addEventListener('DOMContentLoaded', () => {
             ];
             removeTriStateCheckboxes(checkboxIds);
             triStateControllers = null;
+        }
+        
+        // Удаляем трехпозиционные select если были активированы
+        if (triStateSelectControllers) {
+            const selectIds = [
+                'edit_gender',
+                'edit_is_target'
+            ];
+            removeTriStateSelects(selectIds);
+            triStateSelectControllers = null;
         }
         
         closeModalWrapper(editEmployeeModal);

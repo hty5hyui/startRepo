@@ -1,6 +1,7 @@
 /* Стили для трехпозиционных чекбоксов */
 
-.tri-state-checkbox-container {
+.tri-state-checkbox-container,
+.tri-state-select-container {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
