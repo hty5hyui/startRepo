@@ -14,7 +14,6 @@ namespace studentServer.Entity.DBEntity
         public DateOnly? Date3Party { get; set; }
         public string? Number2Party { get; set; }
         public DateOnly? Date2Party { get; set; }
-        public string? GroupNumber { get; set; }
         public DateOnly? DateOfDispatch { get; set; }
         public string? MailCompany { get; set; }
         public DateOnly? DateReturn { get; set; }
@@ -31,7 +30,6 @@ namespace studentServer.Entity.DBEntity
         public DateOnly? Date3Party { get; set; }
         public string? Number2Party { get; set; }
         public DateOnly? Date2Party { get; set; }
-        public string? GroupNumber { get; set; }
         public DateOnly? DateOfDispatch { get; set; }
         public string? MailCompany { get; set; }
         public DateOnly? DateReturn { get; set; }

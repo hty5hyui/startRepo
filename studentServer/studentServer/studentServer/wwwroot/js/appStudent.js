@@ -478,7 +478,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 Date3Party: getValue('tripartite_contract_date'),
                 Number2Party: getValue('bipartite_contract_number'),
                 Date2Party: getValue('bipartite_contract_date'),
-                GroupNumber: getValue('group_number'),
                 DateOfDispatch: getValue('shipment_date'),
                 MailCompany: getValue('postal_company'),
                 DateReturn: getValue('return_date')
@@ -499,6 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 NameEn: getValue('name_en'),
                 PatronymicEn: getValue('patronymic_en'),
                 Birthday: getValue('birth_date'),
+                isMan: getValue('gender') === 'true' || getValue('gender') === true,
                 PassportSeries: getValue('passport_series'),
                 PassportNumber: getValue('passport_number'),
                 PassportDateOfIssue: getValue('passport_issue_date'),
@@ -506,7 +506,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 PlaceOfBirth: getValue('birth_place'),
                 CityOfRegistration: getValue('registration_city'),
                 AddressRegistration: getValue('registration_address'),
-                AddressRegistrationIndex: getValue('registration_zip')
+                AddressRegistrationIndex: getValue('registration_zip'),
+                isTarget: getValue('is_target') === 'true' || getValue('is_target') === true,
+                GroupNumber: getValue('group_number')
             },
             Visa: {
                 InviteNumber: getValue('invitation_number'),
@@ -563,7 +565,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         Date3Party: changedData.edit_tripartite_contract_date || null,
                         Number2Party: changedData.edit_bipartite_contract_number || null,
                         Date2Party: changedData.edit_bipartite_contract_date || null,
-                        GroupNumber: changedData.edit_group_number || null,
                         DateOfDispatch: changedData.edit_shipment_date || null,
                         MailCompany: changedData.edit_postal_company || null,
                         DateReturn: changedData.edit_return_date || null
@@ -584,6 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         NameEn: changedData.edit_name_en || null,
                         PatronymicEn: changedData.edit_patronymic_en || null,
                         Birthday: changedData.edit_birth_date || null,
+                        isMan: changedData.edit_gender !== undefined ? (changedData.edit_gender === 'true' || changedData.edit_gender === true) : null,
                         PassportSeries: changedData.edit_passport_series || null,
                         PassportNumber: changedData.edit_passport_number || null,
                         PassportDateOfIssue: changedData.edit_passport_issue_date || null,
@@ -591,7 +593,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         PlaceOfBirth: changedData.edit_birth_place || null,
                         CityOfRegistration: changedData.edit_registration_city || null,
                         AddressRegistration: changedData.edit_registration_address || null,
-                        AddressRegistrationIndex: changedData.edit_registration_zip || null
+                        AddressRegistrationIndex: changedData.edit_registration_zip || null,
+                        isTarget: changedData.edit_is_target !== undefined ? (changedData.edit_is_target === 'true' || changedData.edit_is_target === true) : null,
+                        GroupNumber: changedData.edit_group_number || null
                     },
                     Visa: {
                         InviteNumber: changedData.edit_invitation_number || null,
@@ -651,7 +655,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         Date3Party: getValue('edit_tripartite_contract_date'),
                         Number2Party: getValue('edit_bipartite_contract_number'),
                         Date2Party: getValue('edit_bipartite_contract_date'),
-                        GroupNumber: getValue('edit_group_number'),
                         DateOfDispatch: getValue('edit_shipment_date'),
                         MailCompany: getValue('edit_postal_company'),
                         DateReturn: getValue('edit_return_date')
@@ -672,6 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         NameEn: getValue('edit_name_en'),
                         PatronymicEn: getValue('edit_patronymic_en'),
                         Birthday: getValue('edit_birth_date'),
+                        isMan: getValue('edit_gender') === 'true' || getValue('edit_gender') === true,
                         PassportSeries: getValue('edit_passport_series'),
                         PassportNumber: getValue('edit_passport_number'),
                         PassportDateOfIssue: getValue('edit_passport_issue_date'),
@@ -679,7 +683,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         PlaceOfBirth: getValue('edit_birth_place'),
                         CityOfRegistration: getValue('edit_registration_city'),
                         AddressRegistration: getValue('edit_registration_address'),
-                        AddressRegistrationIndex: getValue('edit_registration_zip')
+                        AddressRegistrationIndex: getValue('edit_registration_zip'),
+                        isTarget: getValue('edit_is_target') === 'true' || getValue('edit_is_target') === true,
+                        GroupNumber: getValue('edit_group_number')
                     },
                     Visa: {
                         InviteNumber: getValue('edit_invitation_number'),

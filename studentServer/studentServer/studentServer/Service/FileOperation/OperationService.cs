@@ -7,7 +7,7 @@ using Xceed.Words.NET;
 
 namespace studentServer.Service.FileOperation
 {
-    public class OperationService(studentsCRUD studentsCRUD, documentTemplateCRUD documentTemplateCRUD, LogService logger)
+    public class OperationService(studentsCRUD studentsCRUD, documentTemplateCRUD documentTemplateCRUD, companyCRUD companyCRUD, LogService logger)
     {
         //Формируем документы, собираем в архив и отправляем массив байт
         internal async Task<byte[]> makeStudentDocumentAsync(OperationEntity operationEntity)
@@ -25,10 +25,15 @@ namespace studentServer.Service.FileOperation
                     foreach (int userId in operationEntity.userId)
                     {
                         StudentDataDTO studentDataDTO = await studentsCRUD.getStudentDataAsync(userId);
+                        Company company = new Company();
+                        if (studentDataDTO.student.CompanyId != null)
+                        {
+                             company = await companyCRUD.getCompanyDataAsync((int)studentDataDTO.student.CompanyId);
+                        }
                         string nameFile = $"{userId} {studentDataDTO.personalData.Surname} {studentDataDTO.personalData.Name} {studentDataDTO.personalData.Patronymic} {document.DocumentName}.docx";
                         try
                         {
-                            byte[] dataFile = WordReplacer.BaseReplace(document.Content!, studentDataDTO);
+                            byte[] dataFile = WordReplacer.BaseReplace(document.Content!, studentDataDTO, company);
                             //Создаем объект
                             ZipArchiveEntry entry = archive.CreateEntry(nameFile, CompressionLevel.Fastest);
 

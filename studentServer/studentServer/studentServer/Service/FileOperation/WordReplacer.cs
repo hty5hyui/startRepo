@@ -37,7 +37,7 @@ namespace studentServer.Service.FileOperation
             return outputStream.ToArray();
         }
 
-        public static byte[] BaseReplace(byte[] word, StudentDataDTO studentData)
+        public static byte[] BaseReplace(byte[] word, StudentDataDTO studentData, Company company)
         {
             using MemoryStream inputStream = new MemoryStream(word);
             using MemoryStream outputStream = new MemoryStream();
@@ -45,7 +45,7 @@ namespace studentServer.Service.FileOperation
             Formatting highlightFormat = new Formatting();
             highlightFormat.Highlight = Highlight.yellow;
 
-            Dictionary<string, string?> dictinaryData = ReplacePlaceholderDictionaryService.BuildDictionary(studentData);            
+            Dictionary<string, string?> dictinaryData = ReplacePlaceholderDictionaryService.BuildDictionary(studentData, company);            
 
             using (DocX document = DocX.Load(inputStream))
             {

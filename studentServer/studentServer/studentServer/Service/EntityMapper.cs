@@ -49,7 +49,6 @@ namespace studentServer.Service
                 Date3Party = contract.Date3Party,
                 Number2Party = contract.Number2Party,
                 Date2Party = contract.Date2Party,
-                GroupNumber = contract.GroupNumber,
                 DateOfDispatch = contract.DateOfDispatch,
                 MailCompany = contract.MailCompany,
                 DateReturn = contract.DateReturn
@@ -67,7 +66,6 @@ namespace studentServer.Service
                 Date3Party = contractDTO.Date3Party,
                 Number2Party = contractDTO.Number2Party,
                 Date2Party = contractDTO.Date2Party,
-                GroupNumber = contractDTO.GroupNumber,
                 DateOfDispatch = contractDTO.DateOfDispatch,
                 MailCompany = contractDTO.MailCompany,
                 DateReturn = contractDTO.DateReturn
@@ -88,14 +86,17 @@ namespace studentServer.Service
                 NameEn = personalData.NameEn,
                 PatronymicEn = personalData.PatronymicEn,
                 Birthday = personalData.Birthday,
+                isMan = personalData.isMan,
                 PassportSeries = personalData.PassportSeries,
                 PassportNumber = personalData.PassportNumber,
+                isTarget = personalData.isTarget,
                 PassportDateOfIssue = personalData.PassportDateOfIssue,
                 PassportDateEnd = personalData.PassportDateEnd,
                 PlaceOfBirth = personalData.PlaceOfBirth,
                 CityOfRegistration = personalData.CityOfRegistration,
                 AddressRegistration = personalData.AddressRegistration,
-                AddressRegistrationIndex = personalData.AddressRegistrationIndex
+                AddressRegistrationIndex = personalData.AddressRegistrationIndex,
+                GroupNumber = personalData.GroupNumber
             };
         }
 
@@ -113,14 +114,17 @@ namespace studentServer.Service
                 NameEn = personalDataDTO.NameEn,
                 PatronymicEn = personalDataDTO.PatronymicEn,
                 Birthday = personalDataDTO.Birthday,
+                isMan = personalDataDTO.isMan,
                 PassportSeries = personalDataDTO.PassportSeries,
                 PassportNumber = personalDataDTO.PassportNumber,
+                isTarget = personalDataDTO.isTarget,
                 PassportDateOfIssue = personalDataDTO.PassportDateOfIssue,
                 PassportDateEnd = personalDataDTO.PassportDateEnd,
                 PlaceOfBirth = personalDataDTO.PlaceOfBirth,
                 CityOfRegistration = personalDataDTO.CityOfRegistration,
                 AddressRegistration = personalDataDTO.AddressRegistration,
-                AddressRegistrationIndex = personalDataDTO.AddressRegistrationIndex
+                AddressRegistrationIndex = personalDataDTO.AddressRegistrationIndex,
+                GroupNumber = personalDataDTO.GroupNumber
             };
         }
         //----------------------------------------------------------------------------------------------------

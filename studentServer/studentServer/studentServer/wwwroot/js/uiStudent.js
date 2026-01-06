@@ -258,6 +258,7 @@ export async function loadStudentDataToForm(studentId, editEmployeeForm, loadCom
         document.getElementById('edit_patronymic').value = data.personalData.patronymic || '';
         document.getElementById('edit_patronymic_en').value = data.personalData.patronymicEn || '';
         document.getElementById('edit_birth_date').value = data.personalData.birthday || '';
+        document.getElementById('edit_gender').value = data.personalData.isMan ? 'true' : 'false';
         document.getElementById('edit_passport_series').value = data.personalData.passportSeries || '';
         document.getElementById('edit_passport_number').value = data.personalData.passportNumber || '';
         document.getElementById('edit_passport_issue_date').value = data.personalData.passportDateOfIssue || '';
@@ -266,6 +267,8 @@ export async function loadStudentDataToForm(studentId, editEmployeeForm, loadCom
         document.getElementById('edit_registration_city').value = data.personalData.cityOfRegistration || '';
         document.getElementById('edit_registration_address').value = data.personalData.addressRegistration || '';
         document.getElementById('edit_registration_zip').value = data.personalData.addressRegistrationIndex || '';
+        document.getElementById('edit_group_number').value = data.personalData.groupNumber || '';
+        document.getElementById('edit_is_target').value = data.personalData.isTarget ? 'true' : 'false';
     }
 
     // Заполняем поля финансовых документов
@@ -285,7 +288,6 @@ export async function loadStudentDataToForm(studentId, editEmployeeForm, loadCom
         document.getElementById('edit_tripartite_contract_date').value = data.contract.date3Party || '';
         document.getElementById('edit_bipartite_contract_number').value = data.contract.number2Party || '';
         document.getElementById('edit_bipartite_contract_date').value = data.contract.date2Party || '';
-        document.getElementById('edit_group_number').value = data.contract.groupNumber || '';
         document.getElementById('edit_shipment_date').value = data.contract.dateOfDispatch || '';
         document.getElementById('edit_postal_company').value = data.contract.mailCompany || '';
         document.getElementById('edit_return_date').value = data.contract.dateReturn || '';

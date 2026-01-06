@@ -152,7 +152,7 @@ namespace studentServer.repo
                                                                                   Patronymic = s.PersonalData.Patronymic,
                                                                                   PassportSeries = s.PersonalData.PassportSeries,
                                                                                   PassportNumber = s.PersonalData.PassportNumber,
-                                                                                  GroupNumber = s.Contract.GroupNumber,
+                                                                                  GroupNumber = s.PersonalData.GroupNumber,
                                                                                   CompanyName = s.Company.NameCompanyRF,
                                                                                   ProfessionName = s.Profession.ProfessionName,
                                                                                   Curator = s.Curator.Name
@@ -190,7 +190,7 @@ namespace studentServer.repo
                                                           Patronymic = s.PersonalData.Patronymic,
                                                           PassportSeries = s.PersonalData.PassportSeries,
                                                           PassportNumber = s.PersonalData.PassportNumber,
-                                                          GroupNumber = s.Contract.GroupNumber,
+                                                          GroupNumber = s.PersonalData.GroupNumber,
                                                           CompanyName = s.Company.NameCompanyRF,
                                                           ProfessionName = s.Profession.ProfessionName,
                                                           Curator = s.Curator.Name

@@ -5,7 +5,7 @@ namespace studentServer.Service
     public class ReplacePlaceholderDictionaryService
     {
 
-        public static Dictionary<string, string?> BuildDictionary(StudentDataDTO studentData)
+        public static Dictionary<string, string?> BuildDictionary(StudentDataDTO studentData, Company company)
         {
             Dictionary<string, string?> PlaceholderValues = new Dictionary<string, string?>()
             {
@@ -15,7 +15,6 @@ namespace studentServer.Service
                 { "{ДАТА ДОГОВОРА 3-Х}", studentData.contract?.Date3Party?.ToString("dd.MM.yyyy") },
                 { "{НОМЕР ДОГОВОРА 2-Х}", studentData.contract?.Number2Party },
                 { "{ДАТА ДОГОВОРА 2-Х}", studentData.contract?.Date2Party?.ToString("dd.MM.yyyy") },
-                { "{НОМЕР ГРУППЫ}", studentData.contract?.GroupNumber },
                 { "{ДАТА ОТПРАВКИ}", studentData.contract?.DateOfDispatch?.ToString("dd.MM.yyyy") },
                 { "{ПОЧТА КОМПАНИИ}", studentData.contract?.MailCompany },
                 { "{ДАТА ВОЗВРАТА}", studentData.contract?.DateReturn?.ToString("dd.MM.yyyy") },
@@ -44,6 +43,7 @@ namespace studentServer.Service
                 { "{ГОРОД РЕГИСТРАЦИИ}", studentData.personalData?.CityOfRegistration },
                 { "{АДРЕС РЕГИСТРАЦИИ}", studentData.personalData?.AddressRegistration },
                 { "{ИНДЕКС РЕГИСТРАЦИИ}", studentData.personalData?.AddressRegistrationIndex },
+                { "{НОМЕР ГРУППЫ}", studentData.personalData?.GroupNumber },
 
                 // VISADTO
                 { "{НОМЕР ПРИГЛАШЕНИЯ}", studentData.visa?.InviteNumber },
@@ -55,8 +55,24 @@ namespace studentServer.Service
                 { "{ДАТА ПОЛУЧЕНИЯ ВИЗЫ}", studentData.visa?.VisaReceiptDate?.ToString("dd.MM.yyyy") },
                 { "{ДАТА ДЕЙСТВИЯ ВИЗЫ}", studentData.visa?.VisaValidityDate?.ToString("dd.MM.yyyy") },
 
-                //CompanyDTO
-                { "{ID КОМПАНИИ}", studentData.student?.CompanyId.ToString() },
+                //COMPANY
+                { "{НАЗВАНИЕ КОМПАНИИ РФ}", company?.NameCompanyRF },
+                { "{НАЗВАНИЕ КОМПАНИИ КНДР}", company?.NameCompanyKNDR },
+                { "{АДРЕС ПРАКТИКИ}", company?.PracticeAddress },
+                { "{ИНН КОМПАНИИ}", company?.INN },
+                { "{КПП КОМПАНИИ}",  company?.KPP },
+                { "{ОГРН КОМПАНИИ}", company?.OGRN },
+                { "{РАСЧЕТНЫЙ СЧЕТ КОМПАНИИ}", company?.PaymantAccount },
+                { "{БАНК КОМПАНИИ}", company?.Bank },
+                { "{КОРОСПОНДЕНТСКИЙ СЧЕТ КОМПАНИИ}", company?.CorrespondentAccount },
+                { "{БИК КОМПАНИИ}", company?.BIK },
+                { "{ПОЧТА КОМПАНИИ}", company?.Mail },
+                { "{ВИДЫ ДЕЯТЕЛЬНОСТИ КОМПАНИИ}", company?.CompanyActivities },
+                { "{ДИРЕКТОР КОМПАНИИ}", company?.Director },
+                { "{ДОЛЖНОСТЬ РУКОВОДИТЕЛЯ КОМПАНИИ}", company?.PostHeadOfTheCompany },
+                { "{РУКОВОДИТЕЛЬ КОМПАНИИ}", company?.HeadOfTheCompany },
+                { "{АДРЕС КОМПАНИИ}", company?.CompanyAddress },
+                { "{КУРАТОР КОМПАНИИ}", company?.Curator }
             };
 
             return PlaceholderValues;
