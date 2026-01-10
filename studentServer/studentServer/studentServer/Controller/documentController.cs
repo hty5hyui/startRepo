@@ -47,7 +47,7 @@ namespace studentServer.Controller
         {
             DocumentTemplate template = await documentService.GetDocumentTemplateByIdAsync(id);
             if (template.Content == null) return NotFound("Шаблон не найден");
-            Console.WriteLine(template.DocumentName);
+
             return File(template.Content, "application/vnd.openxmlformats-officedocument.wordprocessingml.document", template.DocumentName);
         }
 

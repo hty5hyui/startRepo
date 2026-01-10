@@ -1,4 +1,5 @@
-﻿using studentServer.Entity;
+﻿using Microsoft.Extensions.Caching.Memory;
+using studentServer.Entity;
 using studentServer.Entity.DBEntity;
 using studentServer.Service.CRUD;
 using System.Drawing;
@@ -7,12 +8,15 @@ using Xceed.Words.NET;
 
 namespace studentServer.Service.FileOperation
 {
-    public class OperationService(studentsCRUD studentsCRUD, documentTemplateCRUD documentTemplateCRUD, companyCRUD companyCRUD, LogService logger)
+    public class OperationService(studentsCRUD studentsCRUD, documentTemplateCRUD documentTemplateCRUD, companyCRUD companyCRUD, LogService logger, IMemoryCache cache)
     {
         //Формируем документы, собираем в архив и отправляем массив байт
-        internal async Task<byte[]> makeStudentDocumentAsync(OperationEntity operationEntity)
+        internal async Task makeStudentDocumentAsync(OperationEntity operationEntity, string ticketId)
         {
             DocumentTemplate document = await documentTemplateCRUD.GetDocumentTemplateByIdAsync(operationEntity.documentId);
+            int processedCount = 0;
+            int totalStudents = operationEntity.userId.Count();
+
             if (document == null)
             {
                 throw new Exception($"Шаблон документа с id={operationEntity.documentId} не обнаружен");
@@ -74,10 +78,36 @@ namespace studentServer.Service.FileOperation
                                 }
                             }
                         }
+                        processedCount++;
+                        int currentPercent = (int)((double)processedCount / totalStudents * 100);
+                        if (currentPercent >= 100) currentPercent = 99;
+
+                        if (cache.TryGetValue(ticketId, out ProgressEntity? activeStatus))
+                        {
+                            activeStatus.Progress = currentPercent;
+                        }
+
                     }
                 }
-
-                return stream.ToArray();
+                //Сохраняем результат в кеш
+                try
+                {
+                    byte[] data = stream.ToArray();
+                    if(cache.TryGetValue(ticketId, out ProgressEntity? progressEntity))
+                    {
+                        progressEntity.ResultData = data;
+                        progressEntity.IsReady = true;
+                        progressEntity.Progress = 100;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    if (cache.TryGetValue(ticketId, out ProgressEntity? status))
+                    {
+                        status.Error = ex.Message;
+                        status.IsReady = true;
+                    }
+                } 
             }  
         }
     }

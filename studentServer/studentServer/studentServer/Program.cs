@@ -41,6 +41,7 @@ builder.Services.AddScoped<documentTemplateCRUD>();
 builder.Services.AddScoped<documentController>();
 
 builder.Services.AddScoped<OperationService>();
+builder.Services.AddMemoryCache();
 builder.Services.AddScoped<operationController>();
 
 builder.Services.AddScoped<logRepo>();
