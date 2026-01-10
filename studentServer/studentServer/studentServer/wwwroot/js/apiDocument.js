@@ -194,10 +194,10 @@ export async function searchDocumentTemplates(searchString) {
 }
 
 /**
- * Создает документы для выбранных пользователей
+ * Запускает процесс создания документов для выбранных пользователей
  * @param {Array<number>} userIds - массив ID пользователей
  * @param {number} documentId - ID шаблона документа
- * @returns {Promise<Blob>} архив с документами
+ * @returns {Promise<Object>} объект с ticketId задачи
  */
 export async function makeDocuments(userIds, documentId) {
     try {
@@ -216,10 +216,66 @@ export async function makeDocuments(userIds, documentId) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const blob = await response.blob();
-        return blob;
+        const result = await response.json();
+        return result; // { ticketId: "..." }
     } catch (error) {
-        console.error('Ошибка создания документов:', error);
+        console.error('Ошибка запуска создания документов:', error);
+        throw error;
+    }
+}
+
+/**
+ * Проверяет статус формирования архива документов
+ * @param {string} ticketId - ID задачи
+ * @returns {Promise<Object>} объект с полями progress, isReady, error
+ */
+export async function checkArchiveStatus(ticketId) {
+    try {
+        const response = await fetch(`${getApiBaseUrlValue()}/operation/status/${ticketId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        return result; // { progress: number, isReady: boolean, error?: string }
+    } catch (error) {
+        console.error('Ошибка проверки статуса:', error);
+        throw error;
+    }
+}
+
+/**
+ * Скачивает готовый архив с документами
+ * @param {string} ticketId - ID задачи
+ * @returns {Promise<void>}
+ */
+export async function downloadArchive(ticketId) {
+    try {
+        const response = await fetch(`${getApiBaseUrlValue()}/operation/download/${ticketId}`, {
+            method: 'GET'
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'documents.zip';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Ошибка скачивания архива:', error);
         throw error;
     }
 }

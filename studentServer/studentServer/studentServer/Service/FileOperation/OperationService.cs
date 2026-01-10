@@ -13,9 +13,11 @@ namespace studentServer.Service.FileOperation
         //Формируем документы, собираем в архив и отправляем массив байт
         internal async Task makeStudentDocumentAsync(OperationEntity operationEntity, string ticketId)
         {
-            DocumentTemplate document = await documentTemplateCRUD.GetDocumentTemplateByIdAsync(operationEntity.documentId);
+            
             int processedCount = 0;
             int totalStudents = operationEntity.userId.Count();
+
+            DocumentTemplate document = await documentTemplateCRUD.GetDocumentTemplateByIdAsync(operationEntity.documentId);
 
             if (document == null)
             {

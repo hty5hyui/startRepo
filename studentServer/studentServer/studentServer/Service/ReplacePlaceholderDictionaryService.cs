@@ -16,7 +16,6 @@ namespace studentServer.Service
                 { "{НОМЕР ДОГОВОРА 2-Х}", studentData.contract?.Number2Party },
                 { "{ДАТА ДОГОВОРА 2-Х}", studentData.contract?.Date2Party?.ToString("dd.MM.yyyy") },
                 { "{ДАТА ОТПРАВКИ}", studentData.contract?.DateOfDispatch?.ToString("dd.MM.yyyy") },
-                { "{ПОЧТА КОМПАНИИ}", studentData.contract?.MailCompany },
                 { "{ДАТА ВОЗВРАТА}", studentData.contract?.DateReturn?.ToString("dd.MM.yyyy") },
 
                 // FinanceDocDTO

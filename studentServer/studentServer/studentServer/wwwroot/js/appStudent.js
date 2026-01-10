@@ -1043,33 +1043,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
+            // Отправляем запрос на создание документов и получаем ticketId
+            const result = await makeDocuments(userIds, parseInt(templateIdValue));
+            
+            if (!result || !result.ticketId) {
+                throw new Error('Не получен идентификатор задачи (ticketId)');
+            }
+
             // Закрываем модальное окно выбора шаблона
             closeModalWrapper(selectTemplateModal);
-            
-            // Показываем модальное окно ожидания
-            openModalWrapper(archiveGenerationModal);
 
-            // Отправляем запрос на создание документов
-            const blob = await makeDocuments(userIds, parseInt(templateIdValue));
+            // Открываем новую вкладку с прогресс-баром
+            const progressUrl = `archiveProgress.html?ticketId=${encodeURIComponent(result.ticketId)}`;
+            const progressWindow = window.open(progressUrl, '_blank');
 
-            // Скрываем модальное окно ожидания
-            closeModalWrapper(archiveGenerationModal);
+            if (!progressWindow) {
+                showErrorMessage('Не удалось открыть вкладку прогресса. Проверьте настройки блокировщика всплывающих окон.');
+                return;
+            }
 
-            // Скачиваем архив
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `documents_${new Date().getTime()}.zip`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-
-            showSuccessMessage('Документы успешно подготовлены');
+            showSuccessMessage('Запущен процесс формирования архива. Открыто окно для отслеживания прогресса.');
         } catch (error) {
-            console.error('Ошибка создания документов:', error);
-            closeModalWrapper(archiveGenerationModal);
-            showErrorMessage('Ошибка при подготовке документов');
+            console.error('Ошибка запуска создания документов:', error);
+            showErrorMessage('Ошибка при запуске процесса подготовки документов');
         }
     }
 

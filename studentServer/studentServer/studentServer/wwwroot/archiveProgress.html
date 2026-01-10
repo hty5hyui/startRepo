@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Формирование архива документов</title>
+    <!-- API Configuration (опционально) -->
+    <!-- <meta name="api-base-url" content="https://your-api-domain.com"> -->
+    <!-- <meta name="api-port" content="7229"> -->
+    <script src="js/tailwind.js"></script>
+    <link rel="stylesheet" href="css/all.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-blue-50 min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 p-8">
+        <div class="flex flex-col items-center">
+            <!-- Индикатор загрузки (показывается пока isReady === false) -->
+            <div id="loadingSpinner" class="w-16 h-16 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-6"></div>
+            
+            <h2 class="text-2xl font-bold text-stone-700 mb-2">Подготовка документов</h2>
+            
+            <!-- Прогресс-бар -->
+            <div class="w-full mb-6">
+                <div class="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>Прогресс:</span>
+                    <span id="progressText" class="font-semibold">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div id="progressBar" class="bg-teal-600 h-3 rounded-full transition-all duration-300 ease-out" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <!-- Сообщение об ошибке (скрыто по умолчанию) -->
+            <div id="errorMessage" class="hidden w-full mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm"></div>
+            
+            <!-- Статусное сообщение -->
+            <p id="statusMessage" class="text-gray-600 text-center text-sm mb-4">Пожалуйста, подождите. Архив документов готовится...</p>
+            
+            <!-- Кнопка скачивания (скрыта по умолчанию) -->
+            <button id="downloadBtn" class="hidden px-8 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium text-lg shadow-md">
+                <i class="fas fa-download mr-2"></i>Скачать архив
+            </button>
+            
+            <!-- Кнопка закрытия (показывается только когда готово или есть ошибка) -->
+            <button id="closeBtn" class="hidden mt-6 px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition text-gray-700">
+                Закрыть окно
+            </button>
+        </div>
+    </div>
+
+    <script src="js/archiveProgress.js" type="module"></script>
+</body>
+</html>
+

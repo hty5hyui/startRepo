@@ -8,7 +8,7 @@ namespace studentServer.Controller
 {
     [ApiController]
     [Route("[controller]")]
-    public class operationController(OperationService operationService, IMemoryCache cache) :ControllerBase
+    public class operationController(IServiceScopeFactory scopeFactory, IMemoryCache cache) :ControllerBase
     {
         [HttpPost("makeDocumet")]
         public IActionResult StartMakeStudentDocument([FromBody] OperationEntity operationEntity)
@@ -17,9 +17,25 @@ namespace studentServer.Controller
             ProgressEntity progressEntity = new ProgressEntity();
             cache.Set(ticketId, progressEntity, TimeSpan.FromMinutes(10));//Сохраняем прогресс в кэш на 10 минут
 
-            Task.Run(() =>
+            _ = Task.Run(async () =>
             {
-                operationService.makeStudentDocumentAsync(operationEntity, ticketId);
+                using (IServiceScope scope = scopeFactory.CreateScope())
+                {
+                    OperationService scopedService = scope.ServiceProvider.GetRequiredService<OperationService>();
+                    try
+                    {
+                        await scopedService.makeStudentDocumentAsync(operationEntity, ticketId);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (cache.TryGetValue(ticketId, out ProgressEntity? status))
+                        {
+                            status.Error = ex.Message;
+                            status.IsReady = true;
+                        }
+                    }
+                }
+                
             });
 
             //byte[] data = await operationService.makeStudentDocumentAsync(operationEntity);
@@ -28,7 +44,7 @@ namespace studentServer.Controller
         }
 
 
-        [HttpGet("makeDocumet/status/{ticketId}")]
+        [HttpGet("status/{ticketId}")]
         public IActionResult CheckStatus(string ticketId)
         {
             if (!cache.TryGetValue(ticketId, out ProgressEntity? status))
@@ -39,7 +55,7 @@ namespace studentServer.Controller
             return Ok(new { status.Progress, status.IsReady, status.Error });
         }
 
-        [HttpGet("makeDocumet/download/{ticketId}")]
+        [HttpGet("download/{ticketId}")]
         public IActionResult DownloadZip(string ticketId)
         {
             if (!cache.TryGetValue(ticketId, out ProgressEntity? status) || !status.IsReady || status.ResultData == null)
