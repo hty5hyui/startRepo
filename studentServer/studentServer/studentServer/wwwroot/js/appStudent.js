@@ -600,12 +600,17 @@ document.addEventListener('DOMContentLoaded', () => {
             Visa: {
                 InviteNumber: getValue('invitation_number'),
                 ArrivalDate: getValue('arrival_date'),
+                ArrivalInvite: getValue('arrival_invite'),
                 VisaId: getValue('visa_id'),
                 VisaSeries: getValue('visa_form_series'),
                 VisaNumber: getValue('visa_number'),
                 VisaIssueDate: getValue('visa_issue_date'),
                 VisaReceiptDate: getValue('visa_receipt_date'),
-                VisaValidityDate: getValue('visa_expiry_date')
+                VisaValidityDate: getValue('visa_expiry_date'),
+                MigrationСardSeries: getValue('migration_card_series'),
+                MigrationСardNumber: getValue('migration_card_number'),
+                MigrationСardFromDate: getValue('migration_card_from_date'),
+                MigrationСardToDate: getValue('migration_card_to_date')
             },
             Student: {
                 "CompanyId": getValue('company'),
@@ -687,12 +692,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     visa: {
                         inviteNumber: changedData.edit_invitation_number || null,
                         arrivalDate: changedData.edit_arrival_date || null,
+                        arrivalInvite: changedData.edit_arrival_invite || null,
                         visaId: changedData.edit_visa_id || null,
                         visaSeries: changedData.edit_visa_form_series || null,
                         visaNumber: changedData.edit_visa_number || null,
                         visaIssueDate: changedData.edit_visa_issue_date || null,
                         visaReceiptDate: changedData.edit_visa_receipt_date || null,
-                        visaValidityDate: changedData.edit_visa_expiry_date || null
+                        visaValidityDate: changedData.edit_visa_expiry_date || null,
+                        migrationСardSeries: changedData.edit_migration_card_series || null,
+                        migrationСardNumber: changedData.edit_migration_card_number || null,
+                        migrationСardFromDate: changedData.edit_migration_card_from_date || null,
+                        migrationСardToDate: changedData.edit_migration_card_to_date || null
                     },
                     student: {
                         companyId: changedData.edit_company || null,
@@ -784,12 +794,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     Visa: {
                         InviteNumber: getValue('edit_invitation_number'),
                         ArrivalDate: getValue('edit_arrival_date'),
+                        ArrivalInvite: getValue('edit_arrival_invite'),
                         VisaId: getValue('edit_visa_id'),
                         VisaSeries: getValue('edit_visa_form_series'),
                         VisaNumber: getValue('edit_visa_number'),
                         VisaIssueDate: getValue('edit_visa_issue_date'),
                         VisaReceiptDate: getValue('edit_visa_receipt_date'),
-                        VisaValidityDate: getValue('edit_visa_expiry_date')
+                        VisaValidityDate: getValue('edit_visa_expiry_date'),
+                        MigrationСardSeries: getValue('edit_migration_card_series'),
+                        MigrationСardNumber: getValue('edit_migration_card_number'),
+                        MigrationСardFromDate: getValue('edit_migration_card_from_date'),
+                        MigrationСardToDate: getValue('edit_migration_card_to_date')
                     },
                     Student: {
                         Id: currentStudentId,

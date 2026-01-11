@@ -53,6 +53,11 @@ namespace studentServer.Service
                 { "{ДАТА ВЫДАЧИ ВИЗЫ}", studentData.visa?.VisaIssueDate?.ToString("dd.MM.yyyy") },
                 { "{ДАТА ПОЛУЧЕНИЯ ВИЗЫ}", studentData.visa?.VisaReceiptDate?.ToString("dd.MM.yyyy") },
                 { "{ДАТА ДЕЙСТВИЯ ВИЗЫ}", studentData.visa?.VisaValidityDate?.ToString("dd.MM.yyyy") },
+                { "{ПРИЕХАЛ ПО ПРИГЛАШЕНИЮ}", studentData.visa?.ArrivalInvite },
+                { "{СЕРИЯ МИГРАЦИОННОЙ КАРТЫ}", studentData.visa?.MigrationСardSeries },
+                { "{НОМЕР МИГРАЦИОННОЙ КАРТЫ}", studentData.visa?.MigrationСardNumber },
+                { "{МИГРАЦИОННАЯ КАРТА С}", studentData.visa?.MigrationСardFromDate?.ToString("dd.MM.yyyy") },
+                { "{МИГРАЦИОННАЯ КАРТА ПО}", studentData.visa?.MigrationСardToDate?.ToString("dd.MM.yyyy") },
 
                 //COMPANY
                 { "{НАЗВАНИЕ КОМПАНИИ РФ}", company?.NameCompanyRF },

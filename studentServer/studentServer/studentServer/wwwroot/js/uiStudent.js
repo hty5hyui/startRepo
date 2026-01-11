@@ -297,12 +297,17 @@ export async function loadStudentDataToForm(studentId, editEmployeeForm, loadCom
     if (data.visa) {
         document.getElementById('edit_invitation_number').value = data.visa.inviteNumber || '';
         document.getElementById('edit_arrival_date').value = data.visa.arrivalDate || '';
+        document.getElementById('edit_arrival_invite').value = data.visa.arrivalInvite || '';
         document.getElementById('edit_visa_id').value = data.visa.visaId || '';
         document.getElementById('edit_visa_form_series').value = data.visa.visaSeries || '';
         document.getElementById('edit_visa_number').value = data.visa.visaNumber || '';
         document.getElementById('edit_visa_issue_date').value = data.visa.visaIssueDate || '';
         document.getElementById('edit_visa_receipt_date').value = data.visa.visaReceiptDate || '';
         document.getElementById('edit_visa_expiry_date').value = data.visa.visaValidityDate || '';
+        document.getElementById('edit_migration_card_series').value = data.visa.migrationСardSeries || '';
+        document.getElementById('edit_migration_card_number').value = data.visa.migrationСardNumber || '';
+        document.getElementById('edit_migration_card_from_date').value = data.visa.migrationСardFromDate || '';
+        document.getElementById('edit_migration_card_to_date').value = data.visa.migrationСardToDate || '';
     }
 
     // Заполняем поля работы

@@ -174,9 +174,15 @@ namespace studentServer.Service
                 VisaNumber = visa.VisaNumber,
                 VisaIssueDate = visa.VisaIssueDate,
                 VisaReceiptDate = visa.VisaReceiptDate,
-                VisaValidityDate = visa.VisaValidityDate
+                VisaValidityDate = visa.VisaValidityDate,
+                ArrivalInvite = visa.ArrivalInvite,
+                MigrationСardSeries = visa.MigrationСardSeries,
+                MigrationСardNumber = visa.MigrationСardNumber,
+                MigrationСardFromDate = visa.MigrationСardFromDate,
+                MigrationСardToDate = visa.MigrationСardToDate
             };
         }
+
         public static VISA ToVISA(VISADTO visaDTO)
         {
             if (visaDTO == null) throw new ArgumentNullException(nameof(visaDTO));
@@ -191,7 +197,12 @@ namespace studentServer.Service
                 VisaNumber = visaDTO.VisaNumber,
                 VisaIssueDate = visaDTO.VisaIssueDate,
                 VisaReceiptDate = visaDTO.VisaReceiptDate,
-                VisaValidityDate = visaDTO.VisaValidityDate
+                VisaValidityDate = visaDTO.VisaValidityDate,
+                ArrivalInvite = visaDTO.ArrivalInvite,
+                MigrationСardSeries = visaDTO.MigrationСardSeries,
+                MigrationСardNumber = visaDTO.MigrationСardNumber,
+                MigrationСardFromDate = visaDTO.MigrationСardFromDate,
+                MigrationСardToDate = visaDTO.MigrationСardToDate
             };
         }
         //----------------------------------------------------------------------------------------------------

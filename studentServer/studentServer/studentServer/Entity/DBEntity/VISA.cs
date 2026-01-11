@@ -17,6 +17,11 @@ namespace studentServer.Entity.DBEntity
         public DateOnly? VisaIssueDate { get; set; }
         public DateOnly? VisaReceiptDate { get; set; }
         public DateOnly? VisaValidityDate { get; set; }
+        public string? ArrivalInvite { get; set; }
+        public string? MigrationСardSeries { get; set; }
+        public string? MigrationСardNumber { get; set; }
+        public DateOnly? MigrationСardFromDate { get; set; }//Миграционная карта действительная с
+        public DateOnly? MigrationСardToDate { get; set; }//Миграционная карта действительная по
 
         // Навигационное свойство обратно к главной сущности
         public virtual Student Student { get; set; }
@@ -33,5 +38,10 @@ namespace studentServer.Entity.DBEntity
         public DateOnly? VisaIssueDate { get; set; }
         public DateOnly? VisaReceiptDate { get; set; }
         public DateOnly? VisaValidityDate { get; set; }
+        public string? ArrivalInvite { get; set; }
+        public string? MigrationСardSeries { get; set; }
+        public string? MigrationСardNumber { get; set; }
+        public DateOnly? MigrationСardFromDate { get; set; }//Миграционная карта действительная с
+        public DateOnly? MigrationСardToDate { get; set; }//Миграционная карта действительная по
     }
 }
