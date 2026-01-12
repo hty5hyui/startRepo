@@ -1,4 +1,5 @@
 ﻿using studentServer.Entity.DBEntity;
+using System.Diagnostics.Contracts;
 
 namespace studentServer.Service
 {
@@ -37,7 +38,7 @@ namespace studentServer.Service
             };
         }
         //----------------------------------------------------------------------------------------------------
-        public static ContractDTO ToContractDTO(Contract contract)
+        public static ContractDTO ToContractDTO(Entity.DBEntity.Contract contract)
         {
             if (contract == null) throw new ArgumentNullException(nameof(contract));
 
@@ -49,16 +50,23 @@ namespace studentServer.Service
                 Date3Party = contract.Date3Party,
                 Number2Party = contract.Number2Party,
                 Date2Party = contract.Date2Party,
-                DateOfDispatch = contract.DateOfDispatch,
-                MailCompany = contract.MailCompany,
-                DateReturn = contract.DateReturn
+                NumberStudentUniversity = contract.NumberStudentUniversity,
+                DateStudentUniversity = contract.DateStudentUniversity,
+                Number2PartyRequest = contract.Number2PartyRequest,
+                NumberPractice = contract.NumberPractice,
+                DatePractice = contract.DatePractice,
+                NumberPracticeRequest = contract.NumberPracticeRequest,
+                NumberRegistrySendInMoscow = contract.NumberRegistrySendInMoscow,
+                DateRegistrySendInMoscow = contract.DateRegistrySendInMoscow,
+                DateOfTerminationOfTheContract = contract.DateOfTerminationOfTheContract,
+                OrganizationOfTermination = contract.OrganizationOfTermination
             };
         }
-        public static Contract ToContract(ContractDTO contractDTO)
+        public static Entity.DBEntity.Contract ToContract(ContractDTO contractDTO)
         {
             if (contractDTO == null) throw new ArgumentNullException(nameof(contractDTO));
 
-            return new Contract
+            return new Entity.DBEntity.Contract
             {
                 Id = contractDTO.Id == null ? 0 : (int)contractDTO.Id,
                 NumberUVM = contractDTO.NumberUVM,
@@ -66,9 +74,16 @@ namespace studentServer.Service
                 Date3Party = contractDTO.Date3Party,
                 Number2Party = contractDTO.Number2Party,
                 Date2Party = contractDTO.Date2Party,
-                DateOfDispatch = contractDTO.DateOfDispatch,
-                MailCompany = contractDTO.MailCompany,
-                DateReturn = contractDTO.DateReturn
+                NumberStudentUniversity = contractDTO.NumberStudentUniversity,
+                DateStudentUniversity = contractDTO.DateStudentUniversity,
+                Number2PartyRequest = contractDTO.Number2PartyRequest,
+                NumberPractice = contractDTO.NumberPractice,
+                DatePractice = contractDTO.DatePractice,
+                NumberPracticeRequest = contractDTO.NumberPracticeRequest,
+                NumberRegistrySendInMoscow = contractDTO.NumberRegistrySendInMoscow,
+                DateRegistrySendInMoscow = contractDTO.DateRegistrySendInMoscow,
+                DateOfTerminationOfTheContract = contractDTO.DateOfTerminationOfTheContract,
+                OrganizationOfTermination = contractDTO.OrganizationOfTermination
             };
         }
         //----------------------------------------------------------------------------------------------------

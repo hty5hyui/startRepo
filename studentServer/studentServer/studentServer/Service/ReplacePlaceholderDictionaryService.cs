@@ -15,8 +15,16 @@ namespace studentServer.Service
                 { "{ДАТА ДОГОВОРА 3-Х}", studentData.contract?.Date3Party?.ToString("dd.MM.yyyy") },
                 { "{НОМЕР ДОГОВОРА 2-Х}", studentData.contract?.Number2Party },
                 { "{ДАТА ДОГОВОРА 2-Х}", studentData.contract?.Date2Party?.ToString("dd.MM.yyyy") },
-                { "{ДАТА ОТПРАВКИ}", studentData.contract?.DateOfDispatch?.ToString("dd.MM.yyyy") },
-                { "{ДАТА ВОЗВРАТА}", studentData.contract?.DateReturn?.ToString("dd.MM.yyyy") },
+                { "{НОМЕР ДОГОВОРА СТУДЕНТ-УНИВЕРСИТЕТ}", studentData.contract?.NumberStudentUniversity },
+                { "{ДАТА ДОГОВОРА СТУДЕНТ-УНИВЕРСИТЕТ}", studentData.contract?.DateStudentUniversity?.ToString("dd.MM.yyyy") },
+                { "{НОМЕР ЗАЯВКИ 2-Х}", studentData.contract?.Number2PartyRequest },
+                { "{НОМЕР ДОГОВОРА ПРАКТИКИ}", studentData.contract?.NumberPractice },
+                { "{ДАТА ДОГОВОРА ПРАКТИКИ}", studentData.contract?.DatePractice?.ToString("dd.MM.yyyy") },
+                { "{НОМЕР ЗАЯВКИ ДОГОВОРА ПРАКТИКИ}", studentData.contract?.NumberPracticeRequest },
+                { "{НОМЕР РЕЕСТРА В МОСКВУ}", studentData.contract?.NumberRegistrySendInMoscow },
+                { "{ДАТА РЕЕСТРА В МОСКВУ}", studentData.contract?.DateRegistrySendInMoscow?.ToString("dd.MM.yyyy") },
+                { "{ДАТА РАСТОРЖЕНИЯ ДОГОВОРА}", studentData.contract?.DateOfTerminationOfTheContract?.ToString("dd.MM.yyyy") },
+                { "{ОРГАНИЗАЦИЯ РАСТОРЖЕНИЯ ДОГОВОРА}", studentData.contract?.OrganizationOfTermination },
 
                 // FinanceDocDTO
                 { "{НОМЕР КВИТАНЦИИ}", studentData.financeDoc?.CheckNumber },

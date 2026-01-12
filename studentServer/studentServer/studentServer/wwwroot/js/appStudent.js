@@ -561,13 +561,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = {
             Contract: {
                 NumberUVM: getValue('uvm_contract_number'),
-                Number3Party: getValue('tripartite_contract_number'),
-                Date3Party: getValue('tripartite_contract_date'),
+                NumberStudentUniversity: getValue('number_student_university'),
+                DateStudentUniversity: getValue('date_student_university'),
                 Number2Party: getValue('bipartite_contract_number'),
                 Date2Party: getValue('bipartite_contract_date'),
-                DateOfDispatch: getValue('shipment_date'),
-                MailCompany: getValue('postal_company'),
-                DateReturn: getValue('return_date')
+                Number2PartyRequest: getValue('number_2party_request'),
+                Number3Party: getValue('tripartite_contract_number'),
+                Date3Party: getValue('tripartite_contract_date'),
+                NumberPractice: getValue('number_practice'),
+                DatePractice: getValue('date_practice'),
+                NumberPracticeRequest: getValue('number_practice_request'),
+                NumberRegistrySendInMoscow: getValue('number_registry_send_in_moscow'),
+                DateRegistrySendInMoscow: getValue('date_registry_send_in_moscow'),
+                DateOfTerminationOfTheContract: getValue('date_of_termination_of_the_contract'),
+                OrganizationOfTermination: getValue('organization_of_termination')
             },
             FinanceDoc: {
                 PaymentOfContribution: document.getElementById('payment_contribution').checked,
@@ -653,13 +660,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const formData = {
                     contract: {
                         numberUVM: changedData.edit_uvm_contract_number || null,
-                        number3Party: changedData.edit_tripartite_contract_number || null,
-                        date3Party: changedData.edit_tripartite_contract_date || null,
+                        numberStudentUniversity: changedData.edit_number_student_university || null,
+                        dateStudentUniversity: changedData.edit_date_student_university || null,
                         number2Party: changedData.edit_bipartite_contract_number || null,
                         date2Party: changedData.edit_bipartite_contract_date || null,
-                        dateOfDispatch: changedData.edit_shipment_date || null,
-                        mailCompany: changedData.edit_postal_company || null,
-                        dateReturn: changedData.edit_return_date || null
+                        number2PartyRequest: changedData.edit_number_2party_request || null,
+                        number3Party: changedData.edit_tripartite_contract_number || null,
+                        date3Party: changedData.edit_tripartite_contract_date || null,
+                        numberPractice: changedData.edit_number_practice || null,
+                        datePractice: changedData.edit_date_practice || null,
+                        numberPracticeRequest: changedData.edit_number_practice_request || null,
+                        numberRegistrySendInMoscow: changedData.edit_number_registry_send_in_moscow || null,
+                        dateRegistrySendInMoscow: changedData.edit_date_registry_send_in_moscow || null,
+                        dateOfTerminationOfTheContract: changedData.edit_date_of_termination_of_the_contract || null,
+                        organizationOfTermination: changedData.edit_organization_of_termination || null
                     },
                     financeDoc: {
                         paymentOfContribution: changedData.edit_payment_contribution !== undefined ? changedData.edit_payment_contribution : null,
@@ -755,13 +769,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 const formData = {
                     Contract: {
                         NumberUVM: getValue('edit_uvm_contract_number'),
-                        Number3Party: getValue('edit_tripartite_contract_number'),
-                        Date3Party: getValue('edit_tripartite_contract_date'),
+                        NumberStudentUniversity: getValue('edit_number_student_university'),
+                        DateStudentUniversity: getValue('edit_date_student_university'),
                         Number2Party: getValue('edit_bipartite_contract_number'),
                         Date2Party: getValue('edit_bipartite_contract_date'),
-                        DateOfDispatch: getValue('edit_shipment_date'),
-                        MailCompany: getValue('edit_postal_company'),
-                        DateReturn: getValue('edit_return_date')
+                        Number2PartyRequest: getValue('edit_number_2party_request'),
+                        Number3Party: getValue('edit_tripartite_contract_number'),
+                        Date3Party: getValue('edit_tripartite_contract_date'),
+                        NumberPractice: getValue('edit_number_practice'),
+                        DatePractice: getValue('edit_date_practice'),
+                        NumberPracticeRequest: getValue('edit_number_practice_request'),
+                        NumberRegistrySendInMoscow: getValue('edit_number_registry_send_in_moscow'),
+                        DateRegistrySendInMoscow: getValue('edit_date_registry_send_in_moscow'),
+                        DateOfTerminationOfTheContract: getValue('edit_date_of_termination_of_the_contract'),
+                        OrganizationOfTermination: getValue('edit_organization_of_termination')
                     },
                     FinanceDoc: {
                         PaymentOfContribution: document.getElementById('edit_payment_contribution')?.checked || false,

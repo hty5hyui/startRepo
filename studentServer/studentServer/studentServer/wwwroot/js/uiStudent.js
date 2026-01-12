@@ -284,13 +284,20 @@ export async function loadStudentDataToForm(studentId, editEmployeeForm, loadCom
     // Заполняем поля договоров
     if (data.contract) {
         document.getElementById('edit_uvm_contract_number').value = data.contract.numberUVM || '';
-        document.getElementById('edit_tripartite_contract_number').value = data.contract.number3Party || '';
-        document.getElementById('edit_tripartite_contract_date').value = data.contract.date3Party || '';
+        document.getElementById('edit_number_student_university').value = data.contract.numberStudentUniversity || '';
+        document.getElementById('edit_date_student_university').value = data.contract.dateStudentUniversity || '';
         document.getElementById('edit_bipartite_contract_number').value = data.contract.number2Party || '';
         document.getElementById('edit_bipartite_contract_date').value = data.contract.date2Party || '';
-        document.getElementById('edit_shipment_date').value = data.contract.dateOfDispatch || '';
-        document.getElementById('edit_postal_company').value = data.contract.mailCompany || '';
-        document.getElementById('edit_return_date').value = data.contract.dateReturn || '';
+        document.getElementById('edit_number_2party_request').value = data.contract.number2PartyRequest || '';
+        document.getElementById('edit_tripartite_contract_number').value = data.contract.number3Party || '';
+        document.getElementById('edit_tripartite_contract_date').value = data.contract.date3Party || '';
+        document.getElementById('edit_number_practice').value = data.contract.numberPractice || '';
+        document.getElementById('edit_date_practice').value = data.contract.datePractice || '';
+        document.getElementById('edit_number_practice_request').value = data.contract.numberPracticeRequest || '';
+        document.getElementById('edit_number_registry_send_in_moscow').value = data.contract.numberRegistrySendInMoscow || '';
+        document.getElementById('edit_date_registry_send_in_moscow').value = data.contract.dateRegistrySendInMoscow || '';
+        document.getElementById('edit_date_of_termination_of_the_contract').value = data.contract.dateOfTerminationOfTheContract || '';
+        document.getElementById('edit_organization_of_termination').value = data.contract.organizationOfTermination || '';
     }
 
     // Заполняем поля визы
