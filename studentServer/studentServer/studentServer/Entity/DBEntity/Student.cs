@@ -12,6 +12,7 @@ namespace studentServer.Entity.DBEntity
         public FinanceDocDTO financeDoc { get; set; } = new FinanceDocDTO();
         public PersonalDataDTO personalData { get; set; } = new PersonalDataDTO();
         public VISADTO visa { get; set; } = new VISADTO();
+        public EducationDTO education { get; set; } = new EducationDTO();
     }
 
     public class StudentDataDTO
@@ -21,6 +22,8 @@ namespace studentServer.Entity.DBEntity
         public FinanceDocDTO financeDoc { get; set; } = new FinanceDocDTO();
         public PersonalDataDTO personalData { get; set; } = new PersonalDataDTO();
         public VISADTO visa { get; set; } = new VISADTO();
+        public EducationDTO education { get; set; } = new EducationDTO();
+
     }
 
     public class StudentPreview
@@ -53,18 +56,18 @@ namespace studentServer.Entity.DBEntity
         public int? CompanyId { get; set; }
         public int? ProfessionId { get; set; }
         public int? CuratorId { get; set; }
+        public int? EducationId { get; set; }
 
         //---------Связь с таблицами через внешние ключи---------
         public virtual PersonalData PersonalData { get; set; }
         public virtual FinanceDoc FinanceDoc { get; set; }
         public virtual Contract Contract { get; set; }
         public virtual VISA VISA { get; set; }
+        public virtual Education Education { get; set; }
 
         //---------Связь с таблицами Company, Curator и Profession через внешние ключи---------
         public virtual Company? Company { get; set; }
         public virtual Profession? Profession { get; set; }
-        public virtual Curator? Curator { get; set; }
-
     }
 
     public class StudentDTO
@@ -73,5 +76,6 @@ namespace studentServer.Entity.DBEntity
         public int? CompanyId { get; set; }
         public int? ProfessionId { get; set; }
         public int? CuratorId { get; set; }
+        public int? EducationId { get; set; }
     }
 }

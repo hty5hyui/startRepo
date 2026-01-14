@@ -24,6 +24,7 @@ namespace studentServer.repo
                                        .Include(s => s.FinanceDoc)
                                        .Include(s => s.PersonalData)
                                        .Include(s => s.VISA)
+                                       .Include(s => s.Education)
                                        .FirstOrDefaultAsync(s => s.Id == id);
 
 
@@ -36,7 +37,8 @@ namespace studentServer.repo
                         Id = id,
                         CompanyId = data.CompanyId,
                         ProfessionId = data.ProfessionId,
-                        CuratorId = data.CuratorId
+                        CuratorId = data.CuratorId,
+                        EducationId = data.EducationId
                     },
                     contract = EntityMapper.ToContractDTO(data.Contract),
                     financeDoc = EntityMapper.ToFinanceDocDTO(data.FinanceDoc),
@@ -64,11 +66,13 @@ namespace studentServer.repo
                 VISA visa = EntityMapper.ToVISA(studentData.visa);
                 PersonalData personalData = EntityMapper.ToPersonalData(studentData.personalData);
                 Contract contract = EntityMapper.ToContract(studentData.contract);
+                Education education = EntityMapper.ToEducation(studentData.education);
 
                 student.FinanceDoc = financeDoc;
                 student.VISA = visa;
                 student.PersonalData = personalData;
                 student.Contract = contract;
+                student.Education = education;
 
                 _dbContext.Students.Add(student);
 
@@ -92,26 +96,26 @@ namespace studentServer.repo
             {
                 Student student = EntityMapper.ToStudent(studentData.student);
                 _dbContext.Students.Update(student);
-                await _dbContext.SaveChangesAsync();
 
                 FinanceDoc financeDoc = EntityMapper.ToFinanceDoc(studentData.financeDoc);
                 financeDoc.Id = student.Id;
                 _dbContext.FinanceDoc.Update(financeDoc);
-                await _dbContext.SaveChangesAsync();
 
                 VISA visa = EntityMapper.ToVISA(studentData.visa);
                 visa.Id = student.Id;
                 _dbContext.VISA.Update(visa);
-                await _dbContext.SaveChangesAsync();
 
                 PersonalData personalData = EntityMapper.ToPersonalData(studentData.personalData);
                 personalData.Id = student.Id;
                 _dbContext.PersonalData.Update(personalData);
-                await _dbContext.SaveChangesAsync();
 
                 Contract contract = EntityMapper.ToContract(studentData.contract);
                 contract.Id = student.Id;
                 _dbContext.Contract.Update(contract);
+
+                Education education = EntityMapper.ToEducation(studentData.education);
+                education.Id = student.Id;
+                _dbContext.Education.Update(education);
                 await _dbContext.SaveChangesAsync();
 
                 // Если все операции успешны, подтверждаем транзакцию
@@ -155,7 +159,7 @@ namespace studentServer.repo
                                                                                   GroupNumber = s.PersonalData.GroupNumber,
                                                                                   CompanyName = s.Company.NameCompanyRF,
                                                                                   ProfessionName = s.Profession.ProfessionName,
-                                                                                  Curator = s.Curator.Name
+                                                                                  Curator = s.Company.Curator
                                                                               }).ToListAsync();
 
             int rowCount = await _dbContext.Students.CountAsync();
@@ -174,8 +178,7 @@ namespace studentServer.repo
                                                       .Include(table => table.Company)
                                                       .Include(table => table.FinanceDoc)
                                                       .Include(table => table.VISA)
-                                                      .Include(table => table.Profession)
-                                                      .Include(table => table.Curator);
+                                                      .Include(table => table.Profession);
 
             IQueryable<Student> filteredQuery = queryBuilder.ApplyFilters(baseQuery, pageQuery.searchFilter!);
 
@@ -193,7 +196,7 @@ namespace studentServer.repo
                                                           GroupNumber = s.PersonalData.GroupNumber,
                                                           CompanyName = s.Company.NameCompanyRF,
                                                           ProfessionName = s.Profession.ProfessionName,
-                                                          Curator = s.Curator.Name
+                                                          Curator = s.Company.Curator
                                                       }).ToListAsync();
 
             int rowCount = await filteredQuery.CountAsync();

@@ -12,9 +12,8 @@ namespace studentServer.repo.Data
         public DbSet<VISA> VISA { get; set; }
         public DbSet<Profession> Profession { get; set; }
         public DbSet<Company> Company { get; set; }
-        public DbSet<Curator> Curator { get; set; }
         public DbSet<LogMessage> LogMessage { get; set; }
-
+        public DbSet<Education> Education { get; set; }
         public DbSet<DocumentTemplate> DocumentTemplate { get; set; }
 
         public AppDbStudentContext(DbContextOptions options) : base(options)
@@ -53,6 +52,13 @@ namespace studentServer.repo.Data
                 .WithOne(pi => pi.Student)
                 .HasForeignKey<VISA>(pi => pi.Id) // Внешним ключом в VISA является его собственный Id
                 .OnDelete(DeleteBehavior.Cascade);
+            // Конфигурация для связи Student <--> Education
+            modelBuilder.Entity<Student>()
+                .HasOne(main => main.Education)
+                .WithOne(pi => pi.Student)
+                .HasForeignKey<Education>(pi => pi.Id) // Внешним ключом в Education является его собственный Id
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

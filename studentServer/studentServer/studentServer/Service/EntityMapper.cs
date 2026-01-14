@@ -21,7 +21,8 @@ namespace studentServer.Service
                 Id = studentDTO.Id == null ? 0 : (int)studentDTO.Id,
                 CompanyId = studentDTO.CompanyId,
                 ProfessionId = studentDTO.ProfessionId,
-                CuratorId = studentDTO.CuratorId
+                CuratorId = studentDTO.CuratorId,
+                EducationId = studentDTO.EducationId
             };
         }
 
@@ -34,7 +35,8 @@ namespace studentServer.Service
                 Id = student.Id,
                 CompanyId = student.CompanyId,
                 ProfessionId = student.ProfessionId,
-                CuratorId = student.CuratorId
+                CuratorId = student.CuratorId,
+                EducationId = student.EducationId
             };
         }
         //----------------------------------------------------------------------------------------------------
@@ -255,6 +257,47 @@ namespace studentServer.Service
                 financeDoc = data.financeDoc,
                 personalData = data.personalData,
                 visa = data.visa
+            };
+        }
+        //----------------------------------------------------------------------------------------------------
+        public static EducationDTO ToEducationDTO(Education education)
+        {
+            if (education == null) throw new ArgumentNullException(nameof(education));
+
+            return new EducationDTO
+            {
+                Id = education.Id,
+                NumberEnrollment1Year = education.NumberEnrollment1Year,
+                DateEnrollment1Year = education.DateEnrollment1Year,
+                NumberEnrollment2Year = education.NumberEnrollment2Year,
+                DateEnrollment2Year = education.DateEnrollment2Year,
+                NumberEnrollment3Year = education.NumberEnrollment3Year,
+                DateEnrollment3Year = education.DateEnrollment3Year,
+                NumberEnrollment4Year = education.NumberEnrollment4Year,
+                DateEnrollment4Year = education.DateEnrollment4Year,
+                Departures = education.Departures,
+                NumberExpulsion = education.NumberExpulsion,
+                DateExpulsion = education.DateExpulsion
+            };
+        }
+        public static Education ToEducation(EducationDTO educationDTO)
+        {
+            if (educationDTO == null) throw new ArgumentNullException(nameof(educationDTO));
+
+            return new Education
+            {
+                Id = educationDTO.Id,
+                NumberEnrollment1Year = educationDTO.NumberEnrollment1Year,
+                DateEnrollment1Year = educationDTO.DateEnrollment1Year,
+                NumberEnrollment2Year = educationDTO.NumberEnrollment2Year,
+                DateEnrollment2Year = educationDTO.DateEnrollment2Year,
+                NumberEnrollment3Year = educationDTO.NumberEnrollment3Year,
+                DateEnrollment3Year = educationDTO.DateEnrollment3Year,
+                NumberEnrollment4Year = educationDTO.NumberEnrollment4Year,
+                DateEnrollment4Year = educationDTO.DateEnrollment4Year,
+                Departures = educationDTO.Departures,
+                NumberExpulsion = educationDTO.NumberExpulsion,
+                DateExpulsion = educationDTO.DateExpulsion
             };
         }
         //----------------------------------------------------------------------------------------------------
