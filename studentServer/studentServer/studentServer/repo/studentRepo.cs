@@ -43,7 +43,8 @@ namespace studentServer.repo
                     contract = EntityMapper.ToContractDTO(data.Contract),
                     financeDoc = EntityMapper.ToFinanceDocDTO(data.FinanceDoc),
                     personalData = EntityMapper.ToPersonalDataDTO(data.PersonalData),
-                    visa = EntityMapper.ToVISADTO(data.VISA)
+                    visa = EntityMapper.ToVISADTO(data.VISA),
+                    education = EntityMapper.ToEducationDTO(data.Education)
                 };
 
                 return studentDataDTO;

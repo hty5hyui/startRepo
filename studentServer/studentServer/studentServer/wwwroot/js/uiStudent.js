@@ -345,5 +345,62 @@ export async function loadStudentDataToForm(studentId, editEmployeeForm, loadCom
             }
         }
     }
+
+    // Заполняем поля образования
+    if (data.education) {
+        document.getElementById('edit_number_enrollment_1year').value = data.education.numberEnrollment1Year || '';
+        document.getElementById('edit_date_enrollment_1year').value = data.education.dateEnrollment1Year || '';
+        document.getElementById('edit_number_enrollment_2year').value = data.education.numberEnrollment2Year || '';
+        document.getElementById('edit_date_enrollment_2year').value = data.education.dateEnrollment2Year || '';
+        document.getElementById('edit_number_enrollment_3year').value = data.education.numberEnrollment3Year || '';
+        document.getElementById('edit_date_enrollment_3year').value = data.education.dateEnrollment3Year || '';
+        document.getElementById('edit_number_enrollment_4year').value = data.education.numberEnrollment4Year || '';
+        document.getElementById('edit_date_enrollment_4year').value = data.education.dateEnrollment4Year || '';
+        document.getElementById('edit_number_expulsion').value = data.education.numberExpulsion || '';
+        document.getElementById('edit_date_expulsion').value = data.education.dateExpulsion || '';
+        
+        // Заполняем таблицу выездов
+        renderDeparturesTable(data.education.departures || [], 'edit_departuresTableBody');
+    } else {
+        // Если данных нет, показываем пустую таблицу
+        renderDeparturesTable([], 'edit_departuresTableBody');
+    }
+}
+
+/**
+ * Рендерит таблицу выездов
+ * @param {Array} departures - массив выездов
+ * @param {string} tableBodyId - ID элемента tbody
+ */
+export function renderDeparturesTable(departures, tableBodyId) {
+    const tableBody = document.getElementById(tableBodyId);
+    if (!tableBody) return;
+    
+    if (!departures || departures.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="4" class="px-4 py-8 text-center text-gray-500">Нет выездов</td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tableBody.innerHTML = departures.map((departure, index) => `
+        <tr class="hover:bg-blue-50 transition">
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">${departure.dateLeaving || ''}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">${departure.reason || ''}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">${departure.dateReturn || ''}</td>
+            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                <div class="flex space-x-2">
+                    <button class="text-teal-600 hover:text-teal-800 edit-departure-btn" data-departure-index="${index}" aria-label="Редактировать выезд">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="text-red-600 hover:text-red-800 delete-departure-btn" data-departure-index="${index}" aria-label="Удалить выезд">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
 }
 

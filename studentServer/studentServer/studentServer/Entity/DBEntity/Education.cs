@@ -42,9 +42,9 @@ namespace studentServer.Entity.DBEntity
     {
         [Key]
         public int Id { get; set; }
-        public DateOnly DateLeaving { get; set; }
-        public string Reason { get; set; }
-        public DateOnly? DateReturn { get; set; }
+        public DateOnly DateLeaving { get; set; } //Дата отъезда
+        public string Reason { get; set; } //Причина
+        public DateOnly? DateReturn { get; set; } //Дата возвращения
     }
 
 }

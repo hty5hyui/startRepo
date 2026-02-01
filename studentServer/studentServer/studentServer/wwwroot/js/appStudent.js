@@ -38,7 +38,8 @@ import {
     renderPagination,
     loadCompanies,
     loadProfessions,
-    loadStudentDataToForm
+    loadStudentDataToForm,
+    renderDeparturesTable
 } from './uiStudent.js';
 
 import {
@@ -622,6 +623,19 @@ document.addEventListener('DOMContentLoaded', () => {
             Student: {
                 "CompanyId": getValue('company'),
                 "ProfessionId": getValue('profession')
+            },
+            Education: {
+                NumberEnrollment1Year: getValue('number_enrollment_1year'),
+                DateEnrollment1Year: getValue('date_enrollment_1year'),
+                NumberEnrollment2Year: getValue('number_enrollment_2year'),
+                DateEnrollment2Year: getValue('date_enrollment_2year'),
+                NumberEnrollment3Year: getValue('number_enrollment_3year'),
+                DateEnrollment3Year: getValue('date_enrollment_3year'),
+                NumberEnrollment4Year: getValue('number_enrollment_4year'),
+                DateEnrollment4Year: getValue('date_enrollment_4year'),
+                NumberExpulsion: getValue('number_expulsion'),
+                DateExpulsion: getValue('date_expulsion'),
+                Departures: [] // Пока пустой массив, функционал добавления будет позже
             }
         };
 
@@ -721,6 +735,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     student: {
                         companyId: changedData.edit_company || null,
                         professionId: changedData.edit_profession || null
+                    },
+                    education: {
+                        numberEnrollment1Year: changedData.edit_number_enrollment_1year || null,
+                        dateEnrollment1Year: changedData.edit_date_enrollment_1year || null,
+                        numberEnrollment2Year: changedData.edit_number_enrollment_2year || null,
+                        dateEnrollment2Year: changedData.edit_date_enrollment_2year || null,
+                        numberEnrollment3Year: changedData.edit_number_enrollment_3year || null,
+                        dateEnrollment3Year: changedData.edit_date_enrollment_3year || null,
+                        numberEnrollment4Year: changedData.edit_number_enrollment_4year || null,
+                        dateEnrollment4Year: changedData.edit_date_enrollment_4year || null,
+                        numberExpulsion: changedData.edit_number_expulsion || null,
+                        dateExpulsion: changedData.edit_date_expulsion || null,
+                        departures: null // Пока не обрабатываем, функционал будет позже
                     }
                 };
 
@@ -831,6 +858,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         Id: currentStudentId,
                         CompanyId: getValue('edit_company'),
                         ProfessionId: getValue('edit_profession')
+                    },
+                    Education: {
+                        NumberEnrollment1Year: getValue('edit_number_enrollment_1year'),
+                        DateEnrollment1Year: getValue('edit_date_enrollment_1year'),
+                        NumberEnrollment2Year: getValue('edit_number_enrollment_2year'),
+                        DateEnrollment2Year: getValue('edit_date_enrollment_2year'),
+                        NumberEnrollment3Year: getValue('edit_number_enrollment_3year'),
+                        DateEnrollment3Year: getValue('edit_date_enrollment_3year'),
+                        NumberEnrollment4Year: getValue('edit_number_enrollment_4year'),
+                        DateEnrollment4Year: getValue('edit_date_enrollment_4year'),
+                        NumberExpulsion: getValue('edit_number_expulsion'),
+                        DateExpulsion: getValue('edit_date_expulsion'),
+                        Departures: [] // Пока пустой массив, функционал добавления будет позже
                     }
                 };
 
@@ -1225,7 +1265,11 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModalBtn.addEventListener('click', () => closeModalWrapper(authModal));
 
     // Окно добавления сотрудника
-    addEmployeeBtn.addEventListener('click', () => openModalWrapper(employeeModal));
+    addEmployeeBtn.addEventListener('click', () => {
+        // Инициализируем пустую таблицу выездов
+        renderDeparturesTable([], 'departuresTableBody');
+        openModalWrapper(employeeModal);
+    });
     closeEmployeeModalBtn.addEventListener('click', () => {
         closeModalWrapper(employeeModal);
         clearForm(employeeForm);
