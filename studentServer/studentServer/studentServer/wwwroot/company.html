@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Административная панель</title>
+    <!-- API Configuration (опционально) -->
+    <!-- <meta name="api-base-url" content="https://your-api-domain.com"> -->
+    <!-- <meta name="api-port" content="7229"> -->
+    <script src="js/tailwind.js"></script>
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="css/styleCompany.css">
+</head>
+<body class="bg-blue-50 min-h-screen">
+    <!-- Шапка -->
+    <header class="bg-teal-700 text-blue-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="index.html" class="text-blue-50 hover:text-teal-200 transition flex items-center space-x-1">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </a>
+                <span class="text-blue-50 mx-1">|</span>
+                <a href="company.html" class="text-teal-200 hover:text-blue-100 transition">Компании</a>
+            </div>
+            <button id="authBtn" class="bg-teal-100 text-teal-800 px-4 py-2 rounded-lg font-medium hover:bg-teal-200 transition flex items-center space-x-2">
+                <i class="fas fa-user"></i>
+                <span>Войти</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Основное содержимое -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-teal-800">Редактор базы компаний</h2>
+            <button id="addCompanyBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+                <i class="fas fa-plus"></i>
+                <span>Добавить компанию</span>
+            </button>
+        </div>
+
+        <!-- Поиск -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+            <div class="px-6 py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="flex-1">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Поиск компаний..." 
+                            class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        >
+                    </div>
+                    <button 
+                        id="searchBtn" 
+                        class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2"
+                    >
+                        <i class="fas fa-search"></i>
+                        <span>Поиск</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Таблица компаний -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-teal-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Название (РФ)</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Название (КНДР)</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Вид деятельности</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Адрес</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Руководитель</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">ИНН</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="companiesTableBody">
+                        <!-- Данные будут загружены сюда -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Пагинация -->
+            <div class="bg-teal-50 px-6 py-3 flex items-center justify-end space-x-2">
+                <button id="prevPageBtn" class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50">Назад</button>
+                <span id="currentPage" class="px-4 py-2 text-sm font-medium text-gray-700">1</span>
+                <button id="nextPageBtn" class="px-4 py-2 border border-blue-300 text-sm rounded-md text-gray-700 bg-white hover:bg-blue-50">Вперед</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Модальное окно просмотра/редактирования компании -->
+    <div id="companyModal" class="custom-modal hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-2xl mx-4">
+            <div class="p-6 relative">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 id="companyModalTitle" class="text-2xl font-bold text-stone-700">Редактирование компании</h3>
+                    <button id="closeCompanyModalBtn" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form id="companyForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">ID компании</label>
+                        <input type="text" id="companyId" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                    </div>
+                    <div id="loadingOverlay" class="hidden absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-20 rounded-xl">
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-2"></div>
+                            <p class="text-teal-700 font-medium">Сохранение данных...</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Название компании в РФ</label><input type="text" id="nameCompanyRF" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите название компании в РФ"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Название компании в КНДР</label><input type="text" id="nameCompanyKNDR" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите название компании в КНДР"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Вид деятельности компании</label><input type="text" id="companyActivities" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите вид деятельности"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">ИНН</label><input type="text" id="inn" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите ИНН"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">КПП</label><input type="text" id="kpp" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите КПП"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">ОГРН</label><input type="text" id="ogrn" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите ОГРН"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Расчетный счет</label><input type="text" id="paymantAccount" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите расчетный счет"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Банк</label><input type="text" id="bank" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите банк"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Корреспондентский счёт</label><input type="text" id="correspondentAccount" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите корр. счет"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">БИК</label><input type="text" id="bik" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите БИК"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Почта</label><input type="email" id="mail" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите email"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Директор</label><input type="text" id="director" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите директора"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Должность руководителя</label><input type="text" id="postHeadOfTheCompany" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите должность руководителя"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Руководитель</label><input type="text" id="headOfTheCompany" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите руководителя"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Адрес компании</label><input type="text" id="companyAddress" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите адрес компании"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Адрес практики</label><input type="text" id="practiceAddress" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите адрес практики"></div>
+                        <div><label class="block text-sm font-medium text-gray-700 mb-1">Куратор</label><input type="text" id="curator" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите куратора"></div>
+                    </div>
+                    <div class="flex justify-end space-x-3 pt-4">
+                        <button type="button" id="cancelCompanyModalBtn" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">Отмена</button>
+                        <button type="submit" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div id="authModal" class="custom-modal hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Авторизация</h3>
+                    <button id="closeAuthModalBtn" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times"></i></button>
+                </div>
+                <form id="loginForm" class="space-y-4">
+                    <div><label for="username" class="block text-sm font-medium text-gray-700 mb-1">Логин</label><input type="text" id="username" name="username" class="w-full px-4 py-2 border border-blue-200 rounded-lg" placeholder="Введите ваш логин" required></div>
+                    <div><label for="password" class="block text-sm font-medium text-gray-700 mb-1">Пароль</label><input type="password" id="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="Введите ваш пароль" required></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center"><input id="remember" name="remember" type="checkbox" class="h-4 w-4 text-slate-600 border-gray-300 rounded"><label for="remember" class="ml-2 block text-sm text-gray-700">Запомнить меня</label></div>
+                        <a href="#" class="text-sm text-slate-600 hover:text-slate-500">Забыли пароль?</a>
+                    </div>
+                    <button type="submit" class="w-full bg-teal-600 text-blue-50 py-2 px-4 rounded-lg hover:bg-teal-700 transition">Войти</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения удаления -->
+    <div id="deleteModal" class="custom-modal hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Подтверждение удаления</h3>
+                    <button id="closeDeleteModal" class="text-gray-500 hover:text-gray-700"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="mb-6"><p class="text-gray-700">Вы уверены, что хотите удалить эту компанию? Это действие нельзя отменить.</p></div>
+                <div class="flex justify-end space-x-3">
+                    <button id="cancelDelete" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100">Отмена</button>
+                    <button id="confirmDelete" class="bg-red-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-red-700">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/company.js" type="module"></script>
+</body>
+</html>

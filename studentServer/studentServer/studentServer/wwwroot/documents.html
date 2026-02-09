@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шаблоны документов</title>
+    <script src="js/tailwind.js"></script>
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body class="bg-blue-50 min-h-screen">
+    <header class="bg-teal-700 text-blue-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="index.html" class="text-blue-50 hover:text-teal-200 transition flex items-center space-x-1">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </a>
+                <span class="text-blue-50 mx-1">|</span>
+                <a href="documents.html" class="text-teal-200 hover:text-blue-100 transition">Шаблоны документов</a>
+            </div>
+            <button id="authBtn" class="bg-teal-100 text-teal-800 px-4 py-2 rounded-lg font-medium hover:bg-teal-200 transition flex items-center space-x-2">
+                <i class="fas fa-user"></i>
+                <span>Войти</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-teal-800">Шаблоны документов</h2>
+            <button id="addTemplateBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+                <i class="fas fa-plus"></i>
+                <span>Добавить шаблон</span>
+            </button>
+        </div>
+
+        <!-- Поиск -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+            <div class="px-6 py-4">
+                <div class="flex items-center space-x-3">
+                    <div class="flex-1">
+                        <input 
+                            type="text" 
+                            id="searchInput" 
+                            placeholder="Поиск шаблонов..." 
+                            class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                        >
+                    </div>
+                    <button 
+                        id="searchBtn" 
+                        class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2"
+                    >
+                        <i class="fas fa-search"></i>
+                        <span>Поиск</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Таблица шаблонов -->
+        <div id="tableContainer" class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-teal-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">№</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Название документа</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Дата создания</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="templatesTableBody" class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">Загрузка...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="paginationContainer"></div>
+        </div>
+    </main>
+
+    <!-- Модальное окно добавления шаблона -->
+    <div id="addTemplateModal" class="auth-modal fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Добавить шаблон</h3>
+                    <button id="closeAddTemplateModal" class="text-gray-500 hover:text-gray-700" aria-label="Закрыть модальное окно">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form id="addTemplateForm" class="space-y-4">
+                    <div>
+                        <label for="templateName" class="block text-sm font-medium text-gray-700 mb-1">Название документа</label>
+                        <input type="text" id="templateName" name="templateName" 
+                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                               placeholder="Введите название документа" required>
+                    </div>
+                    
+                    <div>
+                        <label for="templateFile" class="block text-sm font-medium text-gray-700 mb-1">Файл шаблона (.doc или .docx)</label>
+                        <input type="file" id="templateFile" name="templateFile" 
+                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                               accept=".doc,.docx" required>
+                        <p class="mt-1 text-sm text-gray-500">Выберите файл формата .doc или .docx</p>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-4 pt-4">
+                        <button type="button" id="cancelAddTemplateBtn" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                            Отмена
+                        </button>
+                        <button type="submit" id="submitAddTemplateBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition">
+                            Загрузить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div id="authModal" class="auth-modal fixed inset-0 items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Авторизация</h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700" aria-label="Закрыть модальное окно">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Логин</label>
+                        <input type="text" id="username" name="username"
+                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                               placeholder="Введите ваш логин" required>
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
+                        <input type="password" id="password" name="password"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Введите ваш пароль" required>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" name="remember" type="checkbox"
+                                   class="h-4 w-4 text-slate-600 focus:ring-slate-500 border-gray-300 rounded">
+                            <label for="remember" class="ml-2 block text-sm text-gray-700">Запомнить меня</label>
+                        </div>
+
+                        <a href="#" class="text-sm text-slate-600 hover:text-slate-500">Забыли пароль?</a>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full bg-teal-600 text-blue-50 py-2 px-4 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition">
+                        Войти
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/appDocument.js" type="module"></script>
+</body>
+</html>
+

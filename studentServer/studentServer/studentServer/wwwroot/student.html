@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Административная панель</title>
+    <!-- API Configuration (опционально) -->
+    <!-- <meta name="api-base-url" content="https://your-api-domain.com"> -->
+    <!-- <meta name="api-port" content="7229"> -->
+    <script src="js/tailwind.js"></script>
+    <link rel="stylesheet" href="css/all.css">
+    <link rel="stylesheet" href="css/styleStudent.css">
+    <link rel="stylesheet" href="css/triStateCheckbox.css">
+</head>
+<body class="bg-blue-50 min-h-screen">
+    <header class="bg-teal-700 text-blue-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <a href="index.html" class="text-blue-50 hover:text-teal-200 transition flex items-center space-x-1">
+                    <i class="fas fa-home"></i>
+                    <span>Главная</span>
+                </a>
+                <span class="text-blue-50 mx-1">|</span>
+                <a href="student.html" class="text-teal-200 hover:text-blue-100 transition">Сотрудники</a>
+            </div>
+            <button id="authBtn" class="bg-teal-100 text-teal-800 px-4 py-2 rounded-lg font-medium hover:bg-teal-200 transition flex items-center space-x-2">
+                <i class="fas fa-user"></i>
+                <span>Войти</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-3xl font-bold text-teal-800">Редактор базы сотрудников</h2>
+            <div class="flex space-x-3">
+                <button id="editSelectedBtn" class="bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition flex items-center space-x-2 hidden">
+                    <i class="fas fa-edit"></i>
+                    <span>Редактировать выделенные (<span id="selectedCount">0</span>)</span>
+                </button>
+                <button id="prepareDocumentsBtn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition flex items-center space-x-2 hidden">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Подготовить документы (<span id="selectedCountForDocs">0</span>)</span>
+                </button>
+                <button id="addEmployeeBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Добавить сотрудника</span>
+                </button>
+            </div>
+        </div>
+        <!-- Поиск -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-teal-800">Поиск студентов</h3>
+                    <button id="toggleSearchBtn" class="bg-teal-600 text-blue-50 px-4 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+                        <i class="fas fa-search"></i>
+                        <span>Поиск</span>
+                    </button>
+                </div>
+            </div>
+            <div id="searchPanel" class="hidden px-6 py-4 border-t border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm text-gray-600">Настройка поиска</span>
+                    <button id="addSearchFieldBtn" class="bg-teal-600 text-blue-50 px-4 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+                        <i class="fas fa-plus"></i>
+                        <span>Добавить поле</span>
+                    </button>
+                </div>
+                <div id="searchFieldsContainer" class="space-y-3">
+                    <!-- Поля поиска будут добавляться динамически -->
+                </div>
+                <div class="mt-4 flex justify-end space-x-3">
+                    <button id="clearSearchBtn" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                        Очистить
+                    </button>
+                    <button id="searchBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+                        <i class="fas fa-search"></i>
+                        <span>Найти</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Столбцы таблицы -->
+        <div id="tableContainer" class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-teal-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">
+                                <input type="checkbox" id="selectAllCheckbox" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded cursor-pointer" aria-label="Выделить все">
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">№</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">ФИО</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Паспорт</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Группа</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Компания</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Профессия</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTableBody" class="bg-white divide-y divide-gray-200">
+                    </tbody>
+                </table>
+            </div>
+            <!-- Пагинация -->
+            <div id="paginationContainer" class="bg-teal-50 px-6 py-3">
+                <!-- Пагинация будет добавлена динамически -->
+            </div>
+        </div>
+    </main>
+    <!-- Окно добавления сотрудников -->
+    <div id="employeeModal" class="auth-modal fixed inset-0 items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Добавление сотрудника</h3>
+                    <button id="closeEmployeeModal" class="text-gray-500 hover:text-gray-700" aria-label="Закрыть модальное окно">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="mb-6">
+                    <label for="employeeCount" class="block text-sm font-medium text-gray-700 mb-1">Количество сотрудников</label>
+                    <input type="number" id="employeeCount" min="1" value="1" class="w-24 px-4 py-2 border border-blue-200 rounded-lg">
+                </div>
+
+                <div class="border-b border-gray-200 mb-6">
+                    <ul class="flex flex-wrap -mb-px" id="employeeTabs">
+                        <li class="mr-2">
+                            <button class="tab-btn active inline-block p-4 border-b-2 border-teal-600 rounded-t-lg text-teal-600" data-tab="personal">Персональные данные</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="finance">Финансы</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="contracts">Договоры</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="visa">VISA</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="work">Работа</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="education">Образование</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <form id="employeeForm" class="space-y-4">
+                    <div id="personalTab" class="tab-content active">
+                        <div>
+                            <label for="surname" class="block text-sm font-medium text-gray-700 mb-1">Фамилия</label>
+                            <input type="text" id="surname" name="surname" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="surname_en" class="block text-sm font-medium text-gray-700 mb-1">Фамилия (EN)</label>
+                            <input type="text" id="surname_en" name="surname_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Имя</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="name_en" class="block text-sm font-medium text-gray-700 mb-1">Имя (EN)</label>
+                            <input type="text" id="name_en" name="name_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="patronymic" class="block text-sm font-medium text-gray-700 mb-1">Отчество</label>
+                            <input type="text" id="patronymic" name="patronymic" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="patronymic_en" class="block text-sm font-medium text-gray-700 mb-1">Отчество (EN)</label>
+                            <input type="text" id="patronymic_en" name="patronymic_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="passport_series" class="block text-sm font-medium text-gray-700 mb-1">Серия паспорта</label>
+                            <input type="text" id="passport_series" name="passport_series" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="passport_number" class="block text-sm font-medium text-gray-700 mb-1">Номер паспорта</label>
+                            <input type="text" id="passport_number" name="passport_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="birth_date" class="block text-sm font-medium text-gray-700 mb-1">Дата рождения</label>
+                            <input type="date" id="birth_date" name="birth_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Пол</label>
+                            <select id="gender" name="gender" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="true">Мужской</option>
+                                <option value="false">Женский</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="passport_issue_date" class="block text-sm font-medium text-gray-700 mb-1">Дата выдачи паспорта</label>
+                            <input type="date" id="passport_issue_date" name="passport_issue_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="passport_expiry_date" class="block text-sm font-medium text-gray-700 mb-1">Дата окончания паспорта</label>
+                            <input type="date" id="passport_expiry_date" name="passport_expiry_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="birth_place" class="block text-sm font-medium text-gray-700 mb-1">Место рождения</label>
+                            <input type="text" id="birth_place" name="birth_place" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="registration_city" class="block text-sm font-medium text-gray-700 mb-1">Город прописки</label>
+                            <input type="text" id="registration_city" name="registration_city" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="registration_address" class="block text-sm font-medium text-gray-700 mb-1">Адрес прописки</label>
+                            <input type="text" id="registration_address" name="registration_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="registration_zip" class="block text-sm font-medium text-gray-700 mb-1">Индекс адреса прописки</label>
+                            <input type="text" id="registration_zip" name="registration_zip" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="group_number" class="block text-sm font-medium text-gray-700 mb-1">Номер группы</label>
+                            <input type="text" id="group_number" name="group_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="is_target" class="block text-sm font-medium text-gray-700 mb-1">Тип обучения</label>
+                            <select id="is_target" name="is_target" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="true">Целевой</option>
+                                <option value="false">Самостоятельный</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="financeTab" class="tab-content">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="payment_contribution" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="payment_contribution" class="ml-2 block text-sm text-gray-700">Оплата взноса</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="payment_contribution_year" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="payment_contribution_year" class="ml-2 block text-sm text-gray-700">Оплата годового взноса</label>
+                        </div>
+                        <div>
+                            <label for="receipt_number" class="block text-sm font-medium text-gray-700 mb-1">Номер квитанции</label>
+                            <input type="text" id="receipt_number" name="receipt_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="receipt_date" class="block text-sm font-medium text-gray-700 mb-1">Дата Квитанции</label>
+                            <input type="date" id="receipt_date" name="receipt_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="card_ready" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="card_ready" class="ml-2 block text-sm text-gray-700">Оформление карты</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="card_get" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="card_get" class="ml-2 block text-sm text-gray-700">Выдача карты</label>
+                        </div>
+                    </div>
+
+                    <div id="contractsTab" class="tab-content">
+                        <div>
+                            <label for="uvm_contract_number" class="block text-sm font-medium text-gray-700 mb-1">Номер договора УВМ</label>
+                            <input type="text" id="uvm_contract_number" name="uvm_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="number_student_university" class="block text-sm font-medium text-gray-700 mb-1">Номер договора студент-университет</label>
+                            <input type="text" id="number_student_university" name="number_student_university" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="date_student_university" class="block text-sm font-medium text-gray-700 mb-1">Дата договора студент-университет</label>
+                            <input type="date" id="date_student_university" name="date_student_university" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="bipartite_contract_number" class="block text-sm font-medium text-gray-700 mb-1">Номер 2-х стороннего договора</label>
+                            <input type="text" id="bipartite_contract_number" name="bipartite_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="bipartite_contract_date" class="block text-sm font-medium text-gray-700 mb-1">Дата 2-х стороннего договора</label>
+                            <input type="date" id="bipartite_contract_date" name="bipartite_contract_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="number_2party_request" class="block text-sm font-medium text-gray-700 mb-1">Номер заявки 2-х стороннего договора</label>
+                            <input type="text" id="number_2party_request" name="number_2party_request" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="tripartite_contract_number" class="block text-sm font-medium text-gray-700 mb-1">Номер 3-х стороннего договора</label>
+                            <input type="text" id="tripartite_contract_number" name="tripartite_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="tripartite_contract_date" class="block text-sm font-medium text-gray-700 mb-1">Дата 3-х стороннего договора</label>
+                            <input type="date" id="tripartite_contract_date" name="tripartite_contract_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="number_practice" class="block text-sm font-medium text-gray-700 mb-1">Номер договора по практике</label>
+                            <input type="text" id="number_practice" name="number_practice" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="date_practice" class="block text-sm font-medium text-gray-700 mb-1">Дата договора по практике</label>
+                            <input type="date" id="date_practice" name="date_practice" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="number_practice_request" class="block text-sm font-medium text-gray-700 mb-1">Номер заявки договора по практике</label>
+                            <input type="text" id="number_practice_request" name="number_practice_request" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="number_registry_send_in_moscow" class="block text-sm font-medium text-gray-700 mb-1">Номер реестра отправленного в Москву</label>
+                            <input type="text" id="number_registry_send_in_moscow" name="number_registry_send_in_moscow" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="date_registry_send_in_moscow" class="block text-sm font-medium text-gray-700 mb-1">Дата реестра отправленного в Москву</label>
+                            <input type="date" id="date_registry_send_in_moscow" name="date_registry_send_in_moscow" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="date_of_termination_of_the_contract" class="block text-sm font-medium text-gray-700 mb-1">Дата расторжения договора</label>
+                            <input type="date" id="date_of_termination_of_the_contract" name="date_of_termination_of_the_contract" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="organization_of_termination" class="block text-sm font-medium text-gray-700 mb-1">Организация расторжения</label>
+                            <input type="text" id="organization_of_termination" name="organization_of_termination" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                    </div>
+
+                    <div id="visaTab" class="tab-content">
+                        <div>
+                            <label for="invitation_number" class="block text-sm font-medium text-gray-700 mb-1">Номер приглашения</label>
+                            <input type="text" id="invitation_number" name="invitation_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="arrival_date" class="block text-sm font-medium text-gray-700 mb-1">Дата прибытия</label>
+                            <input type="date" id="arrival_date" name="arrival_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="arrival_invite" class="block text-sm font-medium text-gray-700 mb-1">Прибыл по приглашению (Кто пригласил)</label>
+                            <input type="text" id="arrival_invite" name="arrival_invite" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="visa_id" class="block text-sm font-medium text-gray-700 mb-1">Идентификатор визы</label>
+                            <input type="text" id="visa_id" name="visa_id" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="visa_form_series" class="block text-sm font-medium text-gray-700 mb-1">Серия бланка визы</label>
+                            <input type="text" id="visa_form_series" name="visa_form_series" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="visa_number" class="block text-sm font-medium text-gray-700 mb-1">Номер визы</label>
+                            <input type="text" id="visa_number" name="visa_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="visa_issue_date" class="block text-sm font-medium text-gray-700 mb-1">Дата выдачи визы</label>
+                            <input type="date" id="visa_issue_date" name="visa_issue_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="visa_receipt_date" class="block text-sm font-medium text-gray-700 mb-1">Дата получения визы</label>
+                            <input type="date" id="visa_receipt_date" name="visa_receipt_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="visa_expiry_date" class="block text-sm font-medium text-gray-700 mb-1">Виза действительна до</label>
+                            <input type="date" id="visa_expiry_date" name="visa_expiry_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="migration_card_series" class="block text-sm font-medium text-gray-700 mb-1">Номер миграционной карты</label>
+                            <input type="text" id="migration_card_series" name="migration_card_series" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="migration_card_number" class="block text-sm font-medium text-gray-700 mb-1">Серия миграционной карты</label>
+                            <input type="text" id="migration_card_number" name="migration_card_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="migration_card_from_date" class="block text-sm font-medium text-gray-700 mb-1">Миграционная карта действительная с</label>
+                            <input type="date" id="migration_card_from_date" name="migration_card_from_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="migration_card_to_date" class="block text-sm font-medium text-gray-700 mb-1">Миграционная карта действительная по</label>
+                            <input type="date" id="migration_card_to_date" name="migration_card_to_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                    </div>
+
+                    <div id="workTab" class="tab-content">
+                        <div class="md:col-span-2">
+                            <label for="company" class="block text-sm font-medium text-gray-700 mb-1">Компания</label>
+                            <select id="company" name="company" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="">Выберите компанию...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="director" class="block text-sm font-medium text-gray-700 mb-1">Директор</label>
+                            <input type="text" id="director" name="director" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label for="company_address" class="block text-sm font-medium text-gray-700 mb-1">Адрес компании</label>
+                            <input type="text" id="company_address" name="company_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="practice_address" class="block text-sm font-medium text-gray-700 mb-1">Адрес прохождения практики</label>
+                            <input type="text" id="practice_address" name="practice_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="profession" class="block text-sm font-medium text-gray-700 mb-1">Профессия</label>
+                            <select id="profession" name="profession" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="">Выберите профессию...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="profession_number" class="block text-sm font-medium text-gray-700 mb-1">Номер профессии</label>
+                            <input type="text" id="profession_number" name="profession_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="curator" class="block text-sm font-medium text-gray-700 mb-1">Куратор</label>
+                            <input type="text" id="curator" name="curator" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly placeholder="Куратор загружается из данных компании">
+                        </div>
+                    </div>
+
+                    <div id="educationTab" class="tab-content">
+                        <div>
+                            <label for="number_enrollment_1year" class="block text-sm font-medium text-gray-700 mb-1">Номер приказа зачисления на 1 курс</label>
+                            <input type="text" id="number_enrollment_1year" name="number_enrollment_1year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="date_enrollment_1year" class="block text-sm font-medium text-gray-700 mb-1">Дата приказа зачисления на 1 курс</label>
+                            <input type="date" id="date_enrollment_1year" name="date_enrollment_1year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="number_enrollment_2year" class="block text-sm font-medium text-gray-700 mb-1">Номер приказа зачисления на 2 курс</label>
+                            <input type="text" id="number_enrollment_2year" name="number_enrollment_2year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="date_enrollment_2year" class="block text-sm font-medium text-gray-700 mb-1">Дата приказа зачисления на 2 курс</label>
+                            <input type="date" id="date_enrollment_2year" name="date_enrollment_2year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="number_enrollment_3year" class="block text-sm font-medium text-gray-700 mb-1">Номер приказа зачисления на 3 курс</label>
+                            <input type="text" id="number_enrollment_3year" name="number_enrollment_3year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="date_enrollment_3year" class="block text-sm font-medium text-gray-700 mb-1">Дата приказа зачисления на 3 курс</label>
+                            <input type="date" id="date_enrollment_3year" name="date_enrollment_3year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="number_enrollment_4year" class="block text-sm font-medium text-gray-700 mb-1">Номер приказа зачисления на 4 курс</label>
+                            <input type="text" id="number_enrollment_4year" name="number_enrollment_4year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="date_enrollment_4year" class="block text-sm font-medium text-gray-700 mb-1">Дата приказа зачисления на 4 курс</label>
+                            <input type="date" id="date_enrollment_4year" name="date_enrollment_4year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="number_expulsion" class="block text-sm font-medium text-gray-700 mb-1">Номер приказа об отчислении</label>
+                            <input type="text" id="number_expulsion" name="number_expulsion" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="date_expulsion" class="block text-sm font-medium text-gray-700 mb-1">Дата приказа об отчислении</label>
+                            <input type="date" id="date_expulsion" name="date_expulsion" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div class="md:col-span-2 mt-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-lg font-semibold text-gray-800">Выезды из страны</h4>
+                                <button type="button" id="addDepartureBtn" class="bg-teal-600 text-blue-50 px-4 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Добавить выезд</span>
+                                </button>
+                            </div>
+                            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-teal-50">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Дата отъезда</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Причина</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Дата возвращения</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Действия</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="departuresTableBody" class="bg-white divide-y divide-gray-200">
+                                        <tr>
+                                            <td colspan="4" class="px-4 py-8 text-center text-gray-500">Нет выездов</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 pt-6">
+                        <button type="button" id="cancelEmployeeBtn" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                            Отмена
+                        </button>
+                        <button type="submit" id="submitEmployeeBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition w-36 inline-flex items-center justify-center">
+                            Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Окно редактирования сотрудников -->
+    <div id="editEmployeeModal" class="auth-modal fixed inset-0 items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Редактирование сотрудника</h3>
+                    <button id="closeEditEmployeeModal" class="text-gray-500 hover:text-gray-700" aria-label="Закрыть модальное окно">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="border-b border-gray-200 mb-6">
+                    <ul class="flex flex-wrap -mb-px" id="editEmployeeTabs">
+                        <li class="mr-2">
+                            <button class="edit-tab-btn active inline-block p-4 border-b-2 border-teal-600 rounded-t-lg text-teal-600" data-tab="edit-personal">Персональные данные</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="edit-tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="edit-finance">Финансы</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="edit-tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="edit-contracts">Договоры</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="edit-tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="edit-visa">VISA</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="edit-tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="edit-work">Работа</button>
+                        </li>
+                        <li class="mr-2">
+                            <button class="edit-tab-btn inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300" data-tab="edit-education">Образование</button>
+                        </li>
+                    </ul>
+                </div>
+
+                <form id="editEmployeeForm" class="space-y-4">
+                    <div id="edit-personalTab" class="edit-tab-content active">
+                        <div>
+                            <label for="edit_surname" class="block text-sm font-medium text-gray-700 mb-1">Фамилия</label>
+                            <input type="text" id="edit_surname" name="edit_surname" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_surname_en" class="block text-sm font-medium text-gray-700 mb-1">Фамилия (EN)</label>
+                            <input type="text" id="edit_surname_en" name="edit_surname_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_name" class="block text-sm font-medium text-gray-700 mb-1">Имя</label>
+                            <input type="text" id="edit_name" name="edit_name" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_name_en" class="block text-sm font-medium text-gray-700 mb-1">Имя (EN)</label>
+                            <input type="text" id="edit_name_en" name="edit_name_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_patronymic" class="block text-sm font-medium text-gray-700 mb-1">Отчество</label>
+                            <input type="text" id="edit_patronymic" name="edit_patronymic" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_patronymic_en" class="block text-sm font-medium text-gray-700 mb-1">Отчество (EN)</label>
+                            <input type="text" id="edit_patronymic_en" name="edit_patronymic_en" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_passport_series" class="block text-sm font-medium text-gray-700 mb-1">Серия паспорта</label>
+                            <input type="text" id="edit_passport_series" name="edit_passport_series" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_passport_number" class="block text-sm font-medium text-gray-700 mb-1">Номер паспорта</label>
+                            <input type="text" id="edit_passport_number" name="edit_passport_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_birth_date" class="block text-sm font-medium text-gray-700 mb-1">Дата рождения</label>
+                            <input type="date" id="edit_birth_date" name="edit_birth_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_gender" class="block text-sm font-medium text-gray-700 mb-1">Пол</label>
+                            <select id="edit_gender" name="edit_gender" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="true">Мужской</option>
+                                <option value="false">Женский</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="edit_passport_issue_date" class="block text-sm font-medium text-gray-700 mb-1">Дата выдачи паспорта</label>
+                            <input type="date" id="edit_passport_issue_date" name="edit_passport_issue_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_passport_expiry_date" class="block text-sm font-medium text-gray-700 mb-1">Дата окончания паспорта</label>
+                            <input type="date" id="edit_passport_expiry_date" name="edit_passport_expiry_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_birth_place" class="block text-sm font-medium text-gray-700 mb-1">Место рождения</label>
+                            <input type="text" id="edit_birth_place" name="edit_birth_place" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_registration_city" class="block text-sm font-medium text-gray-700 mb-1">Город прописки</label>
+                            <input type="text" id="edit_registration_city" name="edit_registration_city" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="edit_registration_address" class="block text-sm font-medium text-gray-700 mb-1">Адрес прописки</label>
+                            <input type="text" id="edit_registration_address" name="edit_registration_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_registration_zip" class="block text-sm font-medium text-gray-700 mb-1">Индекс адреса прописки</label>
+                            <input type="text" id="edit_registration_zip" name="edit_registration_zip" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_group_number" class="block text-sm font-medium text-gray-700 mb-1">Номер группы</label>
+                            <input type="text" id="edit_group_number" name="edit_group_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_is_target" class="block text-sm font-medium text-gray-700 mb-1">Тип обучения</label>
+                            <select id="edit_is_target" name="edit_is_target" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="true">Целевой</option>
+                                <option value="false">Самостоятельный</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="edit-financeTab" class="edit-tab-content">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="edit_payment_contribution" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="edit_payment_contribution" class="ml-2 block text-sm text-gray-700">Оплата взноса</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="edit_payment_contribution_year" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="edit_payment_contribution_year" class="ml-2 block text-sm text-gray-700">Оплата годового взноса</label>
+                        </div>
+                        <div>
+                            <label for="edit_receipt_number" class="block text-sm font-medium text-gray-700 mb-1">Номер квитанции</label>
+                            <input type="text" id="edit_receipt_number" name="edit_receipt_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_receipt_date" class="block text-sm font-medium text-gray-700 mb-1">Дата Квитанции</label>
+                            <input type="date" id="edit_receipt_date" name="edit_receipt_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="edit_card_ready" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="edit_card_ready" class="ml-2 block text-sm text-gray-700">Оформление карты</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="edit_card_get" class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded">
+                            <label for="edit_card_get" class="ml-2 block text-sm text-gray-700">Выдача карты</label>
+                        </div>
+                    </div>
+
+                    <div id="edit-contractsTab" class="edit-tab-content">
+                        <div>
+                            <label for="edit_uvm_contract_number" class="block text-sm font-medium text-gray-700 mb-1">Номер договора УВМ</label>
+                            <input type="text" id="edit_uvm_contract_number" name="edit_uvm_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_tripartite_contract_number" class="block text-sm font-medium text-gray-700 mb-1">Номер 3-х стороннего договора</label>
+                            <input type="text" id="edit_tripartite_contract_number" name="edit_tripartite_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_tripartite_contract_date" class="block text-sm font-medium text-gray-700 mb-1">Дата 3-х стороннего договора</label>
+                            <input type="date" id="edit_tripartite_contract_date" name="edit_tripartite_contract_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_bipartite_contract_number" class="block text-sm font-medium text-gray-700 mb-1">Номер 2-х стороннего договора</label>
+                            <input type="text" id="edit_bipartite_contract_number" name="edit_bipartite_contract_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_bipartite_contract_date" class="block text-sm font-medium text-gray-700 mb-1">Дата 2-х стороннего договора</label>
+                            <input type="date" id="edit_bipartite_contract_date" name="edit_bipartite_contract_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_number_2party_request" class="block text-sm font-medium text-gray-700 mb-1">Номер заявки 2-х стороннего договора</label>
+                            <input type="text" id="edit_number_2party_request" name="edit_number_2party_request" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_number_student_university" class="block text-sm font-medium text-gray-700 mb-1">Номер договора студент-университет</label>
+                            <input type="text" id="edit_number_student_university" name="edit_number_student_university" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_date_student_university" class="block text-sm font-medium text-gray-700 mb-1">Дата договора студент-университет</label>
+                            <input type="date" id="edit_date_student_university" name="edit_date_student_university" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_number_practice" class="block text-sm font-medium text-gray-700 mb-1">Номер договора по практике</label>
+                            <input type="text" id="edit_number_practice" name="edit_number_practice" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_date_practice" class="block text-sm font-medium text-gray-700 mb-1">Дата договора по практике</label>
+                            <input type="date" id="edit_date_practice" name="edit_date_practice" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_number_practice_request" class="block text-sm font-medium text-gray-700 mb-1">Номер заявки договора по практике</label>
+                            <input type="text" id="edit_number_practice_request" name="edit_number_practice_request" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_number_registry_send_in_moscow" class="block text-sm font-medium text-gray-700 mb-1">Номер реестра отправленного в Москву</label>
+                            <input type="text" id="edit_number_registry_send_in_moscow" name="edit_number_registry_send_in_moscow" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_date_registry_send_in_moscow" class="block text-sm font-medium text-gray-700 mb-1">Дата реестра отправленного в Москву</label>
+                            <input type="date" id="edit_date_registry_send_in_moscow" name="edit_date_registry_send_in_moscow" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_date_of_termination_of_the_contract" class="block text-sm font-medium text-gray-700 mb-1">Дата расторжения договора</label>
+                            <input type="date" id="edit_date_of_termination_of_the_contract" name="edit_date_of_termination_of_the_contract" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_organization_of_termination" class="block text-sm font-medium text-gray-700 mb-1">Организация расторжения</label>
+                            <input type="text" id="edit_organization_of_termination" name="edit_organization_of_termination" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                    </div>
+
+                    <div id="edit-visaTab" class="edit-tab-content">
+                        <div>
+                            <label for="edit_invitation_number" class="block text-sm font-medium text-gray-700 mb-1">Номер приглашения</label>
+                            <input type="text" id="edit_invitation_number" name="edit_invitation_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_arrival_date" class="block text-sm font-medium text-gray-700 mb-1">Дата прибытия</label>
+                            <input type="date" id="edit_arrival_date" name="edit_arrival_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_arrival_invite" class="block text-sm font-medium text-gray-700 mb-1">Прибыл по приглашению (Кто пригласил)</label>
+                            <input type="text" id="edit_arrival_invite" name="edit_arrival_invite" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_visa_id" class="block text-sm font-medium text-gray-700 mb-1">Идентификатор визы</label>
+                            <input type="text" id="edit_visa_id" name="edit_visa_id" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_visa_form_series" class="block text-sm font-medium text-gray-700 mb-1">Серия бланка визы</label>
+                            <input type="text" id="edit_visa_form_series" name="edit_visa_form_series" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_visa_number" class="block text-sm font-medium text-gray-700 mb-1">Номер визы</label>
+                            <input type="text" id="edit_visa_number" name="edit_visa_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_visa_issue_date" class="block text-sm font-medium text-gray-700 mb-1">Дата выдачи визы</label>
+                            <input type="date" id="edit_visa_issue_date" name="edit_visa_issue_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_visa_receipt_date" class="block text-sm font-medium text-gray-700 mb-1">Дата получения визы</label>
+                            <input type="date" id="edit_visa_receipt_date" name="edit_visa_receipt_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_visa_expiry_date" class="block text-sm font-medium text-gray-700 mb-1">Виза действительна до</label>
+                            <input type="date" id="edit_visa_expiry_date" name="edit_visa_expiry_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_migration_card_series" class="block text-sm font-medium text-gray-700 mb-1">Номер миграционной карты</label>
+                            <input type="text" id="edit_migration_card_series" name="edit_migration_card_series" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_migration_card_number" class="block text-sm font-medium text-gray-700 mb-1">Серия миграционной карты</label>
+                            <input type="text" id="edit_migration_card_number" name="edit_migration_card_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_migration_card_from_date" class="block text-sm font-medium text-gray-700 mb-1">Миграционная карта действительная с</label>
+                            <input type="date" id="edit_migration_card_from_date" name="edit_migration_card_from_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_migration_card_to_date" class="block text-sm font-medium text-gray-700 mb-1">Миграционная карта действительная по</label>
+                            <input type="date" id="edit_migration_card_to_date" name="edit_migration_card_to_date" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                    </div>
+
+                    <div id="edit-workTab" class="edit-tab-content">
+                        <div class="md:col-span-2">
+                            <label for="edit_company" class="block text-sm font-medium text-gray-700 mb-1">Компания</label>
+                            <select id="edit_company" name="edit_company" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="">Выберите компанию...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="edit_director" class="block text-sm font-medium text-gray-700 mb-1">Директор</label>
+                            <input type="text" id="edit_director" name="edit_director" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label for="edit_company_address" class="block text-sm font-medium text-gray-700 mb-1">Адрес компании</label>
+                            <input type="text" id="edit_company_address" name="edit_company_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="edit_practice_address" class="block text-sm font-medium text-gray-700 mb-1">Адрес прохождения практики</label>
+                            <input type="text" id="edit_practice_address" name="edit_practice_address" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="edit_profession" class="block text-sm font-medium text-gray-700 mb-1">Профессия</label>
+                            <select id="edit_profession" name="edit_profession" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                                <option value="">Выберите профессию...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="edit_profession_number" class="block text-sm font-medium text-gray-700 mb-1">Номер профессии</label>
+                            <input type="text" id="edit_profession_number" name="edit_profession_number" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="edit_curator" class="block text-sm font-medium text-gray-700 mb-1">Куратор</label>
+                            <input type="text" id="edit_curator" name="edit_curator" class="w-full px-4 py-2 border border-blue-200 rounded-lg bg-gray-100" readonly placeholder="Куратор загружается из данных компании">
+                        </div>
+                    </div>
+
+                    <div id="edit-educationTab" class="edit-tab-content">
+                        <div>
+                            <label for="edit_number_enrollment_1year" class="block text-sm font-medium text-gray-700 mb-1">Номер приказа зачисления на 1 курс</label>
+                            <input type="text" id="edit_number_enrollment_1year" name="edit_number_enrollment_1year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_date_enrollment_1year" class="block text-sm font-medium text-gray-700 mb-1">Дата приказа зачисления на 1 курс</label>
+                            <input type="date" id="edit_date_enrollment_1year" name="edit_date_enrollment_1year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_number_enrollment_2year" class="block text-sm font-medium text-gray-700 mb-1">Номер приказа зачисления на 2 курс</label>
+                            <input type="text" id="edit_number_enrollment_2year" name="edit_number_enrollment_2year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_date_enrollment_2year" class="block text-sm font-medium text-gray-700 mb-1">Дата приказа зачисления на 2 курс</label>
+                            <input type="date" id="edit_date_enrollment_2year" name="edit_date_enrollment_2year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_number_enrollment_3year" class="block text-sm font-medium text-gray-700 mb-1">Номер приказа зачисления на 3 курс</label>
+                            <input type="text" id="edit_number_enrollment_3year" name="edit_number_enrollment_3year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_date_enrollment_3year" class="block text-sm font-medium text-gray-700 mb-1">Дата приказа зачисления на 3 курс</label>
+                            <input type="date" id="edit_date_enrollment_3year" name="edit_date_enrollment_3year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_number_enrollment_4year" class="block text-sm font-medium text-gray-700 mb-1">Номер приказа зачисления на 4 курс</label>
+                            <input type="text" id="edit_number_enrollment_4year" name="edit_number_enrollment_4year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_date_enrollment_4year" class="block text-sm font-medium text-gray-700 mb-1">Дата приказа зачисления на 4 курс</label>
+                            <input type="date" id="edit_date_enrollment_4year" name="edit_date_enrollment_4year" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_number_expulsion" class="block text-sm font-medium text-gray-700 mb-1">Номер приказа об отчислении</label>
+                            <input type="text" id="edit_number_expulsion" name="edit_number_expulsion" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div>
+                            <label for="edit_date_expulsion" class="block text-sm font-medium text-gray-700 mb-1">Дата приказа об отчислении</label>
+                            <input type="date" id="edit_date_expulsion" name="edit_date_expulsion" class="w-full px-4 py-2 border border-blue-200 rounded-lg">
+                        </div>
+                        <div class="md:col-span-2 mt-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-lg font-semibold text-gray-800">Выезды из страны</h4>
+                                <button type="button" id="edit_addDepartureBtn" class="bg-teal-600 text-blue-50 px-4 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Добавить выезд</span>
+                                </button>
+                            </div>
+                            <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-teal-50">
+                                        <tr>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Дата отъезда</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Причина</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Дата возвращения</th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-teal-800 uppercase tracking-wider">Действия</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="edit_departuresTableBody" class="bg-white divide-y divide-gray-200">
+                                        <tr>
+                                            <td colspan="4" class="px-4 py-8 text-center text-gray-500">Нет выездов</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 pt-6">
+                        <button type="button" id="cancelEditEmployeeBtn" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                            Отмена
+                        </button>
+                        <button type="submit" id="submitEditEmployeeBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition w-52 inline-flex items-center justify-center">
+                            Сохранить изменения
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Окно авторизации -->
+    <div id="authModal" class="auth-modal fixed inset-0 items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Авторизация</h3>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700" aria-label="Закрыть модальное окно">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Логин</label>
+                        <input type="text" id="username" name="username"
+                               class="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+                               placeholder="Введите ваш логин" required>
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
+                        <input type="password" id="password" name="password"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Введите ваш пароль" required>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input id="remember" name="remember" type="checkbox"
+                                   class="h-4 w-4 text-slate-600 focus:ring-slate-500 border-gray-300 rounded">
+                            <label for="remember" class="ml-2 block text-sm text-gray-700">Запомнить меня</label>
+                        </div>
+
+                        <a href="#" class="text-sm text-slate-600 hover:text-slate-500">Забыли пароль?</a>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full bg-teal-600 text-blue-50 py-2 px-4 rounded-lg hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition">
+                        Войти
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно выбора шаблона документа -->
+    <div id="selectTemplateModal" class="auth-modal fixed inset-0 items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-2xl mx-4 relative">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-stone-700">Выбор шаблона документа</h3>
+                    <button id="closeSelectTemplateModal" class="text-gray-500 hover:text-gray-700" aria-label="Закрыть модальное окно">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div id="templateLoadingOverlay" class="hidden absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-20 rounded-xl">
+                    <div class="flex flex-col items-center">
+                        <div class="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-2"></div>
+                        <p class="text-teal-700 font-medium">Загрузка шаблонов...</p>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="templateSearchInput" class="block text-sm font-medium text-gray-700 mb-2">Выберите шаблон документа</label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="templateSearchInput" 
+                            class="w-full px-4 py-2 pr-10 border border-blue-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500" 
+                            placeholder="Введите название для поиска..."
+                            autocomplete="off"
+                        />
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <div id="templateSearchResults" class="hidden absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                            <!-- Результаты поиска будут добавлены динамически -->
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedTemplateId" value="">
+                </div>
+
+                <div class="flex justify-end space-x-4 pt-4">
+                    <button type="button" id="cancelSelectTemplateBtn" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                        Отмена
+                    </button>
+                    <button type="button" id="confirmSelectTemplateBtn" class="bg-teal-600 text-blue-50 px-6 py-2 rounded-lg hover:bg-teal-700 transition flex items-center space-x-2" disabled>
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Подготовить документы</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно ожидания создания архива (не используется, оставлено для совместимости) -->
+    <div id="archiveGenerationModal" class="auth-modal fixed inset-0 items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="bg-blue-50 rounded-xl shadow-2xl z-10 w-full max-w-md mx-4">
+            <div class="p-6">
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+                    <h3 class="text-xl font-bold text-stone-700 mb-2">Подготовка документов</h3>
+                    <p class="text-gray-600 text-center">Пожалуйста, подождите. Архив документов готовится...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/appStudent.js" type="module"></script>
+</body>
+</html>

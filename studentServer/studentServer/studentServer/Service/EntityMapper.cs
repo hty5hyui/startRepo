@@ -1,0 +1,305 @@
+﻿using studentServer.Entity.DBEntity;
+using System.Diagnostics.Contracts;
+
+namespace studentServer.Service
+{
+    /// <summary>
+    /// Класс для преобразования между сущностями и DTO.
+    /// </summary>
+    public class EntityMapper
+    {
+        //----------------------------------------------------------------------------------------------------
+        public static Student ToStudent(StudentDTO studentDTO)
+        {
+            if (studentDTO == null)
+            {
+                throw new ArgumentNullException(nameof(studentDTO));
+            }
+
+            return new Student
+            {
+                Id = studentDTO.Id == null ? 0 : (int)studentDTO.Id,
+                CompanyId = studentDTO.CompanyId,
+                ProfessionId = studentDTO.ProfessionId,
+                CuratorId = studentDTO.CuratorId,
+                EducationId = studentDTO.EducationId
+            };
+        }
+
+        public static StudentDTO ToStudentDTO(Student student)
+        {
+            if (student == null) throw new ArgumentNullException(nameof(student));
+
+            return new StudentDTO
+            {
+                Id = student.Id,
+                CompanyId = student.CompanyId,
+                ProfessionId = student.ProfessionId,
+                CuratorId = student.CuratorId,
+                EducationId = student.EducationId
+            };
+        }
+        //----------------------------------------------------------------------------------------------------
+        public static ContractDTO ToContractDTO(Entity.DBEntity.Contract contract)
+        {
+            if (contract == null) throw new ArgumentNullException(nameof(contract));
+
+            return new ContractDTO
+            {
+                Id = contract.Id,
+                NumberUVM = contract.NumberUVM,
+                Number3Party = contract.Number3Party,
+                Date3Party = contract.Date3Party,
+                Number2Party = contract.Number2Party,
+                Date2Party = contract.Date2Party,
+                NumberStudentUniversity = contract.NumberStudentUniversity,
+                DateStudentUniversity = contract.DateStudentUniversity,
+                Number2PartyRequest = contract.Number2PartyRequest,
+                NumberPractice = contract.NumberPractice,
+                DatePractice = contract.DatePractice,
+                NumberPracticeRequest = contract.NumberPracticeRequest,
+                NumberRegistrySendInMoscow = contract.NumberRegistrySendInMoscow,
+                DateRegistrySendInMoscow = contract.DateRegistrySendInMoscow,
+                DateOfTerminationOfTheContract = contract.DateOfTerminationOfTheContract,
+                OrganizationOfTermination = contract.OrganizationOfTermination
+            };
+        }
+        public static Entity.DBEntity.Contract ToContract(ContractDTO contractDTO)
+        {
+            if (contractDTO == null) throw new ArgumentNullException(nameof(contractDTO));
+
+            return new Entity.DBEntity.Contract
+            {
+                Id = contractDTO.Id == null ? 0 : (int)contractDTO.Id,
+                NumberUVM = contractDTO.NumberUVM,
+                Number3Party = contractDTO.Number3Party,
+                Date3Party = contractDTO.Date3Party,
+                Number2Party = contractDTO.Number2Party,
+                Date2Party = contractDTO.Date2Party,
+                NumberStudentUniversity = contractDTO.NumberStudentUniversity,
+                DateStudentUniversity = contractDTO.DateStudentUniversity,
+                Number2PartyRequest = contractDTO.Number2PartyRequest,
+                NumberPractice = contractDTO.NumberPractice,
+                DatePractice = contractDTO.DatePractice,
+                NumberPracticeRequest = contractDTO.NumberPracticeRequest,
+                NumberRegistrySendInMoscow = contractDTO.NumberRegistrySendInMoscow,
+                DateRegistrySendInMoscow = contractDTO.DateRegistrySendInMoscow,
+                DateOfTerminationOfTheContract = contractDTO.DateOfTerminationOfTheContract,
+                OrganizationOfTermination = contractDTO.OrganizationOfTermination
+            };
+        }
+        //----------------------------------------------------------------------------------------------------
+        public static PersonalDataDTO ToPersonalDataDTO(PersonalData personalData)
+        {
+            if (personalData == null) throw new ArgumentNullException(nameof(personalData));
+
+            return new PersonalDataDTO
+            {
+                Id = personalData.Id,
+                Surname = personalData.Surname,
+                Name = personalData.Name,
+                Patronymic = personalData.Patronymic,
+                SurnameEn = personalData.SurnameEn,
+                NameEn = personalData.NameEn,
+                PatronymicEn = personalData.PatronymicEn,
+                Birthday = personalData.Birthday,
+                isMan = personalData.isMan,
+                PassportSeries = personalData.PassportSeries,
+                PassportNumber = personalData.PassportNumber,
+                isTarget = personalData.isTarget,
+                PassportDateOfIssue = personalData.PassportDateOfIssue,
+                PassportDateEnd = personalData.PassportDateEnd,
+                PlaceOfBirth = personalData.PlaceOfBirth,
+                CityOfRegistration = personalData.CityOfRegistration,
+                AddressRegistration = personalData.AddressRegistration,
+                AddressRegistrationIndex = personalData.AddressRegistrationIndex,
+                GroupNumber = personalData.GroupNumber
+            };
+        }
+
+        public static PersonalData ToPersonalData(PersonalDataDTO personalDataDTO)
+        {
+            if (personalDataDTO == null) throw new ArgumentNullException(nameof(personalDataDTO));
+
+            return new PersonalData
+            {
+                Id = personalDataDTO.Id == null ? 0 : (int)personalDataDTO.Id,
+                Surname = personalDataDTO.Surname,
+                Name = personalDataDTO.Name,
+                Patronymic = personalDataDTO.Patronymic,
+                SurnameEn = personalDataDTO.SurnameEn,
+                NameEn = personalDataDTO.NameEn,
+                PatronymicEn = personalDataDTO.PatronymicEn,
+                Birthday = personalDataDTO.Birthday,
+                isMan = personalDataDTO.isMan,
+                PassportSeries = personalDataDTO.PassportSeries,
+                PassportNumber = personalDataDTO.PassportNumber,
+                isTarget = personalDataDTO.isTarget,
+                PassportDateOfIssue = personalDataDTO.PassportDateOfIssue,
+                PassportDateEnd = personalDataDTO.PassportDateEnd,
+                PlaceOfBirth = personalDataDTO.PlaceOfBirth,
+                CityOfRegistration = personalDataDTO.CityOfRegistration,
+                AddressRegistration = personalDataDTO.AddressRegistration,
+                AddressRegistrationIndex = personalDataDTO.AddressRegistrationIndex,
+                GroupNumber = personalDataDTO.GroupNumber
+            };
+        }
+        //----------------------------------------------------------------------------------------------------
+        public static FinanceDocDTO ToFinanceDocDTO(FinanceDoc financeDoc)
+        {
+            if (financeDoc == null) throw new ArgumentNullException(nameof(financeDoc));
+
+            return new FinanceDocDTO
+            {
+                Id = financeDoc.Id,
+                PaymentOfContribution = financeDoc.PaymentOfContribution,
+                PaymentOfContributionYear = financeDoc.PaymentOfContributionYear,
+                CheckNumber = financeDoc.CheckNumber,
+                CheckDate = financeDoc.CheckDate,
+                CardIsReady = financeDoc.CardIsReady,
+                CardIsGet = financeDoc.CardIsGet
+            };
+        }
+
+        public static FinanceDoc ToFinanceDoc(FinanceDocDTO financeDocDTO)
+        {
+            if (financeDocDTO == null) throw new ArgumentNullException(nameof(financeDocDTO));
+
+            return new FinanceDoc
+            {
+                Id = financeDocDTO.Id == null ? 0 : (int)financeDocDTO.Id,
+                PaymentOfContribution = financeDocDTO.PaymentOfContribution,
+                PaymentOfContributionYear = financeDocDTO.PaymentOfContributionYear,
+                CheckNumber = financeDocDTO.CheckNumber,
+                CheckDate = financeDocDTO.CheckDate,
+                CardIsReady = financeDocDTO.CardIsReady,
+                CardIsGet = financeDocDTO.CardIsGet
+            };
+        }
+        //----------------------------------------------------------------------------------------------------
+        public static VISADTO ToVISADTO(VISA visa)
+        {
+            if (visa == null) throw new ArgumentNullException(nameof(visa));
+
+            return new VISADTO
+            {
+                Id = visa.Id,
+                InviteNumber = visa.InviteNumber,
+                ArrivalDate = visa.ArrivalDate,
+                VisaId = visa.VisaId,
+                VisaSeries = visa.VisaSeries,
+                VisaNumber = visa.VisaNumber,
+                VisaIssueDate = visa.VisaIssueDate,
+                VisaReceiptDate = visa.VisaReceiptDate,
+                VisaValidityDate = visa.VisaValidityDate,
+                ArrivalInvite = visa.ArrivalInvite,
+                MigrationСardSeries = visa.MigrationСardSeries,
+                MigrationСardNumber = visa.MigrationСardNumber,
+                MigrationСardFromDate = visa.MigrationСardFromDate,
+                MigrationСardToDate = visa.MigrationСardToDate
+            };
+        }
+
+        public static VISA ToVISA(VISADTO visaDTO)
+        {
+            if (visaDTO == null) throw new ArgumentNullException(nameof(visaDTO));
+
+            return new VISA
+            {
+                Id = visaDTO.Id == null ? 0 : (int)visaDTO.Id,
+                InviteNumber = visaDTO.InviteNumber,
+                ArrivalDate = visaDTO.ArrivalDate,
+                VisaId = visaDTO.VisaId,
+                VisaSeries = visaDTO.VisaSeries,
+                VisaNumber = visaDTO.VisaNumber,
+                VisaIssueDate = visaDTO.VisaIssueDate,
+                VisaReceiptDate = visaDTO.VisaReceiptDate,
+                VisaValidityDate = visaDTO.VisaValidityDate,
+                ArrivalInvite = visaDTO.ArrivalInvite,
+                MigrationСardSeries = visaDTO.MigrationСardSeries,
+                MigrationСardNumber = visaDTO.MigrationСardNumber,
+                MigrationСardFromDate = visaDTO.MigrationСardFromDate,
+                MigrationСardToDate = visaDTO.MigrationСardToDate
+            };
+        }
+        //----------------------------------------------------------------------------------------------------
+        public static ProfessionDTO ToProfessionDTO(Profession profession)
+        {
+            if (profession == null) throw new ArgumentNullException(nameof(profession));
+
+            return new ProfessionDTO
+            {
+                Id = profession.Id,
+                ProfessionName = profession.ProfessionName,
+                ProfessionNumber = profession.ProfessionNumber
+            };
+        }
+        public static Profession ToProfession(ProfessionDTO professionDTO)
+        {
+            if (professionDTO == null) throw new ArgumentNullException(nameof(professionDTO));
+
+            return new Profession
+            {
+                Id = professionDTO.Id,
+                ProfessionName = professionDTO.ProfessionName,
+                ProfessionNumber = professionDTO.ProfessionNumber
+            };
+        }
+        //----------------------------------------------------------------------------------------------------
+        public static StudentDataDTO ToStudentDataDTO(StudentGroupDataDTO data)
+        {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+
+            return new StudentDataDTO
+            {
+                student = data.student,
+                contract = data.contract,
+                financeDoc = data.financeDoc,
+                personalData = data.personalData,
+                visa = data.visa
+            };
+        }
+        //----------------------------------------------------------------------------------------------------
+        public static EducationDTO ToEducationDTO(Education education)
+        {
+            if (education == null) throw new ArgumentNullException(nameof(education));
+
+            return new EducationDTO
+            {
+                Id = education.Id,
+                NumberEnrollment1Year = education.NumberEnrollment1Year,
+                DateEnrollment1Year = education.DateEnrollment1Year,
+                NumberEnrollment2Year = education.NumberEnrollment2Year,
+                DateEnrollment2Year = education.DateEnrollment2Year,
+                NumberEnrollment3Year = education.NumberEnrollment3Year,
+                DateEnrollment3Year = education.DateEnrollment3Year,
+                NumberEnrollment4Year = education.NumberEnrollment4Year,
+                DateEnrollment4Year = education.DateEnrollment4Year,
+                Departures = education.Departures,
+                NumberExpulsion = education.NumberExpulsion,
+                DateExpulsion = education.DateExpulsion
+            };
+        }
+        public static Education ToEducation(EducationDTO educationDTO)
+        {
+            if (educationDTO == null) throw new ArgumentNullException(nameof(educationDTO));
+
+            return new Education
+            {
+                Id = educationDTO.Id,
+                NumberEnrollment1Year = educationDTO.NumberEnrollment1Year,
+                DateEnrollment1Year = educationDTO.DateEnrollment1Year,
+                NumberEnrollment2Year = educationDTO.NumberEnrollment2Year,
+                DateEnrollment2Year = educationDTO.DateEnrollment2Year,
+                NumberEnrollment3Year = educationDTO.NumberEnrollment3Year,
+                DateEnrollment3Year = educationDTO.DateEnrollment3Year,
+                NumberEnrollment4Year = educationDTO.NumberEnrollment4Year,
+                DateEnrollment4Year = educationDTO.DateEnrollment4Year,
+                Departures = educationDTO.Departures,
+                NumberExpulsion = educationDTO.NumberExpulsion,
+                DateExpulsion = educationDTO.DateExpulsion
+            };
+        }
+        //----------------------------------------------------------------------------------------------------
+    }
+}

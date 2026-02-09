@@ -1,0 +1,66 @@
+/* Стили для трехпозиционных чекбоксов */
+
+.tri-state-checkbox-container,
+.tri-state-select-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.tri-state-visual {
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tri-state-visual:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+.tri-state-visual i {
+    color: white;
+    font-size: 0.875rem;
+}
+
+.tri-state-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    user-select: none;
+}
+
+/* Состояние null - желтый/amber */
+.tri-state-visual[data-state="null"] {
+    background-color: #fbbf24;
+    border-color: #f59e0b;
+}
+
+/* Состояние true - зеленый */
+.tri-state-visual[data-state="true"] {
+    background-color: #10b981;
+    border-color: #059669;
+}
+
+/* Состояние false - красный */
+.tri-state-visual[data-state="false"] {
+    background-color: #ef4444;
+    border-color: #dc2626;
+}
+
+/* Подсказка для пользователя */
+.tri-state-help {
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+

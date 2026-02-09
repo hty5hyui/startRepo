@@ -1,0 +1,49 @@
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.auth-modal {
+    display: none;
+    animation: fadeIn 0.3s;
+}
+
+.auth-modal:not(.hidden) {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(-20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+@keyframes fade-in {
+    from { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+}
+
+.blur-background {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
